@@ -1,0 +1,74 @@
+# Vulnerability tracking, both halves of it.
+#
+# The Advisory is a vulnerability an operator recorded themselves,
+# which is the half that carries the weight on a residential fleet:
+# gateway vendors ship security notices to their ISP customers through
+# support portals and most never become CVEs. It needs no feed and no
+# public identifier, so it works the same on a deployment with no
+# egress at all.
+#
+# The device here is Example Networks RG2400, the documentation-OUI
+# family the demo fleets run. The vulnerability is illustrative and the
+# device is not a real product, deliberately: an example that named a
+# real vendor would read as a security claim about their hardware.
+apiVersion: compliance.herder.io/v1alpha1
+kind: Advisory
+metadata:
+  name: example-networks-rg2400-wan-management
+spec:
+  title: Management interface reachable from the WAN
+  severity: critical
+  description: >-
+    Builds before 3.14.3 answer management requests on the WAN
+    interface, so a gateway is administrable from outside the home
+    network.
+  remediation: Upgrade to 3.14.3 or later.
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [RG2400]
+      # SemverRange is the right fence when a vendor's firmware strings
+      # really are semver. They frequently are not, and a device whose
+      # version does not parse never matches, so a fleet on decorated
+      # version strings should list exact builds with In instead of
+      # quietly reporting itself clean.
+      - key: firmwareVersion
+        operator: SemverRange
+        values: ["< 3.14.3"]
+---
+# The CpeBinding is the automatic floor underneath the advisories: it
+# names the CPE product a cohort corresponds to, and the compliance
+# role refreshes that product's public records daily and matches them
+# against each device's firmware.
+#
+# This one is real, and it is a statement of identity rather than a
+# security claim: the Sagemcom F@ST 5280 is catalogued under this CPE
+# product name, and the public record for it is pinned to one exact
+# firmware, which is the shape most consumer-gateway records take.
+#
+# A deployment with no bindings makes no outbound request at all. That
+# is the whole mechanism for an air-gapped install: egress follows from
+# declaring a product, not from a setting.
+apiVersion: compliance.herder.io/v1alpha1
+kind: CpeBinding
+metadata:
+  name: sagemcom-fast5280
+spec:
+  deviceSelector:
+    matchLabels:
+      manufacturer: Sagemcom
+      productClass: FAST5280
+  # Written unescaped. Herder applies the escaping the feed's query
+  # format needs, which matters here: the public API returns nothing
+  # for a bare "@".
+  cpe: "cpe:2.3:o:sagemcom:f@st_5280_router_firmware"
+  # This vendor reports a bare dotted version, so the expression only
+  # has to strip anything a future build might prepend. A device whose
+  # firmware the expression cannot read is skipped and counted, never
+  # guessed at.
+  versionExtract: "^([0-9][0-9.]*)"
+  # Records naming the product with no version at all are skipped. Set
+  # this to match only when a product is end of life and every build
+  # should be treated as affected.
+  unspecifiedVersions: ignore
