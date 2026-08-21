@@ -1,0 +1,47 @@
+# The home hub app's readings, streamed: ValueChange on the lights and
+# the thermostat so a light switched at the wall and a temperature
+# that drifts reach the platform without polling, and ObjectDeletion on
+# the app's object so its parameters leave the device's view when the
+# app is uninstalled. Subscribed on every TR-181 USP device, installed
+# or not: an agent accepts a subscription on a path it does not have
+# yet, and the app's objects appear the moment it is installed.
+#
+# The parameters list repeats the paths so the consumer stores every
+# change as history (interval 0).
+#
+# Priority 10: baseline tier, like the other USP baselines.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: usp-home-hub
+spec:
+  priority: 11
+  deviceSelector:
+    matchExpressions:
+      - key: "protocol:usp"
+        operator: Exists
+      - key: "dataModel:device"
+        operator: Exists
+  subscriptions:
+    - notifType: ValueChange
+      referenceList:
+        - Device.X_ISPX_Home.Light.{i}.On
+        - Device.X_ISPX_Home.Light.{i}.Brightness
+        - Device.X_ISPX_Home.Thermostat.{i}.Temperature
+        - Device.X_ISPX_Home.Thermostat.{i}.Setpoint
+        - Device.X_ISPX_Home.Thermostat.{i}.Mode
+    - notifType: ObjectDeletion
+      referenceList:
+        - Device.X_ISPX_Home.
+  parameters:
+    - path: "Device.X_ISPX_Home.Light.{i}.On"
+      interval: 0
+    - path: "Device.X_ISPX_Home.Light.{i}.Brightness"
+      interval: 0
+    - path: "Device.X_ISPX_Home.Thermostat.{i}.Temperature"
+      interval: 0
+    - path: "Device.X_ISPX_Home.Thermostat.{i}.Setpoint"
+      interval: 0
+    - path: "Device.X_ISPX_Home.Thermostat.{i}.Mode"
+      interval: 0
+

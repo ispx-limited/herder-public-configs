@@ -108,6 +108,12 @@ spec:
       component: module
       config:
         module: port-forwards
+    - key: home
+      title: Home
+      icon: house
+      component: module
+      config:
+        module: home
     - key: remote-access
       title: Remote access
       icon: shield
