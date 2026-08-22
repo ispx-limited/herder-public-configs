@@ -2,14 +2,20 @@
 # the thermostat so a light switched at the wall and a temperature
 # that drifts reach the platform without polling, and ObjectDeletion on
 # the app's object so its parameters leave the device's view when the
-# app is uninstalled. Subscribed on every TR-181 USP device, installed
-# or not: an agent accepts a subscription on a path it does not have
-# yet, and the app's objects appear the moment it is installed.
+# app is uninstalled.
+#
+# Scoped to the same tag as the Home section on the device page
+# (baseline/tr181/device-profile.yaml). An agent does accept a
+# subscription on a path it does not have yet, so this would work
+# fleet-wide, but it would put five subscriptions on every TR-181 USP
+# gateway to watch objects that will never appear on most of them. One
+# tag decides both who has the product and who is watched for it.
 #
 # The parameters list repeats the paths so the consumer stores every
 # change as history (interval 0).
 #
-# Priority 10: baseline tier, like the other USP baselines.
+# Priority 11: baseline tier, above the software module profile it
+# reads the results of.
 apiVersion: telemetry.herder.io/v1alpha1
 kind: TelemetryProfile
 metadata:
@@ -21,6 +27,8 @@ spec:
       - key: "protocol:usp"
         operator: Exists
       - key: "dataModel:device"
+        operator: Exists
+      - key: "tag:app:home-hub"
         operator: Exists
   subscriptions:
     - notifType: ValueChange
