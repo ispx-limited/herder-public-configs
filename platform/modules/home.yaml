@@ -5,8 +5,9 @@
 # home-hub.yaml.
 #
 # Drawn as cards, one per light and one per thermostat, with the
-# controls a support agent uses: a switch, a brightness slider, a colour
-# swatch, a setpoint slider and a heating mode. Every control writes
+# controls a support agent uses: a switch and a brightness slider drawn
+# in the light's own colour, a colour swatch, a setpoint slider and a
+# heating mode. Every control writes
 # through the module API, so a subscriber app drives the same fields.
 # The readings the agent cannot change (the room temperature, the
 # schedule) stay plain values.
@@ -33,6 +34,7 @@ spec:
       type: bool
       writable: true
       widget: toggle
+      tint: light_color
       description: Whether the light is on.
     - name: light_brightness
       canonical: canonical.home.light.{i}.brightness
@@ -40,6 +42,7 @@ spec:
       unit: "%"
       writable: true
       widget: slider
+      tint: light_color
       constraints:
         min: 0
         max: 100
