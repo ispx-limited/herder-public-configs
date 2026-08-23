@@ -143,6 +143,9 @@ spec:
     - canonical: canonical.home.light.1.brightness
       valueType: unsignedint
       devicePath: Device.X_ISPX_Home.Light.1.Brightness
+    - canonical: canonical.home.light.1.color
+      valueType: string
+      devicePath: Device.X_ISPX_Home.Light.1.Color
     - canonical: canonical.home.light.2.name
       valueType: string
       devicePath: Device.X_ISPX_Home.Light.2.Name
@@ -155,6 +158,9 @@ spec:
     - canonical: canonical.home.light.2.brightness
       valueType: unsignedint
       devicePath: Device.X_ISPX_Home.Light.2.Brightness
+    - canonical: canonical.home.light.2.color
+      valueType: string
+      devicePath: Device.X_ISPX_Home.Light.2.Color
     - canonical: canonical.home.thermostat.1.name
       valueType: string
       devicePath: Device.X_ISPX_Home.Thermostat.1.Name
