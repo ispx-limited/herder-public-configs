@@ -35,6 +35,7 @@ spec:
       referenceList:
         - Device.X_ISPX_Home.Light.{i}.On
         - Device.X_ISPX_Home.Light.{i}.Brightness
+        - Device.X_ISPX_Home.Light.{i}.Color
         - Device.X_ISPX_Home.Thermostat.{i}.Temperature
         - Device.X_ISPX_Home.Thermostat.{i}.Setpoint
         - Device.X_ISPX_Home.Thermostat.{i}.Mode
@@ -45,6 +46,8 @@ spec:
     - path: "Device.X_ISPX_Home.Light.{i}.On"
       interval: 0
     - path: "Device.X_ISPX_Home.Light.{i}.Brightness"
+      interval: 0
+    - path: "Device.X_ISPX_Home.Light.{i}.Color"
       interval: 0
     - path: "Device.X_ISPX_Home.Thermostat.{i}.Temperature"
       interval: 0
