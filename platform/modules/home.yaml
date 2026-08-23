@@ -17,6 +17,7 @@ metadata:
   name: home
 spec:
   description: Lights and heating from the home hub app.
+  app: home-hub
   layout: cards
   fields:
     - name: light_name
