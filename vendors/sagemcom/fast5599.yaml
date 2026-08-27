@@ -1,0 +1,418 @@
+# Sagemcom FAST5599 (TR-181 2.12 over CWMP): a WiFi 7 fibre gateway
+# with five switch ports, a 10 Gbit/s Ethernet uplink and an SFP cage.
+# Surveyed from the firmware's own data model dump; every path in this
+# file is one the device reports.
+#
+# What the baseline gets wrong on this hardware, and what this file
+# corrects:
+#
+#   - The uplink is Device.Ethernet.Interface.6 (PHY6, Upstream=true),
+#     after the five switch ports. interfaces-tr181 maps Interface.1 as
+#     the WAN and would render the first LAN port as the uplink.
+#   - The WAN data path is Device.IP.Interface.2 (IP_DATA); the baseline
+#     reads Interface.1, which is the LAN bridge on this model.
+#   - Local accounts are Device.UserAccounts.User.{i} with a Login leaf,
+#     not Device.Users.User.{i}.Username, so the remote-access module's
+#     credential fields need their own table.
+#
+# What the baseline already covers: WiFi clients and their signal
+# (AccessPoint.{i}.AssociatedDevice.{i}.SignalStrength), the neighbour
+# scan (NeighboringWiFiDiagnostic), port forwards (NAT.PortMapping),
+# ping, traceroute, download and upload diagnostics.
+#
+# What the device cannot do through the standard tables: the mesh
+# lives under Device.WiFi.MultiAP.X_SAGEMCOM_MultiAPConfig with no
+# APDevice or DataElements table, so the network map is hosts and
+# associated stations only. Voice is TR-104 issue 1 shaped
+# (VoiceProfile.{i}.Line.{i}), which voice-tr104i2 does not bind.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: interfaces-fast5599
+spec:
+  mappings:
+    - canonical: canonical.interface.wan.status
+      valueType: string
+      devicePath: Device.Ethernet.Interface.6.Status
+    - canonical: canonical.interface.wan.mac
+      valueType: string
+      devicePath: Device.Ethernet.Interface.6.MACAddress
+    - canonical: canonical.interface.wan.bytes_sent
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.6.Stats.BytesSent
+    - canonical: canonical.interface.wan.bytes_received
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.6.Stats.BytesReceived
+    - canonical: canonical.interface.wan.ip_address
+      valueType: string
+      devicePath: Device.IP.Interface.2.IPv4Address.1.IPAddress
+    # The switch ports are Interface.1 to Interface.5 (PHY1 to PHY5),
+    # in the order the device enumerates them, so lan.{n} is
+    # Interface.{n} here with no offset. The SFP cage is
+    # Device.Optical.Interface.1 and is not a switch port; a unit that
+    # uplinks through it instead of PHY6 needs the WAN rows above
+    # repointed, which is a deployment decision, not a firmware one.
+    - canonical: canonical.interface.lan.1.status
+      valueType: string
+      devicePath: Device.Ethernet.Interface.1.Status
+    - canonical: canonical.interface.lan.1.enable
+      valueType: boolean
+      devicePath: Device.Ethernet.Interface.1.Enable
+    - canonical: canonical.interface.lan.1.mac
+      valueType: string
+      devicePath: Device.Ethernet.Interface.1.MACAddress
+    - canonical: canonical.interface.lan.1.bytes_sent
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.1.Stats.BytesSent
+    - canonical: canonical.interface.lan.1.bytes_received
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.1.Stats.BytesReceived
+    - canonical: canonical.interface.lan.2.status
+      valueType: string
+      devicePath: Device.Ethernet.Interface.2.Status
+    - canonical: canonical.interface.lan.2.enable
+      valueType: boolean
+      devicePath: Device.Ethernet.Interface.2.Enable
+    - canonical: canonical.interface.lan.2.mac
+      valueType: string
+      devicePath: Device.Ethernet.Interface.2.MACAddress
+    - canonical: canonical.interface.lan.2.bytes_sent
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.2.Stats.BytesSent
+    - canonical: canonical.interface.lan.2.bytes_received
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.2.Stats.BytesReceived
+    - canonical: canonical.interface.lan.3.status
+      valueType: string
+      devicePath: Device.Ethernet.Interface.3.Status
+    - canonical: canonical.interface.lan.3.enable
+      valueType: boolean
+      devicePath: Device.Ethernet.Interface.3.Enable
+    - canonical: canonical.interface.lan.3.mac
+      valueType: string
+      devicePath: Device.Ethernet.Interface.3.MACAddress
+    - canonical: canonical.interface.lan.3.bytes_sent
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.3.Stats.BytesSent
+    - canonical: canonical.interface.lan.3.bytes_received
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.3.Stats.BytesReceived
+    - canonical: canonical.interface.lan.4.status
+      valueType: string
+      devicePath: Device.Ethernet.Interface.4.Status
+    - canonical: canonical.interface.lan.4.enable
+      valueType: boolean
+      devicePath: Device.Ethernet.Interface.4.Enable
+    - canonical: canonical.interface.lan.4.mac
+      valueType: string
+      devicePath: Device.Ethernet.Interface.4.MACAddress
+    - canonical: canonical.interface.lan.4.bytes_sent
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.4.Stats.BytesSent
+    - canonical: canonical.interface.lan.4.bytes_received
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.4.Stats.BytesReceived
+    - canonical: canonical.interface.lan.5.status
+      valueType: string
+      devicePath: Device.Ethernet.Interface.5.Status
+    - canonical: canonical.interface.lan.5.enable
+      valueType: boolean
+      devicePath: Device.Ethernet.Interface.5.Enable
+    - canonical: canonical.interface.lan.5.mac
+      valueType: string
+      devicePath: Device.Ethernet.Interface.5.MACAddress
+    - canonical: canonical.interface.lan.5.bytes_sent
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.5.Stats.BytesSent
+    - canonical: canonical.interface.lan.5.bytes_received
+      valueType: unsignedint
+      devicePath: Device.Ethernet.Interface.5.Stats.BytesReceived
+---
+# The FAST5599 half of remote access. The four standard leaves come
+# from remote-access-tr181; this table adds the login the remote
+# password belongs to, and the two vendor leaves beside the standard
+# object.
+#
+# The accounts table is Device.UserAccounts.User.{i}: internal, acs,
+# tech, admin and root on the surveyed firmware. User 3 (tech, role
+# support-user) is the support login; WHICH slot a deployment rotates
+# is its provisioning convention, so an operator whose fleet uses
+# another account changes the instance here or overrides these rows
+# from a higher-priority table. The password leaf is write-only on the
+# device.
+#
+# RemoteAccessHost is the address the remote UI accepts management
+# from; it was empty on the surveyed unit, and whether empty means any
+# source has not been confirmed on hardware. Timeout was 0; the
+# module renders it as minutes and the device's unit is unconfirmed.
+# Both are read-and-write mappings of leaves the device reports; the
+# semantics are the part still to verify on a real unit.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: remote-access-fast5599
+spec:
+  mappings:
+    - canonical: canonical.mgmt.remote_access.username
+      valueType: string
+      devicePath: Device.UserAccounts.User.3.Login
+    - canonical: canonical.mgmt.remote_access.password
+      valueType: string
+      devicePath: Device.UserAccounts.User.3.Password
+    - canonical: canonical.mgmt.remote_access.acl
+      valueType: string
+      devicePath: Device.UserInterface.RemoteAccess.RemoteAccessHost
+    - canonical: canonical.mgmt.remote_access.idle_timeout
+      valueType: unsignedint
+      devicePath: Device.UserInterface.RemoteAccess.Timeout
+---
+# A mapping profile replaces rather than extends, so the baseline
+# TR-181-over-CWMP list is restated here with two changes: the
+# interface table is the FAST5599 one, and the remote-access
+# credential table is added. Keep the rest in step with
+# baseline-tr181-cwmp (baseline/tr181/mappings.yaml).
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: sagemcom-fast5599-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [FAST5599]
+      - key: "dataModel:device"
+        operator: Exists
+      - key: "protocol:cwmp"
+        operator: Exists
+  parameterMappings:
+    - device-info-tr181
+    - firmware-tr181
+    - mgmt-tr181
+    - diagnostics-tr181
+    - wifi-tr181
+    - interfaces-fast5599
+    - voice-tr104i2
+    - wifi-scan-tr181
+    - wifi-capability-tr181
+    - wifi-rf-tr181
+    - netdiag-tr181
+    - remote-access-tr181
+    - remote-access-fast5599
+    - nat-tr181
+    - software-tr181
+    - oriel-home-tr181
+---
+# The PPP account identity, so subscriber resolution covers this
+# family the way the TR-098 trees already are. The surveyed unit ran
+# IPoE with the PPP interface configured and down; the username is
+# still the account the line is provisioned against.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: sagemcom-fast5599-identity
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [FAST5599]
+  parameters:
+    - path: "Device.PPP.Interface.{i}.Username"
+      interval: 0
+---
+# WAN posture for the experience score's wan dimension: interface
+# error counters for the error rate, device uptime for stability. The
+# wildcard covers every port; the uplink is Interface.6 and the score
+# reads the counters through the interface table above.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: sagemcom-fast5599-wan
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [FAST5599]
+  parameters:
+    - path: "Device.Ethernet.Interface.{i}.Stats.ErrorsReceived"
+      interval: 0
+    - path: "Device.Ethernet.Interface.{i}.Stats.PacketsReceived"
+      interval: 0
+    - path: "Device.DeviceInfo.UpTime"
+      interval: 0
+---
+# Collect the remote account's login and the vendor remote-access
+# leaves, never the password: a collected password is a password in
+# telemetry history.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: sagemcom-fast5599-remote-access
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [FAST5599]
+  parameters:
+    - path: "Device.UserAccounts.User.3.Login"
+      interval: 0
+    - path: "Device.UserInterface.RemoteAccess.RemoteAccessHost"
+      interval: 0
+    - path: "Device.UserInterface.RemoteAccess.Timeout"
+      interval: 0
+---
+# The SFP cage. A unit that uplinks through it reports its optical
+# levels here, and nothing else in a residential fleet exposes them;
+# on a unit using the Ethernet uplink the interface is dormant and
+# reports zeros, which costs one read a session. The two levels are
+# polled because a fibre bend or a dirty connector shows there before
+# the subscriber calls; the transceiver readings are read on session
+# only.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: sagemcom-fast5599-optical
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [FAST5599]
+  parameters:
+    - path: "Device.Optical.Interface.{i}.OpticalSignalLevel"
+      interval: 300
+    - path: "Device.Optical.Interface.{i}.TransmitOpticalLevel"
+      interval: 300
+    - path: "Device.Optical.Interface.{i}.Temperature"
+      interval: 0
+    - path: "Device.Optical.Interface.{i}.Voltage"
+      interval: 0
+    - path: "Device.Optical.Interface.{i}.BIASCurrent"
+      interval: 0
+    - path: "Device.Optical.Interface.{i}.Status"
+      interval: 0
+    - path: "Device.Optical.Interface.{i}.Alarm"
+      interval: 0
+
+---
+# Device UI profile for the Sagemcom FAST5599 (TR-181): the sections
+# the FAST5598 profile shows, with this model's ports (five switch
+# ports, the 10 Gbit/s uplink) and its third radio (6 GHz). No voice
+# section: the firmware's voice tree is TR-104 issue 1 shaped and the
+# voice module's canonicals do not resolve on it.
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: sagemcom-fast5599-ui
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [FAST5599]
+  sections:
+    - key: overview
+      title: Overview
+      icon: gauge
+      component: overview
+    - key: status
+      title: Device status
+      icon: info
+      component: form
+      config:
+        groups:
+          - title: Identity
+            fields:
+              - {label: Manufacturer, canonical: canonical.device.manufacturer}
+              - {label: Model, canonical: canonical.device.model_name}
+              - {label: Product class, canonical: canonical.device.product_class}
+              - {label: Serial number, canonical: canonical.device.serial_number}
+              - {label: Firmware, canonical: canonical.device.software_version}
+              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
+          - title: WAN
+            fields:
+              - {label: Link status, canonical: canonical.interface.wan.status}
+              - {label: WAN IP address, canonical: canonical.interface.wan.ip_address}
+              - {label: WAN MAC, canonical: canonical.interface.wan.mac}
+          - title: Management
+            fields:
+              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
+              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
+    - key: interfaces
+      title: Interfaces
+      icon: ethernet-port
+      component: ports
+      config:
+        ports:
+          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
+          - {id: lan1, label: "1", kind: ethernet, entity: canonical.interface.lan.1}
+          - {id: lan2, label: "2", kind: ethernet, entity: canonical.interface.lan.2}
+          - {id: lan3, label: "3", kind: ethernet, entity: canonical.interface.lan.3}
+          - {id: lan4, label: "4", kind: ethernet, entity: canonical.interface.lan.4}
+          - {id: lan5, label: "5", kind: ethernet, entity: canonical.interface.lan.5}
+          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
+          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
+          - {id: wifi6, label: 6 GHz, kind: wifi, entity: canonical.wifi.radio.3}
+    - key: wifi
+      title: WiFi
+      icon: wifi
+      component: module
+      config:
+        module: wifi
+    - key: network-map
+      title: Network map
+      icon: network
+      component: topology
+    - key: monitoring
+      title: Monitoring
+      icon: chart-line
+      component: dashboard
+      config:
+        dashboard: tr181-traffic
+    - key: dashboard
+      title: Dashboard
+      icon: layout-grid
+      component: dashboard
+    - key: compliance
+      title: Compliance
+      icon: shield-alert
+      component: compliance
+    - key: actions
+      title: Actions
+      icon: zap
+      component: actions
+    - key: action-log
+      title: Action log
+      icon: history
+      component: tasks
+    - key: events
+      title: Events
+      icon: scroll-text
+      component: events
+    - key: remote-access
+      title: Remote access
+      icon: shield
+      component: module
+      config:
+        module: remote-access
+        # Where the gateway's own UI answers, assembled from the WAN
+        # address plus this module's port and protocol. Declared here
+        # rather than inferred, as on the FAST5598: which address a
+        # management UI listens on is an operator's question.
+        link:
+          address: canonical.interface.wan.ip_address
+          port: port
+          protocol: protocol
+    - key: maintenance
+      title: Maintenance
+      icon: wrench
+      component: maintenance
