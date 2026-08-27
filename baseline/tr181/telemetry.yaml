@@ -165,8 +165,13 @@ spec:
       interval: 900
     - path: "Device.WiFi.Radio.{i}.Status"
       interval: 900
+    # Every session, not every 900s, because the per-client label rule
+    # reads it. An enrichment rule sees only the parameters in its own
+    # batch (there is no stored-parameter read from an enrichment VM),
+    # and it labels a client row on every session, so the band has to
+    # arrive on every session or the row is labelled from a guess.
     - path: "Device.WiFi.Radio.{i}.OperatingFrequencyBand"
-      interval: 900
+      interval: 0
     - path: "Device.WiFi.Radio.{i}.Channel"
       interval: 900
     - path: "Device.WiFi.Radio.{i}.OperatingStandards"
@@ -202,8 +207,11 @@ spec:
       interval: 900
     - path: "Device.WiFi.SSID.{i}.BSSID"
       interval: 3600
+    # Which radio an SSID sits on. Static, and collected every session
+    # for the reason above: it is the middle link of the chain that
+    # gives a client row its band.
     - path: "Device.WiFi.SSID.{i}.LowerLayers"
-      interval: 3600
+      interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesSent"
       interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesReceived"
