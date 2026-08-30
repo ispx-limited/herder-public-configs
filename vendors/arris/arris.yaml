@@ -65,7 +65,7 @@ spec:
 #   * All SET operations (UserInterface.RemoteAccess.*, etc)
 #   * Security-sensitive (KeyPassphrase, Security.KeyPassphrase)
 #   * Diagnostic triggers (NeighboringWiFiDiagnostic, Download/Upload)
-#   * Non-Arris paths (Sagemcom X_SAGEMCOM_*, X_YF_*)
+#   * Non-Arris paths (X_SAGEMCOM_* and other vendors' X_* prefixes)
 #   * TR-181 Device.* paths (covered by the default tr181-*.yaml set)
 #   * Paths already in the default tr098-*.yaml set
 #   * SummaryStats.STA.*.MaximumNumberOfEntries / NumberNoAP
