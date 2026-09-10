@@ -5,33 +5,76 @@
 # northbound if they are written out here (same declared-instances rule
 # as the WiFi tables; see the note in mappings.yaml).
 #
-# The WAN/LAN split below is the common residential layout: the first
-# ethernet interface is the uplink and the rest are switch ports.
-# TR-181 encodes the real answer in Device.Ethernet.Interface.{i}.Upstream,
-# which a static table cannot branch on; a vendor whose port ordering
-# differs overrides this table at a higher-priority profile, which is
-# the intended shape for all vendor knowledge.
+# The WAN rows find their instance rather than assuming it; the LAN
+# rows below still assume the common residential layout, where the
+# first ethernet interface is the uplink and the rest are switch ports.
+# A vendor whose port ordering differs overrides this table at a
+# higher-priority profile, which is the intended shape for all vendor
+# knowledge.
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingTable
 metadata:
   name: interfaces-tr181
 spec:
   mappings:
+    # The WAN is found, not assumed. TR-181 promises nothing about
+    # instance numbering, and a GPON ONT in PPPoE routed mode proves it:
+    # on a TP-Link XC220-G3, Device.IP.Interface.1 is the 192.168.1.1/24
+    # LAN bridge and the uplink is instance 6 on one unit and 8 on the
+    # next, so the device page showed the LAN bridge as a WAN with no
+    # link while the PPP session was up. A static index is wrong on
+    # half the fleet and a per-model override on the other half.
+    #
+    # The physical uplink is the ethernet interface that reports
+    # Upstream true, the flag TR-181 defines for exactly this. The WAN
+    # IP interface is the one whose address is a /32 host route, which
+    # is what a PPP session hands out where a LAN bridge carries a /24
+    # and a management VLAN a /16. Both comparisons are exact, so this
+    # file loads on every release. Matching LowerLayers on the
+    # Device.PPP. prefix says the same thing more directly and is the
+    # intended form once every supported release understands
+    # matchType: Prefix (Herder 0.9 and later). fallbackIndex 1 keeps
+    # today's behaviour on gateways that report no match.
     - canonical: canonical.interface.wan.status
       valueType: string
-      devicePath: Device.Ethernet.Interface.1.Status
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: IPv4Address.1.SubnetMask
+        matchValue: 255.255.255.255
+        fallbackIndex: 1
+      pathTemplate: Device.IP.Interface.{index}.Status
     - canonical: canonical.interface.wan.mac
       valueType: string
-      devicePath: Device.Ethernet.Interface.1.MACAddress
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "true"
+        fallbackIndex: 1
+      pathTemplate: Device.Ethernet.Interface.{index}.MACAddress
     - canonical: canonical.interface.wan.bytes_sent
       valueType: unsignedint
-      devicePath: Device.Ethernet.Interface.1.Stats.BytesSent
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "true"
+        fallbackIndex: 1
+      pathTemplate: Device.Ethernet.Interface.{index}.Stats.BytesSent
     - canonical: canonical.interface.wan.bytes_received
       valueType: unsignedint
-      devicePath: Device.Ethernet.Interface.1.Stats.BytesReceived
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "true"
+        fallbackIndex: 1
+      pathTemplate: Device.Ethernet.Interface.{index}.Stats.BytesReceived
     - canonical: canonical.interface.wan.ip_address
       valueType: string
-      devicePath: Device.IP.Interface.1.IPv4Address.1.IPAddress
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: IPv4Address.1.SubnetMask
+        matchValue: 255.255.255.255
+        fallbackIndex: 1
+      pathTemplate: Device.IP.Interface.{index}.IPv4Address.1.IPAddress
     # Per-port counters, same reasoning as the TR-098 table: the ports
     # view asks every port for bytes_sent and bytes_received, and an
     # unmapped field is silently dropped from the detail rather than
@@ -57,9 +100,11 @@ spec:
     #
     # Wildcarding as-is would be worse than the enumeration, because
     # lan.{i} to Interface.{i} makes the WAN appear as lan.1 on every
-    # TR-181 device. Doing this properly means selecting on Upstream
-    # rather than index, which the mapping layer cannot express today.
-    # Left enumerated deliberately, with the limitation written down.
+    # TR-181 device. The WAN rows above select the one upstream port by
+    # matching on Upstream; the LAN rows need the set of ports that are
+    # not upstream, and an instance alias picks one instance, not a
+    # complement. Left enumerated deliberately, with the limitation
+    # written down.
     - canonical: canonical.interface.lan.1.bytes_sent
       valueType: unsignedint
       devicePath: Device.Ethernet.Interface.2.Stats.BytesSent
