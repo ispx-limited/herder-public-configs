@@ -1,12 +1,11 @@
 # herder-public-configs
 
 The default configuration Herder ships with: mapping profiles, telemetry
-profiles, provisioning rules, identity enrichment, topology scripts and
-dashboards.
+profiles, provisioning rules, identity enrichment and topology scripts.
 
 Every Herder deployment already has this. The configservice image bakes a
 copy to `/etc/herder/configs` and points its default config source at it, so
-a fresh install renders dashboards and provisions devices without cloning
+a fresh install reads its devices and provisions them without cloning
 anything. This repo is where that content is maintained, and what you fork
 if you want to change it.
 
@@ -18,7 +17,7 @@ are easier to read together than scattered across four directories.
 
 ```
 baseline/            Vendor-neutral defaults, keyed by data model
-├── tr098/           TR-098 (InternetGatewayDevice.*) mappings, telemetry, dashboards
+├── tr098/           TR-098 (InternetGatewayDevice.*) mappings and telemetry
 ├── tr181/           TR-181 (Device.*) mappings and telemetry
 ├── usp/             USP-specific telemetry (pushed and sampled, not polled)
 ├── identity.yaml    Identity enrichment for CWMP and USP
@@ -26,7 +25,7 @@ baseline/            Vendor-neutral defaults, keyed by data model
 
 platform/            Behaviour that is not tied to a vendor or data model
 ├── provisioning/    boot, first_contact and periodic rules with their scripts
-└── topology/        EasyMesh and TR-098 topology enrichment, plus a dashboard
+└── topology/        EasyMesh and TR-098 topology enrichment
 
 vendors/             Overrides for specific hardware
 ├── arris/           ARRIS NVG578LX: X_0000C5_* extensions, HNC topology
@@ -46,7 +45,6 @@ typo in a global fails when you push it rather than at 3am on a live fleet.
 | `MappingTable` | 7 | Canonical name to raw CPE path |
 | `MappingProfile` | 7 | Which mapping tables apply to which devices |
 | `EnrichmentRule` | 5 | Per-row telemetry labelling and topology emit |
-| `Dashboard` | 4 | Panel layouts over the telemetry and device data |
 | `ProvisioningRule` | 3 | What to do on boot, first contact and periodically |
 | `IdentityProfile` | 2 | Populating manufacturer, model and firmware |
 
@@ -73,7 +71,7 @@ editing anything in `baseline/`.
 
 ## Selectors
 
-Every profile, rule and dashboard carries a `deviceSelector` deciding which
+Every profile and rule carries a `deviceSelector` deciding which
 devices it applies to. Selectors match labels Herder derives per device at
 evaluation time (the full model is in the
 [Device Selectors guide](https://docs.herder.ispx.co/guides/device-selectors/)):
