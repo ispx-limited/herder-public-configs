@@ -61,6 +61,11 @@ spec:
       interval: 3600
     - path: "InternetGatewayDevice.ManagementServer.PeriodicInformInterval"
       interval: 3600
+    # The Jabber ID a device configured for XMPP connection requests
+    # reports; empty on every other device. It is what makes Herder ask
+    # the device over XMPP instead of HTTP.
+    - path: "InternetGatewayDevice.ManagementServer.ConnReqJabberID"
+      interval: 3600
     # Remote-access posture. Collected with identity because the fleet
     # question ("how many gateways answer management from the WAN") is
     # a posture question, and the support question needs current state
