@@ -44,6 +44,12 @@ declare global {
     readonly model?: string;
     readonly firmware?: string;
     readonly tags: ReadonlyArray<string>;
+    /**
+     * The device record's metadata as the run started: operator-assigned
+     * facts (a service package, an OSS reference) and the identity keys
+     * enrichment writes. Read-only; a PATCH on the device changes it.
+     */
+    readonly metadata: Readonly<Record<string, unknown>>;
 
     // ── Provisioning-only methods ─────────────────────────────────
     // These are injected into provisioning script VMs. Enrichment
@@ -106,7 +112,13 @@ declare global {
 
     /**
      * Register a path for live retrieval; returns null on first run,
-     * the cached value on replay. Search paths read live: the
+     * the cached value on replay. The whole script re-runs from the top
+     * once the answer arrives, so write for repetition. Fetches issued
+     * in the same pass batch into ONE round trip to the CPE; a fetch
+     * whose path depends on another fetch's answer costs a round trip
+     * per level, which is the difference between a fast script and a
+     * slow one. A path this evaluation already `set` answers with the
+     * desired value, no round trip. Search paths read live: the
      * expression keys fetch as wildcards from the CPE and the filter
      * applies on replay, so
      * `fetch('Device.NAT.PortMapping.[ExternalPort==8080].InternalClient')`
@@ -129,9 +141,21 @@ declare global {
     ensureObject(searchPath: string, params?: Record<string, string | number | boolean>): void;
 
     /**
+     * The credential the device logs into Herder's xmpp role with for
+     * TR-069 Annex K connection requests, issued on first call and the
+     * same on every call after. A rule writes it into the device's
+     * `XMPP.Connection`. Null when the role running the script has no
+     * credential store.
+     */
+    xmppCredential(): { username: string; password: string } | null;
+
+    /**
      * Declare that every instance matching the search expression, or
      * the one concrete instance path, must not exist. Removing what is
-     * already absent is a no-op.
+     * already absent is a no-op. Deliberately asymmetric with
+     * `ensureObject`: ensure converges on the lowest-numbered match,
+     * remove deletes ALL matches, because "no such instance" is only
+     * true when every one is gone.
      */
     removeObject(path: string): void;
 
@@ -187,7 +211,7 @@ declare global {
   }
 
   // ───────────────────────────────────────────────────────────────────
-  // Enrichment: telemetry batch + per-rule operator config
+  // Enrichment + provisioning: telemetry batch, per-rule operator config
   // ───────────────────────────────────────────────────────────────────
 
   /**
@@ -220,7 +244,14 @@ declare global {
     readonly [key: string]: string | Readonly<Record<string, string>>;
   }
 
-  /** Per-invocation context — operator-supplied config + helpers. */
+  /**
+   * Per-invocation context — operator-supplied per-rule config.
+   * Injected for enrichment AND provisioning scripts, from one shared
+   * builder, so a config read means the same thing on both surfaces.
+   * One script, many rules, different parameters per rule: the rule's
+   * YAML carries a free-form `config` block and the script reads it
+   * here instead of being copied per cohort.
+   */
   const ctx: CtxGlobal;
 
   interface CtxGlobal {
@@ -231,8 +262,11 @@ declare global {
     readonly config: Readonly<Record<string, unknown>> | null;
 
     /**
-     * Read a config key with a default fallback. Emits an enrichment
-     * warning on missing keys so typos surface in the editor preview.
+     * Read a config key with a default fallback. A missing key emits a
+     * warning (enrichment warning / provisioning evaluation warning) so
+     * typos surface in the editor preview instead of silently
+     * defaulting. Cast the result to the shape the script expects:
+     * `const pacing = ctx.configGet("informPacing", { base: 900, spread: 300 });`
      */
     configGet<T>(key: string, defaultValue: T): T;
   }
@@ -409,6 +443,35 @@ declare global {
      * `const opts = provision.args[0] as { informInterval: number };`
      */
     readonly args: ReadonlyArray<unknown>;
+
+    /**
+     * One request to an operator-declared ExternalService, e.g.
+     * `provision.call("oss-lookup", { path: "/subscriber/x" })`.
+     * Herder makes the HTTP request from the platform, not the sandbox:
+     * the URL, the credential and the timeout come from the service's
+     * declaration and the deployment's environment, and the script sees
+     * only the parsed response body.
+     *
+     * Returns the JSON body on success (a string for a non-JSON body),
+     * or null with an evaluation warning on any failure: undeclared
+     * service, missing credential, timeout, non-2xx, open circuit
+     * breaker. Write the null check and the fallback; a dead OSS must
+     * degrade the rule, not the session.
+     *
+     * Responses are cached per the declaration's cache block, which is
+     * what makes calling at the top of a script safe: the replay loop
+     * re-runs the script up to eight times per evaluation and every
+     * pass after the first answers from cache.
+     */
+    call(
+      service: string,
+      options: {
+        path: string;
+        method?: string;
+        query?: Record<string, string | number | boolean>;
+        body?: unknown;
+      },
+    ): unknown;
     readonly rule: { readonly name: string; readonly priority: number };
     /** Operator-supplied template payloads, keyed by template name. */
     readonly templates: Readonly<Record<string, unknown>>;
