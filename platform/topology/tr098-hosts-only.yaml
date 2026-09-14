@@ -13,8 +13,13 @@ metadata:
 spec:
   priority: 50
   deviceSelector:
+    # The data-model label for InternetGatewayDevice.* is `igd`, the
+    # same key the TR-098 telemetry profiles and device profile select
+    # on. This rule shipped selecting `dataModel:internetgatewaydevice`,
+    # which no device carries, so no TR-098 gateway ever had a network
+    # map.
     matchExpressions:
-      - key: dataModel:internetgatewaydevice
+      - key: dataModel:igd
         operator: Exists
   triggerPaths:
     - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"

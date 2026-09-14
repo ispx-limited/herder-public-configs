@@ -281,6 +281,12 @@ spec:
       interval: 0
     - path: "Device.Ethernet.Interface.{i}.MACAddress"
       interval: 0
+    # The Link MAC is what other devices on the LAN see this one as,
+    # and on an extender it is the address the gateway's host table
+    # lists it under. The identity rule (platform/topology/identity.ts)
+    # reads it, so a managed extender links back to its gateway.
+    - path: "Device.Ethernet.Link.{i}.MACAddress"
+      interval: 0
     - path: "Device.Ethernet.Interface.{i}.LowerLayers"
       interval: 0
     - path: "Device.Ethernet.Interface.{i}.Stats.BytesSent"
