@@ -33,10 +33,10 @@ spec:
       - key: oui
         operator: Exists
   triggerPaths:
-    - "InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.MACAddress"
-    - "InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.MACAddress"
-    - "InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.MACAddress"
-    - "Device.Ethernet.Interface.*.MACAddress"
-    - "Device.Ethernet.Link.*.MACAddress"
+    - "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.MACAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.MACAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.MACAddress"
+    - "Device.Ethernet.Interface.{i}.MACAddress"
+    - "Device.Ethernet.Link.{i}.MACAddress"
   coalesceWindow: 60s
   script: identity.ts
