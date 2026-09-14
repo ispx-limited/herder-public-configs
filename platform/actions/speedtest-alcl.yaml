@@ -1,0 +1,80 @@
+# Speedtest for ALCL / Nokia Beacon gateways (TR-098), sized upload.
+#
+# The baseline speedtest-tr143 runs a time-based upload: TestFileLength 0
+# plus UploadDiagnostics.TimeBasedTestDuration. ALCL Beacon firmware
+# rejects that combination with CWMP fault 9003 "Invalid arguments" — its
+# UploadDiagnostics does not implement the time-based mode — so the
+# upload step fails on these units while the download step (time-based
+# through the URL, no such parameter) succeeds. Confirmed on a Beacon 2
+# at a production deployment: the upload SetParameterValues faulted 9003.
+#
+# This profile is the baseline with a SIZED upload instead: a fixed
+# TestFileLength and no TimeBasedTestDuration, which is the fallback the
+# baseline's own comment points to. The download step is unchanged.
+# Priority 50 so it wins over the priority-10 baseline for ALCL igd
+# devices; everything else keeps the baseline.
+#
+# The normalizer is shared with the baseline: TR-143 reports byte counts
+# and BOM/EOM timestamps for a sized upload exactly as for a timed one,
+# and throughput is derived from TestBytesSent over that window either
+# way.
+apiVersion: actions.herder.io/v1alpha1
+kind: ActionProfile
+metadata:
+  name: speedtest-alcl
+spec:
+  capability: speedtest
+  priority: 50
+
+  deviceSelector:
+    matchLabels:
+      manufacturer: ALCL
+    matchExpressions:
+      - key: "dataModel:igd"
+        operator: Exists
+
+  config:
+    # Download stays time-based (seconds), driven through the URL path.
+    test_seconds: "8"
+    # Upload is sized: the CPE sends this many bytes and reports the
+    # duration, and the rate is bytes over the measured window. Sized so
+    # a typical broadband uplink spends a few seconds on it: large enough
+    # to measure a sustained rate, small enough not to hold the line for
+    # long. An operator on much faster or slower access adjusts it here.
+    upload_bytes: "25000000"
+
+  timeout: 20m
+
+  steps:
+    - name: download
+      set:
+        canonical.diagnostics.download.url: "{{ .config.test_server }}/dntimebasedmode_{{ .config.test_seconds }}.txt?ref={{ .run.id }}"
+        canonical.diagnostics.download.state: Requested
+      awaitParam: canonical.diagnostics.download.state
+      awaitNotIn: [Requested, None]
+      pollInterval: 5s
+      timeout: 5m
+      probe:
+        url: "{{ .config.probe_server }}/live?ref={{ .run.id }}"
+        interval: 1s
+      collect:
+        - InternetGatewayDevice.DownloadDiagnostics.
+    - name: upload
+      set:
+        canonical.diagnostics.upload.url: "{{ .config.test_server }}/upload?ref={{ .run.id }}"
+        # Sized upload: a real byte count, and no TimeBasedTestDuration.
+        # This is the one difference from the baseline, and the reason
+        # this profile exists.
+        canonical.diagnostics.upload.test_file_length: "{{ .config.upload_bytes }}"
+        canonical.diagnostics.upload.state: Requested
+      awaitParam: canonical.diagnostics.upload.state
+      awaitNotIn: [Requested, None]
+      pollInterval: 5s
+      timeout: 5m
+      probe:
+        url: "{{ .config.probe_server }}/live?ref={{ .run.id }}"
+        interval: 1s
+      collect:
+        - InternetGatewayDevice.UploadDiagnostics.
+
+  normalize: platform/actions/speedtest-tr143.ts
