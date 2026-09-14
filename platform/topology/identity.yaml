@@ -1,0 +1,42 @@
+# The MACs a managed CPE is seen by on a LAN.
+#
+# A mesh extender that runs its own TR-069 or TR-369 client is two
+# things at once: a managed device with a page of its own, and a row
+# in its gateway's host table. Nothing in either data model says the
+# two are the same unit. What both sides do carry is a MAC: the
+# gateway lists the extender's LAN address as a host, and the extender
+# reports that same address as one of its own interfaces.
+#
+# This rule publishes the second half. Every device it matches emits
+# one `topology.identity` row per interface MAC it reports about
+# itself, and the topology read joins a gateway's host nodes against
+# those rows to find the managed device behind each one, and an
+# extender's own MACs against every gateway's graph to find the device
+# it hangs off. See docs/public/guides/topology-data-model.md.
+#
+# Only addresses a device reports as its OWN interfaces belong here.
+# The host table, the associated-device tables and the neighbour scan
+# name other units' MACs, and a rule that emitted those would claim a
+# subscriber's phone as an interface of the gateway.
+#
+# Vendor paths outside the standard trees (an EasyMesh agent's AL MAC
+# under a vendor prefix, a MoCA interface) go in a vendor rule that
+# emits the same row.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: topology-identity
+spec:
+  priority: 100
+  deviceSelector:
+    matchExpressions:
+      - key: oui
+        operator: Exists
+  triggerPaths:
+    - "InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.MACAddress"
+    - "InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.MACAddress"
+    - "InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.MACAddress"
+    - "Device.Ethernet.Interface.*.MACAddress"
+    - "Device.Ethernet.Link.*.MACAddress"
+  coalesceWindow: 60s
+  script: identity.ts
