@@ -60,7 +60,7 @@
   // render an empty graph (the script still emits clients/extenders
   // if they have valid MACs of their own).
   //
-  // The panel is on a per-device dashboard, so the device being
+  // The graph is drawn on the device page, so the device being
   // viewed IS the gateway — the script just needs a stable 6-byte
   // MAC to identify it as a graph node. Any MAC-bearing path defined
   // by TR-181 for this device qualifies; we walk them in priority

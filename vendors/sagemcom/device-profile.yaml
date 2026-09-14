@@ -70,16 +70,6 @@ spec:
       title: Network map
       icon: network
       component: topology
-    - key: monitoring
-      title: Monitoring
-      icon: chart-line
-      component: dashboard
-      config:
-        dashboard: tr181-traffic
-    - key: dashboard
-      title: Dashboard
-      icon: layout-grid
-      component: dashboard
     - key: compliance
       title: Compliance
       icon: shield-alert
