@@ -56,6 +56,12 @@ spec:
     - canonical: canonical.mgmt.connection_request_password
       valueType: string
       devicePath: Device.ManagementServer.ConnectionRequestPassword
+    # Reported once the device holds an XMPP session (TR-069 Annex K).
+    # A non-empty value makes Herder send the connection request over
+    # XMPP instead of to the URL above.
+    - canonical: canonical.mgmt.connection_request_jabber_id
+      valueType: string
+      devicePath: Device.ManagementServer.ConnReqJabberID
     - canonical: canonical.mgmt.username
       valueType: string
       devicePath: Device.ManagementServer.Username
