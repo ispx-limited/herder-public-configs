@@ -1,0 +1,56 @@
+# Nokia FastMile 5G Gateway (TR-181 over CWMP).
+#
+# A fixed-wireless gateway: the WAN is the cellular interface, not an
+# Ethernet port, which is the one place the baseline needs help (see the
+# interfaces note below). Everything else the baseline TR-181 CWMP
+# tables already resolve, so this profile restates that set and scopes
+# it to the vendor tuple; feature tables are added here as they are
+# proven on the hardware.
+#
+# Binding is single-profile: the winning profile's table list is the
+# device's entire mapping vocabulary, so every baseline table the
+# device still needs is restated. The list mirrors baseline-tr181-cwmp.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: nokia-fastmile-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["Nokia"]}
+      - {key: "productClass", operator: In, values: ["3TG01797"]}
+      - {key: "protocol:cwmp", operator: Exists}
+  parameterMappings:
+    - device-info-tr181
+    - firmware-tr181
+    - mgmt-tr181
+    - diagnostics-tr181
+    - wifi-tr181
+    - interfaces-nokia-fastmile
+    - voice-tr104i2
+    - wifi-scan-tr181
+    - wifi-capability-tr181
+    - wifi-rf-tr181
+    - netdiag-tr181
+    - remote-access-tr181
+    - nat-tr181
+    - software-tr181
+    - oriel-home-tr181
+---
+# The 5G units report a dotted firmware (1.2202.00.0287), the scheme NVD
+# carries for fastmile_5g_receiver_firmware. Confirm this is the product
+# your units are catalogued under; fastmile_firmware is the alternative
+# for builds that report a 3TG-style string.
+apiVersion: compliance.herder.io/v1alpha1
+kind: CpeBinding
+metadata:
+  name: nokia-fastmile-5g
+spec:
+  deviceSelector:
+    matchLabels:
+      manufacturer: Nokia
+      productClass: "3TG01797"
+  cpe: "cpe:2.3:o:nokia:fastmile_5g_receiver_firmware"
+  versionExtract: "^([0-9][0-9.]*)"
+  unspecifiedVersions: ignore

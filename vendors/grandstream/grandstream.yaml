@@ -1,0 +1,39 @@
+# Grandstream GWN gateways and access points (TR-181 over CWMP).
+#
+# These speak standard TR-181: WiFi clients are the standard
+# AssociatedDevice.SignalStrength table, diagnostics are the standard
+# IP.Diagnostics objects, so the baseline scripts and actions already
+# cover them once this profile binds the baseline tables to the vendor
+# tuple. The X_GRANDSTREAM_ tree is capability hints (Available* enums)
+# and per-radio config, none of it worth streaming, so no vendor
+# telemetry table ships until a leaf earns it.
+#
+# GWN7062 is the WiFi access point; GWN7002 is the wired gateway with no
+# associated-device tables. One profile covers both product classes.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: grandstream-gwn-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "oui", operator: In, values: ["EC74D7"]}
+      - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
+      - {key: "protocol:cwmp", operator: Exists}
+  parameterMappings:
+    - device-info-tr181
+    - firmware-tr181
+    - mgmt-tr181
+    - diagnostics-tr181
+    - wifi-tr181
+    - interfaces-tr181
+    - voice-tr104i2
+    - wifi-scan-tr181
+    - wifi-capability-tr181
+    - wifi-rf-tr181
+    - netdiag-tr181
+    - remote-access-tr181
+    - nat-tr181
+    - software-tr181
+    - oriel-home-tr181

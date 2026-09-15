@@ -1,0 +1,63 @@
+# Nokia Beacon neighbour scan (TR-098 units).
+#
+# TR-098 has no standard NeighboringWiFiDiagnostic, so the baseline
+# wifi-scan-tr181 profile does not cover these. The Beacons expose the
+# same diagnostic under InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic
+# with the standard Result fields (confirmed by running a scan). This
+# maps the scan canonicals onto that tree and provides the wifi_scan
+# capability over it. The mapping table is listed in the TR-098 Beacon
+# profile in place of any standard scan table.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: wifi-scan-nokia-beacon
+spec:
+  mappings:
+    - canonical: canonical.wifi.scan.state
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.DiagnosticsState
+    - canonical: canonical.wifi.scan.result_count
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.ResultNumberOfEntries
+    - canonical: canonical.wifi.scan.result.{i}.bssid
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.Result.{i}.BSSID
+    - canonical: canonical.wifi.scan.result.{i}.ssid
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.Result.{i}.SSID
+    - canonical: canonical.wifi.scan.result.{i}.channel
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.Result.{i}.Channel
+    - canonical: canonical.wifi.scan.result.{i}.rssi
+      valueType: int
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.Result.{i}.SignalStrength
+    - canonical: canonical.wifi.scan.result.{i}.band
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.Result.{i}.OperatingFrequencyBand
+    - canonical: canonical.wifi.scan.result.{i}.bandwidth
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.Result.{i}.OperatingChannelBandwidth
+---
+apiVersion: actions.herder.io/v1alpha1
+kind: ActionProfile
+metadata:
+  name: wifi-scan-nokia-beacon
+spec:
+  capability: wifi_scan
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+  timeout: 6m
+  steps:
+    - name: scan
+      set:
+        canonical.wifi.scan.state: Requested
+      awaitParam: canonical.wifi.scan.state
+      awaitNotIn: [Requested, None]
+      pollInterval: 10s
+      timeout: 4m
+      collect:
+        - InternetGatewayDevice.X_ALU-COM_NeighboringWiFiDiagnostic.
+  normalize: wifi-scan-nokia-beacon.ts

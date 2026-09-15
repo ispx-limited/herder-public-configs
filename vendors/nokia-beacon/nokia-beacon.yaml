@@ -1,0 +1,67 @@
+# Nokia WiFi Beacon mesh access points.
+#
+# The family spans two data models: Beacon 2 and Beacon G6 manage over
+# InternetGatewayDevice (TR-098), Beacon 3.1 over Device (TR-181). Each
+# needs a profile in its own data model's vocabulary, scoped to the
+# ALCL manufacturer and the product class, restating the baseline tables
+# so the vendor binding does not strip the device of standard coverage.
+#
+# The Beacon 3.1 (TR-181) already resolves its mesh map from
+# WiFi.DataElements and its clients from the standard AssociatedDevice
+# table through the baseline. The TR-098 Beacons expose the same mesh
+# data under a Device.WiFi.DataElements subtree alongside their IGD
+# root; wiring their client signal, topology and neighbour scan onto
+# that tree is the vendor work still to come, added here as tables and
+# rules once each is proven on the hardware.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: nokia-beacon-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 3.1"]}
+      - {key: "protocol:cwmp", operator: Exists}
+  parameterMappings:
+    - device-info-tr181
+    - firmware-tr181
+    - mgmt-tr181
+    - diagnostics-tr181
+    - wifi-tr181
+    - interfaces-tr181
+    - voice-tr104i2
+    - wifi-scan-tr181
+    - wifi-capability-tr181
+    - wifi-rf-tr181
+    - netdiag-tr181
+    - remote-access-tr181
+    - nat-tr181
+    - software-tr181
+    - oriel-home-tr181
+---
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: nokia-beacon-tr098
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+      - {key: "protocol:cwmp", operator: Exists}
+  parameterMappings:
+    - device-info-tr098
+    - mgmt-tr098
+    - diagnostics-tr098
+    - netdiag-tr098
+    - remote-access-tr098
+    - wifi-tr098
+    - wifi-bssid-tr098
+    - wifi-capability-tr098
+    - interfaces-tr098
+    - voice-tr104
+    - nat-tr098
+    - wifi-scan-nokia-beacon

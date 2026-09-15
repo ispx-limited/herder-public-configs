@@ -1,0 +1,77 @@
+# Collect the Wi-Fi DataElements mesh tree the Beacons expose, and draw
+# the map from it. Split by root: TR-181 Beacons report the tree under
+# Device.WiFi.DataElements, TR-098 Beacons under
+# InternetGatewayDevice.DataElements, so a profile per root keeps each
+# from faulting on paths the other model does not have. Vendor priority
+# (50) beats the baseline's minimal DataElements collection.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-dataelements-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 3.1"]}
+  parameters:
+    - {path: "Device.WiFi.DataElements.Network.ControllerID", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.ID", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Manufacturer", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.ManufacturerModel", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.EasyMeshControllerOperationMode", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.LinkType", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.SignalStrength", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.Hostname", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.LastDataDownlinkRate", interval: 0}
+---
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-dataelements-tr098
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+  parameters:
+    - {path: "InternetGatewayDevice.DataElements.Network.ControllerID", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.ID", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Manufacturer", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.ManufacturerModel", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.MultiAPDevice.EasyMeshControllerOperationMode", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.LinkType", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.SignalStrength", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.Hostname", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.LastDataDownlinkRate", interval: 0}
+---
+# The map itself: walk DataElements into gateway, extenders and clients.
+# Scoped to the vendor tuple, not a data model, because the TR-098
+# Beacons carry the tree while registering as igd. Triggers on either
+# root's Device table so it runs whenever the mesh is in the batch.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: nokia-beacon-topology
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon G6"]}
+  triggerPaths:
+    - "Device.WiFi.DataElements.Network.Device.*"
+    - "InternetGatewayDevice.DataElements.Network.Device.*"
+  changeHash:
+    paths:
+      - "Device.WiFi.DataElements.Network.Device.{i}.ID"
+      - "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress"
+      - "InternetGatewayDevice.DataElements.Network.Device.{i}.ID"
+      - "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress"
+  coalesceWindow: 60s
+  script: dataelements.ts
