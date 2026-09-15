@@ -1,0 +1,39 @@
+# Collect the associated-device table and each radio's band, and label
+# clients from it. The signal is standard, so the generic rule already
+# reads it; this rule wins for Grandstream (priority below the generic
+# 200) so the band comes from the radio rather than the AccessPoint
+# index. GWN7002 has no radios and matches nothing here.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: grandstream-wifi-clients
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "oui", operator: In, values: ["EC74D7"]}
+      - {key: "productClass", operator: In, values: ["GWN7062"]}
+  parameters:
+    - {path: "Device.WiFi.Radio.{i}.OperatingFrequencyBand", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.MACAddress", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.SignalStrength", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Active", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.LastDataDownlinkRate", interval: 0}
+---
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: grandstream-wifi-clients
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "oui", operator: In, values: ["EC74D7"]}
+      - {key: "productClass", operator: In, values: ["GWN7062"]}
+  triggerPaths:
+    - "Device.WiFi.AccessPoint.*.AssociatedDevice.*"
+  changeHash:
+    paths:
+      - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.SignalStrength"
+  coalesceWindow: 60s
+  script: clients.ts
