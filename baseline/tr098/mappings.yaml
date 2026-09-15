@@ -261,30 +261,88 @@ spec:
   # radio settings and the SSID, so radio.{i} and ssid.{i} both map into it.
   # Consumers read the same canonical names on either data model, which is
   # the entire point of the canonical layer.
+    # Radio slots are bands, not instance numbers: slot 1 is the 2.4 GHz
+    # radio and slot 2 the 5 GHz one. TR-098 has no band parameter and
+    # some firmware puts a vendor string in Standard, so the band is read
+    # off PossibleChannels, which TR-098 defines and every radio reports:
+    # 2.4 GHz channels start at 1, 5 GHz at 36. The lowest instance on
+    # the band is the radio; the rest are its extra SSIDs. A Nokia
+    # Beacon puts its 5 GHz radio at instance 5, an ARRIS NVG578LX too;
+    # the old assumption drew instance 2, a disabled 2.4 GHz SSID, as
+    # the 5 GHz radio. fallbackIndex keeps the old index on a firmware
+    # that reports no channel list.
     - canonical: canonical.wifi.radio.1.enable
       valueType: boolean
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Enable
     - canonical: canonical.wifi.radio.1.status
       valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Status
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Status
     - canonical: canonical.wifi.radio.1.channel
       valueType: unsignedint
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Channel
     - canonical: canonical.wifi.radio.1.band
       valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Standard
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Standard
     - canonical: canonical.wifi.radio.2.enable
       valueType: boolean
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Enable
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Enable
     - canonical: canonical.wifi.radio.2.status
       valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Status
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Status
     - canonical: canonical.wifi.radio.2.channel
       valueType: unsignedint
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Channel
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Channel
     - canonical: canonical.wifi.radio.2.band
       valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Standard
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Standard
     - canonical: canonical.wifi.radio.3.enable
       valueType: boolean
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Enable
@@ -363,10 +421,22 @@ spec:
   # it and rollback restores what the CPE reported before.
     - canonical: canonical.wifi.radio.1.auto_channel_enable
       valueType: boolean
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AutoChannelEnable
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.AutoChannelEnable
     - canonical: canonical.wifi.radio.2.auto_channel_enable
       valueType: boolean
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AutoChannelEnable
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.AutoChannelEnable
     - canonical: canonical.wifi.radio.3.auto_channel_enable
       valueType: boolean
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AutoChannelEnable
@@ -391,16 +461,40 @@ spec:
   # error counters, not bytes.
     - canonical: canonical.wifi.radio.1.stats.bytes_sent
       valueType: unsignedint
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesSent
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.TotalBytesSent
     - canonical: canonical.wifi.radio.1.stats.bytes_received
       valueType: unsignedint
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesReceived
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.TotalBytesReceived
     - canonical: canonical.wifi.radio.2.stats.bytes_sent
       valueType: unsignedint
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalBytesSent
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.TotalBytesSent
     - canonical: canonical.wifi.radio.2.stats.bytes_received
       valueType: unsignedint
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalBytesReceived
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.TotalBytesReceived
     - canonical: canonical.wifi.radio.3.stats.bytes_sent
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalBytesSent
@@ -627,10 +721,22 @@ spec:
   mappings:
     - canonical: canonical.wifi.radio.1.possible_channels
       valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PossibleChannels
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.PossibleChannels
     - canonical: canonical.wifi.radio.2.possible_channels
       valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.PossibleChannels
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.PossibleChannels
     - canonical: canonical.wifi.radio.3.possible_channels
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.PossibleChannels

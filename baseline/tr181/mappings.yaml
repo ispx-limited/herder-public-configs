@@ -295,45 +295,111 @@ metadata:
   name: wifi-tr181
 spec:
   mappings:
+    # Radio slots are bands, not instance numbers: slot 1 is the 2.4 GHz
+    # radio, slot 2 the 5 GHz one, slot 3 the 6 GHz one, each found by
+    # OperatingFrequencyBand, which TR-181 defines on every radio. A
+    # gateway that lists its 5 GHz radio first still lands it in slot 2.
+    # fallbackIndex keeps a firmware that reports no band on the old
+    # index assumption.
     - canonical: canonical.wifi.radio.1.enable
       valueType: boolean
-      devicePath: Device.WiFi.Radio.1.Enable
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Enable
     - canonical: canonical.wifi.radio.1.status
       valueType: string
-      devicePath: Device.WiFi.Radio.1.Status
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Status
     - canonical: canonical.wifi.radio.1.channel
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.1.Channel
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Channel
     - canonical: canonical.wifi.radio.1.band
       valueType: string
-      devicePath: Device.WiFi.Radio.1.OperatingFrequencyBand
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingFrequencyBand
     - canonical: canonical.wifi.radio.2.enable
       valueType: boolean
-      devicePath: Device.WiFi.Radio.2.Enable
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Enable
     - canonical: canonical.wifi.radio.2.status
       valueType: string
-      devicePath: Device.WiFi.Radio.2.Status
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Status
     - canonical: canonical.wifi.radio.2.channel
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.2.Channel
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Channel
     - canonical: canonical.wifi.radio.2.band
       valueType: string
-      devicePath: Device.WiFi.Radio.2.OperatingFrequencyBand
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingFrequencyBand
     # A third radio, because 6 GHz is normally Radio.3 on a tri-band
     # gateway and a band the platform cannot see is a band it will report
     # as absent.
     - canonical: canonical.wifi.radio.3.enable
       valueType: boolean
-      devicePath: Device.WiFi.Radio.3.Enable
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Enable
     - canonical: canonical.wifi.radio.3.status
       valueType: string
-      devicePath: Device.WiFi.Radio.3.Status
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Status
     - canonical: canonical.wifi.radio.3.channel
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.3.Channel
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Channel
     - canonical: canonical.wifi.radio.3.band
       valueType: string
-      devicePath: Device.WiFi.Radio.3.OperatingFrequencyBand
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingFrequencyBand
     # The auto-channel switch, one per radio. The channel planner writes
     # it: a channel set against a radio still running auto-select is a
     # set the CPE's own algorithm is free to revert, so a plan apply
@@ -341,25 +407,55 @@ spec:
     # restores what the CPE reported before.
     - canonical: canonical.wifi.radio.1.auto_channel_enable
       valueType: boolean
-      devicePath: Device.WiFi.Radio.1.AutoChannelEnable
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.AutoChannelEnable
     - canonical: canonical.wifi.radio.2.auto_channel_enable
       valueType: boolean
-      devicePath: Device.WiFi.Radio.2.AutoChannelEnable
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.AutoChannelEnable
     - canonical: canonical.wifi.radio.3.auto_channel_enable
       valueType: boolean
-      devicePath: Device.WiFi.Radio.3.AutoChannelEnable
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.AutoChannelEnable
     # The operating width. Without it every radio in a TR-181 fleet is
     # drawn at the assumed 20 MHz and reported as a coverage gap, and no
     # radio can be told apart from one running below what it supports.
     - canonical: canonical.wifi.radio.1.bandwidth
       valueType: string
-      devicePath: Device.WiFi.Radio.1.OperatingChannelBandwidth
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingChannelBandwidth
     - canonical: canonical.wifi.radio.2.bandwidth
       valueType: string
-      devicePath: Device.WiFi.Radio.2.OperatingChannelBandwidth
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingChannelBandwidth
     - canonical: canonical.wifi.radio.3.bandwidth
       valueType: string
-      devicePath: Device.WiFi.Radio.3.OperatingChannelBandwidth
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingChannelBandwidth
     - canonical: canonical.wifi.ssid.1.enable
       valueType: boolean
       devicePath: Device.WiFi.SSID.1.Enable
@@ -521,49 +617,124 @@ spec:
     # Radio capability, against the operating values in wifi-tr181.
     - canonical: canonical.wifi.radio.1.supported_bands
       valueType: string
-      devicePath: Device.WiFi.Radio.1.SupportedFrequencyBands
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedFrequencyBands
     - canonical: canonical.wifi.radio.1.possible_channels
       valueType: string
-      devicePath: Device.WiFi.Radio.1.PossibleChannels
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.PossibleChannels
     - canonical: canonical.wifi.radio.1.supported_standards
       valueType: string
-      devicePath: Device.WiFi.Radio.1.SupportedStandards
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedStandards
     - canonical: canonical.wifi.radio.1.operating_standards
       valueType: string
-      devicePath: Device.WiFi.Radio.1.OperatingStandards
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingStandards
     - canonical: canonical.wifi.radio.1.supported_bandwidths
       valueType: string
-      devicePath: Device.WiFi.Radio.1.SupportedOperatingChannelBandwidths
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedOperatingChannelBandwidths
     - canonical: canonical.wifi.radio.2.supported_bands
       valueType: string
-      devicePath: Device.WiFi.Radio.2.SupportedFrequencyBands
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedFrequencyBands
     - canonical: canonical.wifi.radio.2.possible_channels
       valueType: string
-      devicePath: Device.WiFi.Radio.2.PossibleChannels
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.PossibleChannels
     - canonical: canonical.wifi.radio.2.supported_standards
       valueType: string
-      devicePath: Device.WiFi.Radio.2.SupportedStandards
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedStandards
     - canonical: canonical.wifi.radio.2.operating_standards
       valueType: string
-      devicePath: Device.WiFi.Radio.2.OperatingStandards
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingStandards
     - canonical: canonical.wifi.radio.2.supported_bandwidths
       valueType: string
-      devicePath: Device.WiFi.Radio.2.SupportedOperatingChannelBandwidths
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedOperatingChannelBandwidths
     - canonical: canonical.wifi.radio.3.supported_bands
       valueType: string
-      devicePath: Device.WiFi.Radio.3.SupportedFrequencyBands
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedFrequencyBands
     - canonical: canonical.wifi.radio.3.possible_channels
       valueType: string
-      devicePath: Device.WiFi.Radio.3.PossibleChannels
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.PossibleChannels
     - canonical: canonical.wifi.radio.3.supported_standards
       valueType: string
-      devicePath: Device.WiFi.Radio.3.SupportedStandards
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedStandards
     - canonical: canonical.wifi.radio.3.operating_standards
       valueType: string
-      devicePath: Device.WiFi.Radio.3.OperatingStandards
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.OperatingStandards
     - canonical: canonical.wifi.radio.3.supported_bandwidths
       valueType: string
-      devicePath: Device.WiFi.Radio.3.SupportedOperatingChannelBandwidths
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.SupportedOperatingChannelBandwidths
     # Security, supported against enabled. `security_mode` itself is in
     # wifi-tr181; without the supported list next to it, an access point
     # running WPA2 cannot be told apart from one that can do nothing else.
@@ -859,49 +1030,124 @@ spec:
   mappings:
     - canonical: canonical.wifi.radio.1.utilization
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.1.ChannelUtilization
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelUtilization
     - canonical: canonical.wifi.radio.1.noise
       valueType: int
-      devicePath: Device.WiFi.Radio.1.Stats.Noise
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.Noise
     - canonical: canonical.wifi.radio.1.stats.fcs_errors
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.1.Stats.FCSErrorCount
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.FCSErrorCount
     - canonical: canonical.wifi.radio.1.stats.bytes_sent
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.1.Stats.BytesSent
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesSent
     - canonical: canonical.wifi.radio.1.stats.bytes_received
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.1.Stats.BytesReceived
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesReceived
     - canonical: canonical.wifi.radio.2.utilization
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.2.ChannelUtilization
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelUtilization
     - canonical: canonical.wifi.radio.2.noise
       valueType: int
-      devicePath: Device.WiFi.Radio.2.Stats.Noise
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.Noise
     - canonical: canonical.wifi.radio.2.stats.fcs_errors
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.2.Stats.FCSErrorCount
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.FCSErrorCount
     - canonical: canonical.wifi.radio.2.stats.bytes_sent
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.2.Stats.BytesSent
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesSent
     - canonical: canonical.wifi.radio.2.stats.bytes_received
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.2.Stats.BytesReceived
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesReceived
     - canonical: canonical.wifi.radio.3.utilization
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.3.ChannelUtilization
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelUtilization
     - canonical: canonical.wifi.radio.3.noise
       valueType: int
-      devicePath: Device.WiFi.Radio.3.Stats.Noise
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.Noise
     - canonical: canonical.wifi.radio.3.stats.fcs_errors
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.3.Stats.FCSErrorCount
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.FCSErrorCount
     - canonical: canonical.wifi.radio.3.stats.bytes_sent
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.3.Stats.BytesSent
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesSent
     - canonical: canonical.wifi.radio.3.stats.bytes_received
       valueType: unsignedint
-      devicePath: Device.WiFi.Radio.3.Stats.BytesReceived
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesReceived
 ---
 # Remote access to the gateway's own web UI. The rare namespace both
 # data models spell identically: UserInterface.RemoteAccess carries the
