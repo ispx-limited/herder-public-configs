@@ -34,6 +34,14 @@ function toInt(s: unknown): number | null {
   return isNaN(n) ? null : n;
 }
 
+// A TR-069/TR-369 boolean is "0"/"1" or "false"/"true" on the wire.
+// Only an explicit not-active reading skips the client; an absent
+// field (a profile that does not collect Active) is not treated as
+// inactive, so the negative-dBm guard below still carries it.
+function isInactive(v: unknown): boolean {
+  return v === "0" || v === "false" || v === false;
+}
+
 function resolveBand(idx: string): string {
   return AP_BAND_FALLBACK[idx] || "unknown";
 }
@@ -74,6 +82,11 @@ for (let ci = 0; ci < tr181Clients.length; ci++) {
   const c = tr181Clients[ci];
   const mac = normaliseMac(c.MACAddress);
   if (!mac) continue;
+  // A client the CPE marks not-active has disassociated or gone to
+  // sleep; its SignalStrength/rate leaves read 0, the vendor's "no
+  // measurement" placeholder, not a real value. Skip it so it does
+  // not land on the radar as a 0 dBm spoke.
+  if (isInactive(c.Active)) continue;
   const apIdx = c.$indexes.AccessPoint;
   const host = hostByMac[mac];
   const labels = {
@@ -83,9 +96,12 @@ for (let ci = 0; ci < tr181Clients.length; ci++) {
     band: resolveBand(apIdx),
     ap_idx: apIdx,
   };
-  const sigStr = c.SignalStrength as string | undefined;
-  if (sigStr !== undefined && sigStr !== "") {
-    emit("wifi.client.rssi", toInt(sigStr), labels);
+  // TR-181 SignalStrength is dBm, always negative for an associated
+  // client. 0 (or positive) is the same no-measurement placeholder, so
+  // only a negative reading is emitted.
+  const rssi = toInt(c.SignalStrength);
+  if (rssi !== null && rssi < 0) {
+    emit("wifi.client.rssi", rssi, labels);
   }
   const tx = c.LastDataDownlinkRate as string | undefined;
   if (tx !== undefined && tx !== "") {
@@ -105,6 +121,7 @@ for (let ti = 0; ti < tr098Clients.length; ti++) {
   const t = tr098Clients[ti];
   const tmac = normaliseMac(t.AssociatedDeviceMACAddress);
   if (!tmac) continue;
+  if (isInactive(t.Active)) continue;
   const wlanIdx = t.$indexes.WLANConfiguration;
   const thost = hostByMac[tmac];
   const tlabels = {
@@ -114,9 +131,9 @@ for (let ti = 0; ti < tr098Clients.length; ti++) {
     band: resolveBand(wlanIdx),
     wlan_idx: wlanIdx,
   };
-  const tsig = t.SignalStrength as string | undefined;
-  if (tsig !== undefined && tsig !== "") {
-    emit("wifi.client.rssi", toInt(tsig), tlabels);
+  const trssi = toInt(t.SignalStrength);
+  if (trssi !== null && trssi < 0) {
+    emit("wifi.client.rssi", trssi, tlabels);
   }
   const ttx = t.LastDataTransmitRate as string | undefined;
   if (ttx !== undefined && ttx !== "") {
