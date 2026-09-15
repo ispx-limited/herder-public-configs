@@ -48,10 +48,7 @@ spec:
       config:
         ports:
           - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan1, label: "1", kind: ethernet, entity: canonical.interface.lan.1}
-          - {id: lan2, label: "2", kind: ethernet, entity: canonical.interface.lan.2}
-          - {id: lan3, label: "3", kind: ethernet, entity: canonical.interface.lan.3}
-          - {id: lan4, label: "4", kind: ethernet, entity: canonical.interface.lan.4}
+          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
           - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
           - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
     - key: wifi
