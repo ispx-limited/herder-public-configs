@@ -1,0 +1,25 @@
+# Radar clients for the Beacon mesh: wifi.client.rssi from the
+# DataElements STA table, so a client on an extender shows on the wheel
+# too. Scoped to the vendor tuple across both data models. Priority 50,
+# below the generic rule (200), so where a client appears in both the
+# gateway's AssociatedDevice table and here, the more specific mesh
+# reading is the one kept.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: nokia-beacon-clients
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon G6"]}
+  triggerPaths:
+    - "Device.WiFi.DataElements.Network.Device.*"
+    - "InternetGatewayDevice.DataElements.Network.Device.*"
+  changeHash:
+    paths:
+      - "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength"
+      - "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength"
+  coalesceWindow: 60s
+  script: dataelements-clients.ts
