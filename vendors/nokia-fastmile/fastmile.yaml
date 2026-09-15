@@ -27,7 +27,7 @@ spec:
     - mgmt-tr181
     - diagnostics-tr181
     - wifi-tr181
-    - interfaces-tr181
+    - interfaces-nokia-fastmile
     - voice-tr104i2
     - wifi-scan-tr181
     - wifi-capability-tr181
