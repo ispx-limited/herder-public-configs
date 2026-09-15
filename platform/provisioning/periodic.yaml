@@ -5,7 +5,6 @@ metadata:
 spec:
   triggers:
     - periodic
-    - connection_request
   # Scoped to CWMP devices. The seed scripts write
   # `canonical.mgmt.connection_request_*` and the PeriodicInform pair —
   # TR-069 ManagementServer parameters that a TR-369 agent does not
