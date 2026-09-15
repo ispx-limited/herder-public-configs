@@ -64,3 +64,4 @@ spec:
     - interfaces-tr098
     - voice-tr104
     - nat-tr098
+    - wifi-scan-nokia-beacon
