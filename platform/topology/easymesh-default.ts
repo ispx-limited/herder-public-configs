@@ -13,6 +13,28 @@
   const rssiEncoding: string = ctx.configGet<string>("rssiEncoding", "dbm");
   const includeInactive: boolean = ctx.configGet<boolean>("includeInactiveHosts", false);
 
+  // A station the CPE marks not-active has disassociated or gone to
+  // sleep; its SignalStrength reads 0, the vendor's "no measurement"
+  // placeholder, not a real value.
+  function isInactive(v: unknown): boolean {
+    return v === "0" || v === "false" || v === false;
+  }
+
+  // Attach an RSSI overlay to one edge, but only for a real reading. A
+  // raw 0 is the no-measurement placeholder in both encodings (rcpi 0
+  // would otherwise convert to a plausible-looking -110), and a
+  // non-negative dBm is the same placeholder read straight, so neither
+  // is emitted: an unmeasured link carries no metric rather than a
+  // 0 dBm one that paints as the strongest link on the map.
+  function edgeRssi(sigStr: unknown, parent: string, child: string): void {
+    if (typeof sigStr !== "string" || sigStr === "") return;
+    const raw = parseFloat(sigStr);
+    if (isNaN(raw) || raw === 0) return;
+    const rssi = rssiEncoding === "rcpi" ? (raw / 2) - 110 : raw;
+    if (rssi >= 0) return;
+    topology.addEdgeMetric("rssi_dbm", rssi, { parent: parent, child: child });
+  }
+
   // ---- Step 1: host metadata by MAC ----
   // Captures hostname / IPv4 / IPv6 for cross-ref in steps 3 + 5,
   // and the host's Layer1Interface so step 3.5 can identify wired
@@ -267,6 +289,10 @@
     const s = flatStations[i];
     const clientMAC = ((s.MACAddress as string | undefined) || "").toLowerCase();
     if (!clientMAC) continue;
+    // A disassociated station is not on the network now, so it is left
+    // off the map entirely, the same call includeInactiveHosts makes
+    // for wired hosts above.
+    if (!includeInactive && isInactive(s.Active)) continue;
 
     const apIdx = s.$indexes.AccessPoint;
     const ssidMeta = ssidForAP(apIdx);
@@ -290,19 +316,7 @@
       bssid: ssidMeta ? ssidMeta.bssid : undefined,
     });
 
-    const sigStr = s.SignalStrength as string | undefined;
-    if (sigStr !== undefined && sigStr !== "") {
-      let rssi = parseFloat(sigStr);
-      if (!isNaN(rssi)) {
-        if (rssiEncoding === "rcpi") {
-          rssi = (rssi / 2) - 110;
-        }
-        topology.addEdgeMetric("rssi_dbm", rssi, {
-          parent: parentNodeId,
-          child: clientMAC,
-        });
-      }
-    }
+    edgeRssi(s.SignalStrength, parentNodeId, clientMAC);
   }
 
   // ---- Step 5: wired clients (Hosts.Host with Layer1Interface = Device.Ethernet.*)
@@ -370,19 +384,7 @@
     // Without this attachment the edge has no metric and the overlay
     // falls back to the static "wifi_backhaul" type tone, hiding the
     // most operationally interesting signal in the mesh path.
-    const backhaulRssiStr = ap.SignalStrength as string | undefined;
-    if (backhaulRssiStr !== undefined && backhaulRssiStr !== "") {
-      let backhaulRssi = parseFloat(backhaulRssiStr);
-      if (!isNaN(backhaulRssi)) {
-        if (rssiEncoding === "rcpi") {
-          backhaulRssi = (backhaulRssi / 2) - 110;
-        }
-        topology.addEdgeMetric("rssi_dbm", backhaulRssi, {
-          parent: gatewayMAC,
-          child: apMAC,
-        });
-      }
-    }
+    edgeRssi(ap.SignalStrength, gatewayMAC, apMAC);
   }
 
   // Walk APDevice.{i}.Radio.{j}.AP.{k} and emit an `ssid` node per
@@ -460,18 +462,6 @@
       bssid: meshSsid ? meshSsid.bssid : undefined,
     });
 
-    const sigStr = s.SignalStrength as string | undefined;
-    if (sigStr !== undefined && sigStr !== "") {
-      let rssi = parseFloat(sigStr);
-      if (!isNaN(rssi)) {
-        if (rssiEncoding === "rcpi") {
-          rssi = (rssi / 2) - 110;
-        }
-        topology.addEdgeMetric("rssi_dbm", rssi, {
-          parent: parentNodeId,
-          child: clientMAC,
-        });
-      }
-    }
+    edgeRssi(s.SignalStrength, parentNodeId, clientMAC);
   }
 })();
