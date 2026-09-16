@@ -10,18 +10,51 @@
 //   2. TR-098 gateway-attached clients via InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*
 //
 // Both sections correlate against Hosts.Host for hostname/IP enrichment
-// and use AP/WLAN index → band lookup tables (no vendor field for
-// per-radio band on a synthetic CPE).
+// and label each client with the band of the radio its AP runs on
+// (TR-181 OperatingFrequencyBand, TR-098 channel), not an index guess.
 
-// AP/WLAN index → band fallback. Tweak per CPE if the natural index→band
-// mapping differs (this profile assumes 1=2.4GHz main, 2=2.4GHz guest,
-// 3=5GHz main, 4=5GHz guest, matching the cpe-labs example profiles).
+// Last-resort AP/WLAN index → band table, used only when the band
+// cannot be read from the radio the AP runs on (below). A CPE with more
+// than two SSIDs per radio, or a non-standard SSID ordering, does not
+// follow this pattern (a Nokia Beacon exposes eight APs, 1-4 on 2.4GHz
+// and 5-8 on 5GHz), so the radio lookup is always tried first and this
+// only carries a synthetic CPE that omits the OperatingFrequencyBand /
+// Channel leaves entirely.
 const AP_BAND_FALLBACK: Record<string, string> = {
   "1": "2.4GHz",
   "2": "2.4GHz",
   "3": "5GHz",
   "4": "5GHz",
 };
+
+// TR-181 OperatingFrequencyBand is "2.4GHz" | "5GHz" | "6GHz"; some
+// firmware inserts a space ("2.4 GHz"). Fold to the canonical spelling
+// the dashboards group on, or null when it is not one of the three.
+function normaliseBand(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const s = v.replace(/\s+/g, "").toLowerCase();
+  if (s.startsWith("2.4")) return "2.4GHz";
+  if (s.startsWith("5")) return "5GHz";
+  if (s.startsWith("6")) return "6GHz";
+  return null;
+}
+
+// A 2.4GHz channel is 1-14; anything above is 5GHz. 6GHz reuses the low
+// channel numbers, so channel alone cannot name it, but no TR-098 CPE
+// (the only caller of this) reports a 6GHz radio, so the two-way split
+// is safe there. Returns null for a missing or unparseable channel.
+function bandFromChannel(v: unknown): string | null {
+  const ch = toInt(v);
+  if (ch === null || ch <= 0) return null;
+  return ch <= 14 ? "2.4GHz" : "5GHz";
+}
+
+// Strip the optional trailing dot a CPE may put on a path reference so
+// "Device.WiFi.SSID.5." and "Device.WiFi.SSID.5" key the same map entry.
+function refPath(v: unknown): string | null {
+  if (typeof v !== "string" || v === "") return null;
+  return v.replace(/\.$/, "");
+}
 
 function normaliseMac(s: unknown): string | null {
   if (typeof s !== "string") return null;
@@ -42,8 +75,47 @@ function isInactive(v: unknown): boolean {
   return v === "0" || v === "false" || v === false;
 }
 
-function resolveBand(idx: string): string {
-  return AP_BAND_FALLBACK[idx] || "unknown";
+// --- Band lookup: derive the AP's band from the radio it runs on --------
+//
+// The authoritative source is the radio's OperatingFrequencyBand, reached
+// from the AP by AccessPoint.SSIDReference -> SSID.LowerLayers -> Radio.
+// The bundled TR-181 telemetry profile collects all three leaves, so this
+// resolves for any conforming CPE regardless of how many SSIDs it exposes
+// or in what order. Only when the chain is broken (a leaf the CPE does not
+// report) does it fall back to the index table.
+
+// Radio instance path ("Device.WiFi.Radio.2") -> canonical band.
+const radioBand: Record<string, string> = {};
+const radios = batch.matches("Device.WiFi.Radio.*");
+for (let ri = 0; ri < radios.length; ri++) {
+  const r = radios[ri];
+  const band = normaliseBand(r.OperatingFrequencyBand);
+  if (band) radioBand["Device.WiFi.Radio." + r.$indexes.Radio] = band;
+}
+
+// SSID instance path ("Device.WiFi.SSID.5") -> radio instance path, from
+// the SSID's LowerLayers (a WiFi SSID has exactly one lower radio).
+const ssidToRadio: Record<string, string> = {};
+const ssids = batch.matches("Device.WiFi.SSID.*");
+for (let si = 0; si < ssids.length; si++) {
+  const s = ssids[si];
+  const lower = refPath((s.LowerLayers as string | undefined || "").split(",")[0]);
+  if (lower) ssidToRadio["Device.WiFi.SSID." + s.$indexes.SSID] = lower;
+}
+
+// AccessPoint index -> canonical band, resolved via that AP's referenced
+// SSID and its radio. Built from the AccessPoint instances (the associated
+// client rows the emit loop walks do not carry SSIDReference themselves).
+// Falls back to the index table only when the chain is broken.
+const apBand: Record<string, string> = {};
+const accessPoints = batch.matches("Device.WiFi.AccessPoint.*");
+for (let ai = 0; ai < accessPoints.length; ai++) {
+  const ap = accessPoints[ai];
+  const apIdx = ap.$indexes.AccessPoint;
+  const ssidPath = refPath(ap.SSIDReference);
+  const radioPath = ssidPath ? ssidToRadio[ssidPath] : null;
+  const band = radioPath ? radioBand[radioPath] : null;
+  apBand[apIdx] = band || AP_BAND_FALLBACK[apIdx] || "unknown";
 }
 
 // --- Lookup tables built once per invocation ----------------------------
@@ -93,7 +165,7 @@ for (let ci = 0; ci < tr181Clients.length; ci++) {
     client_mac: mac,
     hostname: host ? host.hostname : null,
     via: "gateway",
-    band: resolveBand(apIdx),
+    band: apBand[apIdx] || "unknown",
     ap_idx: apIdx,
   };
   // TR-181 SignalStrength is dBm, always negative for an associated
@@ -114,6 +186,20 @@ for (let ci = 0; ci < tr181Clients.length; ci++) {
 }
 
 // --- 2. TR-098 gateway-attached clients ---------------------------------
+
+// "<lanDev>.<wlan>" -> band from the WLANConfiguration's channel. TR-098
+// has no per-radio band leaf; the channel is authoritative for the 2.4 vs
+// 5GHz split and the telemetry profile collects it. Index table is the
+// last resort for a CPE that omits Channel.
+const wlanBand: Record<string, string> = {};
+const wlans = batch.matches("InternetGatewayDevice.LANDevice.*.WLANConfiguration.*");
+for (let wi = 0; wi < wlans.length; wi++) {
+  const w = wlans[wi];
+  const key = w.$indexes.LANDevice + "." + w.$indexes.WLANConfiguration;
+  const band = bandFromChannel(w.Channel);
+  if (band) wlanBand[key] = band;
+}
+
 const tr098Clients = batch.matches(
   "InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*",
 );
@@ -123,12 +209,13 @@ for (let ti = 0; ti < tr098Clients.length; ti++) {
   if (!tmac) continue;
   if (isInactive(t.Active)) continue;
   const wlanIdx = t.$indexes.WLANConfiguration;
+  const wlanKey = t.$indexes.LANDevice + "." + wlanIdx;
   const thost = hostByMac[tmac];
   const tlabels = {
     client_mac: tmac,
     hostname: thost ? thost.hostname : null,
     via: "gateway",
-    band: resolveBand(wlanIdx),
+    band: wlanBand[wlanKey] || AP_BAND_FALLBACK[wlanIdx] || "unknown",
     wlan_idx: wlanIdx,
   };
   const trssi = toInt(t.SignalStrength);
