@@ -22,7 +22,7 @@ spec:
   deviceSelector:
     matchExpressions:
       - {key: "manufacturer", operator: In, values: ["ALCL"]}
-      - {key: "productClass", operator: In, values: ["Beacon 3.1"]}
+      - {key: "productClass", operator: In, values: ["Beacon 3.1", "Beacon 4"]}
       - {key: "protocol:cwmp", operator: Exists}
   parameterMappings:
     - device-info-tr181
