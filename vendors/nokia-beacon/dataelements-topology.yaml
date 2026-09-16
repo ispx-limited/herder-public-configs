@@ -13,7 +13,7 @@ spec:
   deviceSelector:
     matchExpressions:
       - {key: "manufacturer", operator: In, values: ["ALCL"]}
-      - {key: "productClass", operator: In, values: ["Beacon 3.1"]}
+      - {key: "productClass", operator: In, values: ["Beacon 3.1", "Beacon 4"]}
   parameters:
     - {path: "Device.WiFi.DataElements.Network.ControllerID", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.ID", interval: 0}
@@ -63,7 +63,7 @@ spec:
   deviceSelector:
     matchExpressions:
       - {key: "manufacturer", operator: In, values: ["ALCL"]}
-      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon G6"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon 4", "Beacon G6"]}
   triggerPaths:
     - "Device.WiFi.DataElements.Network.Device.*"
     - "InternetGatewayDevice.DataElements.Network.Device.*"
