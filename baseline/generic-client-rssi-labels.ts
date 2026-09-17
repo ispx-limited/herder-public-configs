@@ -115,7 +115,11 @@ for (let ai = 0; ai < accessPoints.length; ai++) {
   const ssidPath = refPath(ap.SSIDReference);
   const radioPath = ssidPath ? ssidToRadio[ssidPath] : null;
   const band = radioPath ? radioBand[radioPath] : null;
-  apBand[apIdx] = band || AP_BAND_FALLBACK[apIdx] || "unknown";
+  // Only record a band we could actually resolve. An unresolved entry
+  // is left absent (not "unknown") so the emit loop skips the client
+  // rather than labelling it with a guess.
+  const resolved = band || AP_BAND_FALLBACK[apIdx];
+  if (resolved) apBand[apIdx] = resolved;
 }
 
 // --- Lookup tables built once per invocation ----------------------------
@@ -160,12 +164,21 @@ for (let ci = 0; ci < tr181Clients.length; ci++) {
   // not land on the radar as a 0 dBm spoke.
   if (isInactive(c.Active)) continue;
   const apIdx = c.$indexes.AccessPoint;
+  // The batch is one telemetry event, not the device snapshot. A CPE
+  // value-change inform can carry the AssociatedDevice row without the
+  // Radio/SSID/AccessPoint config the band is read from, so apBand has
+  // no entry. Emitting band "unknown" there puts a phantom spoke on the
+  // client radar that flickers against the real band the next full
+  // inform resolves. Skip the client on this event instead; a
+  // chain-bearing event re-emits it with the right band moments later.
+  const band = apBand[apIdx];
+  if (!band) continue;
   const host = hostByMac[mac];
   const labels = {
     client_mac: mac,
     hostname: host ? host.hostname : null,
     via: "gateway",
-    band: apBand[apIdx] || "unknown",
+    band,
     ap_idx: apIdx,
   };
   // TR-181 SignalStrength is dBm, always negative for an associated
@@ -210,12 +223,17 @@ for (let ti = 0; ti < tr098Clients.length; ti++) {
   if (isInactive(t.Active)) continue;
   const wlanIdx = t.$indexes.WLANConfiguration;
   const wlanKey = t.$indexes.LANDevice + "." + wlanIdx;
+  // As in the TR-181 loop: skip the client on an event that does not
+  // carry the WLANConfiguration its band is read from, rather than
+  // emit a phantom "unknown" band.
+  const tband = wlanBand[wlanKey] || AP_BAND_FALLBACK[wlanIdx];
+  if (!tband) continue;
   const thost = hostByMac[tmac];
   const tlabels = {
     client_mac: tmac,
     hostname: thost ? thost.hostname : null,
     via: "gateway",
-    band: wlanBand[wlanKey] || AP_BAND_FALLBACK[wlanIdx] || "unknown",
+    band: tband,
     wlan_idx: wlanIdx,
   };
   const trssi = toInt(t.SignalStrength);
