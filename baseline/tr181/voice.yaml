@@ -99,3 +99,98 @@ spec:
       interval: 0
     - path: "Device.Services.VoiceService.{i}.SIP.Network.{i}.ProxyServer"
       interval: 0
+---
+# Canonical voice mappings for a TR-181 gateway that carries the TR-104
+# issue 1 tree rather than issue 2: lines under VoiceProfile, SIP servers
+# on the profile, no CallControl and no SIP.Client. The data model root
+# is the only thing such a gateway shares with the table above, so the
+# two cannot be merged.
+#
+# Same canonical names as voice-tr104 and voice-tr104i2, so the voice
+# module renders identically whichever tree a gateway exposes. Bind this
+# one instead of voice-tr104i2 on a model that reports VoiceProfile; a
+# model that reports neither costs one rejected subtree read per tree,
+# which the negative cache then remembers.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: voice-tr104-device
+spec:
+  mappings:
+    - canonical: canonical.voice.line.1.status
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.1.Status
+    - canonical: canonical.voice.line.1.enable
+      valueType: boolean
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.1.Enable
+    - canonical: canonical.voice.line.1.number
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.1.DirectoryNumber
+    - canonical: canonical.voice.line.1.call_state
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.1.CallState
+    - canonical: canonical.voice.line.1.sip.username
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.AuthUserName
+    - canonical: canonical.voice.line.1.sip.password
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.AuthPassword
+    - canonical: canonical.voice.line.2.status
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.2.Status
+    - canonical: canonical.voice.line.2.enable
+      valueType: boolean
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.2.Enable
+    - canonical: canonical.voice.line.2.number
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.2.DirectoryNumber
+    - canonical: canonical.voice.line.2.call_state
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.2.CallState
+    - canonical: canonical.voice.line.2.sip.username
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.2.SIP.AuthUserName
+    - canonical: canonical.voice.line.2.sip.password
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.Line.2.SIP.AuthPassword
+    - canonical: canonical.voice.sip.registrar
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.SIP.RegistrarServer
+    - canonical: canonical.voice.sip.proxy
+      valueType: string
+      devicePath: Device.Services.VoiceService.1.VoiceProfile.1.SIP.ProxyServer
+---
+# Telemetry profile: the TR-104 issue 1 tree on a TR-181 gateway.
+#
+# The sibling of tr181-voice, for the gateways that put their lines under
+# VoiceProfile. Both profiles select every TR-181 CPE because nothing in
+# the data model says in advance which tree a firmware built, and the
+# canonical names are the same either way, so a reader does not have to
+# know. A gateway that has one tree rejects the other's subtree read
+# once, and the rejection is remembered per device, so the cost is one
+# request per firmware version rather than one per session.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: tr181-voice-i1
+spec:
+  priority: 10
+  deviceSelector:
+    matchExpressions:
+      - key: "dataModel:device"
+        operator: Exists
+  parameters:
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.Status"
+      interval: 0
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.CallState"
+      interval: 0
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.Enable"
+      interval: 0
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.DirectoryNumber"
+      interval: 0
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.SIP.AuthUserName"
+      interval: 0
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.SIP.RegistrarServer"
+      interval: 3600
+    - path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.SIP.ProxyServer"
+      interval: 3600

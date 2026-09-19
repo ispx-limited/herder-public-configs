@@ -86,7 +86,11 @@ spec:
     - diagnostics-tr181
     - wifi-tr181
     - interfaces-tr181
-    - voice-tr104i2
+    # This firmware reports its lines under VoiceProfile, the TR-104
+    # issue 1 tree, not the CallControl and SIP.Client of issue 2. Bound
+    # to issue 2 the voice module stayed empty and every collection asked
+    # the gateway for three subtrees it does not have.
+    - voice-tr104-device
     - wifi-scan-tr181
     - wifi-capability-tr181
     - wifi-rf-tr181
