@@ -253,9 +253,11 @@ spec:
 # Upstream boolean flag. Dashboards filter on Upstream=true (WAN)
 # vs Upstream=false (LAN) at query time.
 #
-# Byte counters only (BytesSent/BytesReceived) — packet counters
-# (Errors, Discards, Unicast, Multicast, Broadcast) excluded as
-# operationally low-value, matching #315's tr098-lan-eth.yaml stance.
+# Link settings plus the byte, packet and error counters, which is
+# what the lan service module reads: a module field whose path nothing
+# collects has no stored value and reports as raw_missing on every
+# device. Discard, unicast, multicast and broadcast counters excluded
+# as operationally low-value, matching tr098-lan-eth.
 #
 # Intervals are the cost dial: identity and capability fields hourly,
 # slow state and health gauges every 15 minutes, live counters at
@@ -280,6 +282,8 @@ spec:
       - key: "dataModel:device"
         operator: Exists
   parameters:
+    - path: "Device.Ethernet.Interface.{i}.Enable"
+      interval: 900
     - path: "Device.Ethernet.Interface.{i}.Status"
       interval: 0
     - path: "Device.Ethernet.Interface.{i}.Upstream"
@@ -294,9 +298,23 @@ spec:
       interval: 0
     - path: "Device.Ethernet.Interface.{i}.LowerLayers"
       interval: 0
+    - path: "Device.Ethernet.Interface.{i}.MaxBitRate"
+      interval: 3600
+    - path: "Device.Ethernet.Interface.{i}.DuplexMode"
+      interval: 3600
+    - path: "Device.Ethernet.Interface.{i}.CurrentBitRate"
+      interval: 900
     - path: "Device.Ethernet.Interface.{i}.Stats.BytesSent"
       interval: 0
     - path: "Device.Ethernet.Interface.{i}.Stats.BytesReceived"
+      interval: 0
+    - path: "Device.Ethernet.Interface.{i}.Stats.PacketsSent"
+      interval: 0
+    - path: "Device.Ethernet.Interface.{i}.Stats.PacketsReceived"
+      interval: 0
+    - path: "Device.Ethernet.Interface.{i}.Stats.ErrorsSent"
+      interval: 0
+    - path: "Device.Ethernet.Interface.{i}.Stats.ErrorsReceived"
       interval: 0
 ---
 # Telemetry profile: TR-181 IP interfaces + IPv4/IPv6 address tables.
@@ -346,11 +364,18 @@ spec:
       interval: 0
     - path: "Device.IP.Interface.{i}.LowerLayers"
       interval: 0
+    # Seconds in the current state: the WAN connection's uptime while
+    # the interface is Up. It moves on every read, so it rides the same
+    # bucket as the device's own UpTime.
+    - path: "Device.IP.Interface.{i}.LastChange"
+      interval: 900
     # --- IPv4 addresses ---
     - path: "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
       interval: 0
     - path: "Device.IP.Interface.{i}.IPv4Address.{i}.SubnetMask"
       interval: 900
+    - path: "Device.IP.Interface.{i}.IPv4Address.{i}.AddressingType"
+      interval: 3600
     # --- IPv6 addresses ---
     - path: "Device.IP.Interface.{i}.IPv6Address.{i}.IPAddress"
       interval: 0

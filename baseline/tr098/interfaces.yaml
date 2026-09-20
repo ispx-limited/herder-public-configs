@@ -50,6 +50,29 @@ spec:
     - canonical: canonical.interface.lan.{i}.bytes_received
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.Stats.BytesReceived
+    # The configured ceiling, not the negotiated rate: TR-098 spells it
+    # 10, 100, 1000, 10000 or Auto, which is why the value is a string.
+    # TR-098 has no standard parameter for the rate a port negotiated,
+    # so canonical.interface.lan.{i}.current_bit_rate is absent here and
+    # a vendor table maps it where the firmware has one.
+    - canonical: canonical.interface.lan.{i}.max_bit_rate
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.MaxBitRate
+    - canonical: canonical.interface.lan.{i}.duplex_mode
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.DuplexMode
+    - canonical: canonical.interface.lan.{i}.packets_sent
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.Stats.PacketsSent
+    - canonical: canonical.interface.lan.{i}.packets_received
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.Stats.PacketsReceived
+    - canonical: canonical.interface.lan.{i}.errors_sent
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.Stats.ErrorsSent
+    - canonical: canonical.interface.lan.{i}.errors_received
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.Stats.ErrorsReceived
     - canonical: canonical.interface.wan.status
       valueType: string
       devicePath: InternetGatewayDevice.WANDevice.1.WANCommonInterfaceConfig.PhysicalLinkStatus
@@ -96,3 +119,62 @@ spec:
         matchValue: IP_Routed
         fallbackIndex: 1
       pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.Uptime
+    # The rest of the connection, behind the same alias so the fields of
+    # one read describe one connection.
+    #
+    # A PPPoE service lives under WANPPPConnection, which has a
+    # different parameter set (no AddressingType, SubnetMask or
+    # DefaultGateway) and cannot share these entries. A PPPoE TR-098
+    # fleet binds these canonicals to WANPPPConnection in a table of its
+    # own. TR-098 has no standard IPv6 parameter on the WAN connection,
+    # so no IPv6 canonical is declared.
+    - canonical: canonical.interface.wan.connection_status
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.
+        matchBy: ConnectionType
+        matchValue: IP_Routed
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.ConnectionStatus
+    # DHCP or Static.
+    - canonical: canonical.interface.wan.addressing_type
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.
+        matchBy: ConnectionType
+        matchValue: IP_Routed
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.AddressingType
+    - canonical: canonical.interface.wan.subnet_mask
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.
+        matchBy: ConnectionType
+        matchValue: IP_Routed
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.SubnetMask
+    - canonical: canonical.interface.wan.default_gateway
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.
+        matchBy: ConnectionType
+        matchValue: IP_Routed
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.DefaultGateway
+    # A comma-separated list, as the CPE reports it.
+    - canonical: canonical.interface.wan.dns_servers
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.
+        matchBy: ConnectionType
+        matchValue: IP_Routed
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.DNSServers
+    - canonical: canonical.interface.wan.mac
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.
+        matchBy: ConnectionType
+        matchValue: IP_Routed
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.{index}.MACAddress
