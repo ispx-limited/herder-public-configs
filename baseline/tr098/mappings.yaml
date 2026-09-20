@@ -703,6 +703,35 @@ spec:
     - canonical: canonical.wifi.ap.8.security_mode
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.BeaconType
+    # The subscriber's WiFi key. A write flows one way: the plaintext is
+    # sealed by the API, opened once inside the protocol adapter and never
+    # stored. A mapping entry is not a collection instruction, and no
+    # telemetry profile here collects these paths, which is what keeps a
+    # fleet-wide store of every subscriber's key from existing.
+    - canonical: canonical.wifi.ap.1.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.2.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.3.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.4.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.5.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.6.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.7.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.PreSharedKey.1.KeyPassphrase
+    - canonical: canonical.wifi.ap.8.passphrase
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.PreSharedKey.1.KeyPassphrase
     - canonical: canonical.wifi.ap.8.client_count
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalAssociations
