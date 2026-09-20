@@ -537,6 +537,23 @@ spec:
     - canonical: canonical.wifi.ap.4.security_mode
       valueType: string
       devicePath: Device.WiFi.AccessPoint.4.Security.ModeEnabled
+    # The subscriber's WiFi key. A write flows one way: the plaintext is
+    # sealed by the API, opened once inside the protocol adapter and never
+    # stored. A mapping entry is not a collection instruction, and no
+    # telemetry profile here collects these paths, which is what keeps a
+    # fleet-wide store of every subscriber's key from existing.
+    - canonical: canonical.wifi.ap.1.passphrase
+      valueType: string
+      devicePath: Device.WiFi.AccessPoint.1.Security.KeyPassphrase
+    - canonical: canonical.wifi.ap.2.passphrase
+      valueType: string
+      devicePath: Device.WiFi.AccessPoint.2.Security.KeyPassphrase
+    - canonical: canonical.wifi.ap.3.passphrase
+      valueType: string
+      devicePath: Device.WiFi.AccessPoint.3.Security.KeyPassphrase
+    - canonical: canonical.wifi.ap.4.passphrase
+      valueType: string
+      devicePath: Device.WiFi.AccessPoint.4.Security.KeyPassphrase
     - canonical: canonical.wifi.ap.4.client_count
       valueType: unsignedint
       devicePath: Device.WiFi.AccessPoint.4.AssociatedDeviceNumberOfEntries
