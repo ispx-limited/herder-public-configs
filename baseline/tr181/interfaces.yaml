@@ -78,6 +78,73 @@ spec:
         matchValue: 255.255.255.255
         fallbackIndex: 1
       pathTemplate: Device.IP.Interface.{index}.IPv4Address.1.IPAddress
+    # The rest of the connection, behind the same alias as the address
+    # so the fields of one read describe one connection.
+    #
+    # TR-181 has one state for the IP interface where TR-098 separates
+    # the physical link from the connection over it, so
+    # connection_status reads the same parameter as status. It is
+    # declared so that a consumer asking whether the connection is up
+    # gets an answer on either data model. The vocabularies differ: Up
+    # and Down here, Connected and Disconnected on TR-098.
+    - canonical: canonical.interface.wan.connection_status
+      valueType: string
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: IPv4Address.1.SubnetMask
+        matchValue: 255.255.255.255
+        fallbackIndex: 1
+      pathTemplate: Device.IP.Interface.{index}.Status
+    # DHCP, Static, or IPCP for an address a PPP session assigned.
+    - canonical: canonical.interface.wan.addressing_type
+      valueType: string
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: IPv4Address.1.SubnetMask
+        matchValue: 255.255.255.255
+        fallbackIndex: 1
+      pathTemplate: Device.IP.Interface.{index}.IPv4Address.1.AddressingType
+    - canonical: canonical.interface.wan.subnet_mask
+      valueType: string
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: IPv4Address.1.SubnetMask
+        matchValue: 255.255.255.255
+        fallbackIndex: 1
+      pathTemplate: Device.IP.Interface.{index}.IPv4Address.1.SubnetMask
+    # LastChange counts seconds since the interface entered its current
+    # state, which is the connection's uptime while the status is Up and
+    # the length of the outage while it is not. Read it beside
+    # connection_status.
+    - canonical: canonical.interface.wan.uptime
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: IPv4Address.1.SubnetMask
+        matchValue: 255.255.255.255
+        fallbackIndex: 1
+      pathTemplate: Device.IP.Interface.{index}.LastChange
+    # Deliberately absent, because the standard parameter cannot be
+    # addressed without guessing an instance, and a wrong value is worse
+    # than an unresolved one:
+    #
+    #   canonical.interface.wan.default_gateway. The default route is
+    #   the Device.Routing.Router.{i}.IPv4Forwarding.{i} entry whose
+    #   DestIPAddress is empty, and an alias cannot match an empty
+    #   value. Device.DHCPv4.Client.{i}.IPRouters is indexed by DHCP
+    #   client, which on a multi-service gateway is not tied to the
+    #   Internet WAN.
+    #
+    #   canonical.interface.wan.dns_servers. TR-181 models resolvers as
+    #   a table, Device.DNS.Client.Server.{i}, and the per-client lists
+    #   (DHCPv4.Client.{i}.DNSServers, PPP.Interface.{i}.IPCP.DNSServers)
+    #   have the same indexing problem as IPRouters.
+    #
+    #   An IPv6 address or prefix. They live two instance levels down,
+    #   Device.IP.Interface.{i}.IPv6Address.{i}, and the first address
+    #   of a WAN interface is commonly its link-local one.
+    #
+    # A vendor table that knows its hardware's layout maps them.
     # LAN ports are the Ethernet interfaces whose Upstream flag is
     # false, in instance order, however many the device has and
     # wherever its uplink sits. TR-181 defines the flag for exactly this
@@ -131,3 +198,69 @@ spec:
         matchType: Boolean
         select: All
       pathTemplate: Device.Ethernet.Interface.{index}.Stats.BytesReceived
+    # The configured ceiling in Mbps, -1 for automatic. A string because
+    # TR-098 reports the same setting as 10, 100, 1000, 10000 or Auto.
+    - canonical: canonical.interface.lan.{i}.max_bit_rate
+      valueType: string
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.MaxBitRate
+    # The negotiated rate in Mbps, 0 when the port has no link.
+    - canonical: canonical.interface.lan.{i}.current_bit_rate
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.CurrentBitRate
+    - canonical: canonical.interface.lan.{i}.duplex_mode
+      valueType: string
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.DuplexMode
+    - canonical: canonical.interface.lan.{i}.packets_sent
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.Stats.PacketsSent
+    - canonical: canonical.interface.lan.{i}.packets_received
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.Stats.PacketsReceived
+    - canonical: canonical.interface.lan.{i}.errors_sent
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.Stats.ErrorsSent
+    - canonical: canonical.interface.lan.{i}.errors_received
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.Ethernet.Interface.
+        matchBy: Upstream
+        matchValue: "false"
+        matchType: Boolean
+        select: All
+      pathTemplate: Device.Ethernet.Interface.{index}.Stats.ErrorsReceived

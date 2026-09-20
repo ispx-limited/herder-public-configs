@@ -323,9 +323,11 @@ spec:
 ---
 # Telemetry profile: TR-098 LAN Ethernet interface.
 #
-# Per-port LAN Ethernet link state and aggregate byte counters.
-# Error/discard/multicast/unicast/packet counters deliberately excluded —
-# operationally low-value for day-1 operator dashboards.
+# Per-port LAN Ethernet link state, link settings, and the byte, packet
+# and error counters, which is what the lan service module reads: a
+# module field whose path nothing collects has no stored value and
+# reports as raw_missing on every device. Discard, unicast, multicast
+# and broadcast counters excluded as operationally low-value.
 #
 # Intervals are the cost dial: identity and capability fields hourly,
 # slow state and health gauges every 15 minutes, live counters at
@@ -352,13 +354,27 @@ spec:
       - key: "dataModel:igd"
         operator: Exists
   parameters:
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Enable"
+      interval: 900
     - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Status"
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.MACAddress"
       interval: 0
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.MaxBitRate"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.DuplexMode"
+      interval: 3600
     - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Stats.BytesSent"
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Stats.BytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Stats.PacketsSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Stats.PacketsReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Stats.ErrorsSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.Stats.ErrorsReceived"
       interval: 0
 ---
 # Telemetry profile: TR-098 connected hosts table.

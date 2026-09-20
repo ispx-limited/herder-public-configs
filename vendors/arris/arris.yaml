@@ -29,6 +29,8 @@ spec:
     - wifi-tr098
     - wifi-bssid-tr098
     - wifi-capability-tr098
+    # Channel width under the vendor prefix; TR-098 has no standard one.
+    - wifi-arris
     - interfaces-tr098
     - voice-tr104
     # Neighbour scan under the vendor X_0000C5_ subtree. Binding it here
@@ -174,6 +176,11 @@ spec:
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.X_0000C5_OperatingFrequencyBand"
       interval: 0
+    # Read by wifi-arris as canonical.wifi.radio.{i}.bandwidth. A
+    # setting, so it rides the bucket the TR-181 baseline gives the
+    # standard width.
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.X_0000C5_OperatingChannelBandwidth"
+      interval: 900
     # --- LAN Ethernet X_0000C5 link-layer extensions ---
     - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.{i}.X_0000C5_CurrentBitRate"
       interval: 0
