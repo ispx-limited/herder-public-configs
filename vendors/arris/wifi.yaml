@@ -1,9 +1,10 @@
-# Channel width for ARRIS NVG gateways (TR-098).
+# Channel width and frequency band for ARRIS NVG gateways (TR-098).
 #
-# TR-098 has no standard channel width parameter, so the baseline
-# wifi-tr098 table leaves canonical.wifi.radio.{i}.bandwidth unmapped.
-# The NVG data model declares one under its vendor prefix, read-write,
-# over the TR-181 vocabulary: 20MHz, 40MHz, 80MHz, 160MHz and Auto.
+# TR-098 declares neither, so the baseline wifi-tr098 table leaves
+# canonical.wifi.radio.{i}.bandwidth and .band unmapped. The NVG data
+# model declares both under its vendor prefix: the width read-write over
+# the TR-181 vocabulary (20MHz, 40MHz, 80MHz, 160MHz, Auto), the band as
+# 2.4GHz or 5GHz.
 #
 # The radio slots follow wifi-tr098 exactly, because a width has to
 # land on the same WLANConfiguration instance as the channel it belongs
@@ -51,3 +52,39 @@ spec:
     - canonical: canonical.wifi.radio.8.bandwidth
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.X_0000C5_OperatingChannelBandwidth
+    - canonical: canonical.wifi.radio.1.band
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.2.band
+      valueType: string
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.3.band
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.4.band
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.5.band
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.6.band
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.7.band
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.8.band
+      valueType: string
+      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.X_0000C5_OperatingFrequencyBand

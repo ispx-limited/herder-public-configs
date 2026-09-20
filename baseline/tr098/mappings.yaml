@@ -298,7 +298,14 @@ spec:
         matchType: Prefix
         fallbackIndex: 1
       pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Channel
-    - canonical: canonical.wifi.radio.1.band
+    # WLANConfiguration.{i}.Standard is the 802.11 standard the radio
+    # runs (a, b, g, n, and a vendor's own values past that), not the
+    # frequency band it runs on. It was bound to
+    # canonical.wifi.radio.{i}.band, which served an ARRIS NVG's
+    # X_0000C5_11AX as the band. TR-098 1.8 declares no frequency band
+    # parameter at all, so band stays unmapped here and a vendor table
+    # binds it where the firmware has one.
+    - canonical: canonical.wifi.radio.1.standard
       valueType: string
       instanceAlias:
         object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
@@ -334,7 +341,7 @@ spec:
         matchType: Prefix
         fallbackIndex: 2
       pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.Channel
-    - canonical: canonical.wifi.radio.2.band
+    - canonical: canonical.wifi.radio.2.standard
       valueType: string
       instanceAlias:
         object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
@@ -352,7 +359,7 @@ spec:
     - canonical: canonical.wifi.radio.3.channel
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Channel
-    - canonical: canonical.wifi.radio.3.band
+    - canonical: canonical.wifi.radio.3.standard
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Standard
     - canonical: canonical.wifi.radio.4.enable
@@ -364,7 +371,7 @@ spec:
     - canonical: canonical.wifi.radio.4.channel
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Channel
-    - canonical: canonical.wifi.radio.4.band
+    - canonical: canonical.wifi.radio.4.standard
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Standard
     - canonical: canonical.wifi.radio.5.enable
@@ -376,7 +383,7 @@ spec:
     - canonical: canonical.wifi.radio.5.channel
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Channel
-    - canonical: canonical.wifi.radio.5.band
+    - canonical: canonical.wifi.radio.5.standard
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Standard
     - canonical: canonical.wifi.radio.6.enable
@@ -388,7 +395,7 @@ spec:
     - canonical: canonical.wifi.radio.6.channel
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Channel
-    - canonical: canonical.wifi.radio.6.band
+    - canonical: canonical.wifi.radio.6.standard
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Standard
     - canonical: canonical.wifi.radio.7.enable
@@ -400,7 +407,7 @@ spec:
     - canonical: canonical.wifi.radio.7.channel
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Channel
-    - canonical: canonical.wifi.radio.7.band
+    - canonical: canonical.wifi.radio.7.standard
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Standard
     - canonical: canonical.wifi.radio.8.enable
@@ -412,7 +419,7 @@ spec:
     - canonical: canonical.wifi.radio.8.channel
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Channel
-    - canonical: canonical.wifi.radio.8.band
+    - canonical: canonical.wifi.radio.8.standard
       valueType: string
       devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Standard
   # Auto-channel, for the channel planner: a plan that sets a channel on
