@@ -150,6 +150,18 @@ declare global {
     xmppCredential(): { username: string; password: string } | null;
 
     /**
+     * The credential the ACS authenticates a connection request with,
+     * issued on first call and the same on every call after. A rule
+     * writes it into `canonical.mgmt.connection_request_username` and
+     * `canonical.mgmt.connection_request_password`, and the task
+     * worker reads the same row back, so nothing derives the pair
+     * twice. A credential Herder adopted from another ACS is returned
+     * as it stands and never replaced. Null when the role running the
+     * script has no credential store.
+     */
+    connectionRequestCredential(): { username: string; password: string } | null;
+
+    /**
      * Declare that every instance matching the search expression, or
      * the one concrete instance path, must not exist. Removing what is
      * already absent is a no-op. Deliberately asymmetric with
@@ -173,6 +185,35 @@ declare global {
      * CPE names it back in the following Inform.
      */
     reboot(options?: { reason?: string }): void;
+
+    /**
+     * Ask the device to observe a value again, for firmware that
+     * honours a setting only when it changes rather than when it is
+     * set. The value itself is unchanged and still declared with
+     * `set`; this says the device is not acting on it.
+     *
+     * Writes are desired state, so `set(p, false)` then `set(p, true)`
+     * in one run sends one write and the device never sees `false`.
+     * That is right for configuration and wrong for the case where the
+     * transition is the remediation: an NVG578LX that reports IPv6
+     * enabled while IPv6 is down comes back only when the flag goes
+     * off and on again.
+     *
+     * Takes a path or a list of them, because CPE trees do: a voice
+     * line means the service, the profile and the line together, and
+     * three separate calls could leave the service up with its line
+     * down. The list goes down in the order given and comes back in
+     * reverse.
+     *
+     * What "off" is comes from the mapping, not from here. A boolean
+     * needs nothing; an enum declares `reapplyVia` on its mapping
+     * entry, so a vendor whose line re-registers some other way
+     * changes its config and not this script.
+     *
+     * Keyed on its cause exactly as `reboot` is, so a script that runs
+     * every session does not bounce a subscriber every session.
+     */
+    reapply(paths: string | string[], options?: { reason?: string }): void;
 
     /** Factory reset, keyed on its cause exactly as `reboot` is. */
     factoryReset(options?: { reason?: string }): void;
