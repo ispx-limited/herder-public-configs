@@ -47,6 +47,13 @@ spec:
     # right event. Long-term fix tracked separately.
     - "Device.WiFi.MultiAP.APDevice.*"
     - "Device.Hosts.Host.*"
+  # Structural only, deliberately. The client nodes now carry what the
+  # radio reports about each station (signal, rates, byte counters), and
+  # every one of those changes on every Inform. Hashing them would run
+  # this script against every session on every device, which is what
+  # the gate exists to prevent. So a station's figures on the map are as
+  # of the last time the client set changed, and the live series is the
+  # per-edge rssi_dbm metric this rule already emits.
   changeHash:
     paths:
       - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.MACAddress"
