@@ -1,0 +1,44 @@
+# A CPE's own XMPP account, so the ACS can reach it between informs.
+#
+# DISABLED AND UNCONFIGURED ON PURPOSE. This rule writes eleven
+# parameters to every device it matches. Copy it into your own config
+# repository, rename it, set the config below, prove it on one device,
+# then enable it. See ../README.md.
+#
+# Two rules because the two device classes need opposite things from
+# the connection table, which is the whole reason this recipe exists:
+# a Grandstream ATA answers AddObject with 9005 and ships three fixed
+# instances, so a spare is claimed; a Sagemcom extender ships exactly
+# one and its firmware services only that one, so the incumbent's is
+# taken over. The script decides per device; the split here is only
+# about which credential store and resource name each family gets.
+apiVersion: provisioning.herder.io/v1alpha1
+kind: ProvisioningRule
+metadata:
+  name: xmpp
+spec:
+  triggers:
+    - first_contact
+    - boot
+    - periodic
+  deviceSelector:
+    # Yours. Left deliberately narrow so a careless adoption matches
+    # nothing rather than the fleet.
+    matchExpressions:
+      - key: "tag:xmpp"
+        operator: Exists
+  desired:
+    script: "xmpp.ts"
+  config:
+    # The XMPP domain the CPE dials. Must be a NAME with an A record
+    # the CPE can resolve, never an address: the CPE puts this in
+    # XMPP.Connection.{i}.Domain and looks it up, and an IP literal
+    # leaves the connection Enabled at Status Disabled for ever with
+    # every wake answering service-unavailable. That cost a week.
+    domain: "CHANGE-ME.example.net"
+    # The ACS's own JID, which the CPE is told to accept wakes from.
+    acsJid: "acs@CHANGE-ME.example.net"
+    # The resource the CPE appends to its JID.
+    resource: "cpe"
+  priority: 50
+  enabled: false
