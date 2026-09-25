@@ -44,6 +44,8 @@
     ipv4: string;
     ipv6: string;
     layer1: string;
+    lease: string;
+    addressSource: string;
   }
   const hostByMAC: Record<string, HostMeta> = {};
   const hosts = batch.matches("Device.Hosts.Host.*");
@@ -64,6 +66,8 @@
       ipv4: (h.IPAddress as string | undefined) || "",
       ipv6: v6,
       layer1: (h.Layer1Interface as string | undefined) || "",
+      lease: (h.LeaseTimeRemaining as string | undefined) || "",
+      addressSource: (h.AddressSource as string | undefined) || "",
     };
   }
 
@@ -193,6 +197,20 @@
     return "wifi_5g";
   }
 
+  // A node property is a string, and an absent value must be absent
+  // rather than the text "undefined".
+  function str(v: unknown): string | undefined {
+    return typeof v === "string" && v !== "" ? v : undefined;
+  }
+
+  // The band as an operator reads it, not as the data model spells it.
+  function bandLabel(band: string): string | undefined {
+    if (band === "2.4GHz") return "2.4 GHz";
+    if (band === "5GHz") return "5 GHz";
+    if (band === "6GHz") return "6 GHz";
+    return undefined;
+  }
+
   function bssidForAP(apIdx: string): string {
     const ssidRef = batch.params["Device.WiFi.AccessPoint." + apIdx + ".SSIDReference"] || "";
     const m = ssidRef.match(/Device\.WiFi\.SSID\.(\d+)/);
@@ -300,12 +318,40 @@
     const edgeType = ssidMeta ? bandToEdgeType(ssidMeta.band) : "wifi_5g";
 
     const hostMeta = hostByMAC[clientMAC];
+    const staBase = "Device.WiFi.AccessPoint." + apIdx + ".AssociatedDevice." +
+      s.$indexes.AssociatedDevice + ".";
+    const chan = ssidMeta && ssidMeta.radioIdx
+      ? batch.params["Device.WiFi.Radio." + ssidMeta.radioIdx + ".Channel"]
+      : undefined;
+
     topology.addNode({
       id: clientMAC,
       type: "client",
-      hostname: hostMeta ? hostMeta.hostname : undefined,
-      ipv4: hostMeta ? hostMeta.ipv4 : undefined,
-      ipv6: hostMeta ? hostMeta.ipv6 : undefined,
+      hostname: hostMeta ? hostMeta.hostname || undefined : undefined,
+      ipv4: hostMeta ? hostMeta.ipv4 || undefined : undefined,
+      ipv6: hostMeta ? hostMeta.ipv6 || undefined : undefined,
+      address_source: hostMeta ? hostMeta.addressSource || undefined : undefined,
+      lease_remaining_s: hostMeta ? hostMeta.lease || undefined : undefined,
+      interface_type: "Wi-Fi",
+      // What the radio reports about this station. All standard TR-181
+      // under AssociatedDevice, and all of it was already collected and
+      // thrown away at the map: an X5042 in service reports signal,
+      // both rates, retransmissions and byte counters for every client.
+      //
+      // As of the last topology rebuild, not live. These change on
+      // every Inform and the rule's changeHash is structural on
+      // purpose, so hashing them would run this script against every
+      // session on every device. The live signal series is the
+      // per-edge rssi_dbm metric emitted below.
+      ssid: ssidMeta ? ssidMeta.name || undefined : undefined,
+      band: ssidMeta ? bandLabel(ssidMeta.band) : undefined,
+      channel: chan || undefined,
+      signal_dbm: str(s.SignalStrength),
+      rate_down_kbps: str(s.LastDataDownlinkRate),
+      rate_up_kbps: str(s.LastDataUplinkRate),
+      retransmissions: str(s.Retransmissions),
+      bytes_down: batch.params[staBase + "Stats.BytesReceived"] || undefined,
+      bytes_up: batch.params[staBase + "Stats.BytesSent"] || undefined,
     });
     emittedClients[clientMAC] = true;
 
@@ -337,6 +383,9 @@
       hostname: hostMeta.hostname || undefined,
       ipv4: hostMeta.ipv4 || undefined,
       ipv6: hostMeta.ipv6 || undefined,
+      address_source: hostMeta.addressSource || undefined,
+      lease_remaining_s: hostMeta.lease || undefined,
+      interface_type: "Ethernet",
     });
     emittedClients[macKey] = true;
 
