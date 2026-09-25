@@ -11,13 +11,23 @@
 // InterfaceType, LeaseTimeRemaining, the MAC and the addresses.
 //
 // Addresses are a set, not a field. A host has one IPAddress and as
-// many IPv6Address.{i} entries as it has acquired, and the read side
-// wants all of them: a client reached over v6 is not an exception to
-// handle later. `addresses` carries every one with its family, while
-// `ipv4` and `ipv6` carry the first routable of each for panels that
-// want a single value. The family is parsed from the address, never
-// inferred from the path it arrived on, because a vendor putting a v6
-// address in IPAddress is within spec and several do.
+// many IPv6Address.{i} entries as it has acquired, and a client reached
+// over v6 is not an exception to handle later. `ipv4` and `ipv6` carry
+// the first routable of each; `ipv4_all` and `ipv6_all` carry the rest,
+// comma separated, and are omitted when they would only repeat the
+// single value above.
+//
+// Comma separated because a node property is a string. The emit side
+// stringifies whatever it is handed with fmt.Sprint, so an array of
+// objects reaches the UI as `[map[address:192.168.1.4 family:ipv4]]`,
+// which is how this shipped for one evening. Anything structured has to
+// be encoded deliberately or not sent.
+//
+// The family is parsed from the address, never inferred from the path
+// it arrived on, because a vendor putting a v6 address in IPAddress is
+// within spec and several do. Link-local is read and then dropped: it
+// identifies nothing off its own segment, so it is noise in a panel and
+// useless as a target for a diagnostic.
 //
 // The band is resolved, not assumed. This rule used to call every
 // wireless client wifi_5g, which put 2.4 GHz clients on the wrong radio
@@ -125,13 +135,13 @@
       if (!known) addrs.unshift({ address: primary, family: primaryFam });
     }
 
-    let firstV4: string | undefined;
-    let firstV6: string | undefined;
+    const v4: string[] = [];
+    const v6: string[] = [];
     for (let k = 0; k < addrs.length; k++) {
       const a = addrs[k];
       if (!routable(a.address, a.family)) continue;
-      if (a.family === "ipv4" && firstV4 === undefined) firstV4 = a.address;
-      if (a.family === "ipv6" && firstV6 === undefined) firstV6 = a.address;
+      if (a.family === "ipv4" && v4.indexOf(a.address) < 0) v4.push(a.address);
+      if (a.family === "ipv6" && v6.indexOf(a.address) < 0) v6.push(a.address);
     }
 
     const lease = parseInt(String(h.LeaseTimeRemaining || ""), 10);
@@ -141,10 +151,10 @@
       id: mac,
       type: "client",
       hostname: (h.HostName as string | undefined) || undefined,
-      ipv4: firstV4,
-      ipv6: firstV6,
-      addresses: addrs.length > 0 ? addrs : undefined,
-      mac: mac,
+      ipv4: v4.length > 0 ? v4[0] : undefined,
+      ipv6: v6.length > 0 ? v6[0] : undefined,
+      ipv4_all: v4.length > 1 ? v4.join(", ") : undefined,
+      ipv6_all: v6.length > 1 ? v6.join(", ") : undefined,
       active: active === "true" || active === "1" ? true
         : active === "false" || active === "0" ? false
           : undefined,
