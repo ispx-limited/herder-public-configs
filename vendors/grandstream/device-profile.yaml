@@ -21,7 +21,6 @@ spec:
   priority: 50
   deviceSelector:
     matchExpressions:
-      - {key: "oui", operator: In, values: ["EC74D7"]}
       - {key: "productClass", operator: In, values: ["HT801"]}
   sections:
     - key: overview
