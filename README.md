@@ -27,6 +27,10 @@ platform/            Behaviour that is not tied to a vendor or data model
 ├── provisioning/    boot, first_contact and periodic rules with their scripts
 └── topology/        EasyMesh and TR-098 topology enrichment
 
+recipes/             Useful, generic, and writes to the CPE, so NOT shipped
+                     active. Copy one into your own repo and enable it
+                     yourself. Never point a config source here.
+
 vendors/             Overrides for specific hardware
 ├── arris/           ARRIS NVG578LX: X_0000C5_* extensions, HNC topology
 ├── cpe-sim/         cpe-labs simulator profiles
