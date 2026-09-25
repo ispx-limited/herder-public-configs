@@ -1,0 +1,48 @@
+# Grandstream HT80x analogue telephone adapters (TR-181 over CWMP).
+#
+# An ATA is not a small gateway. The HT801 reports DeviceInfo,
+# ManagementServer, GatewayInfo, LAN, XMPP and one VoiceService, and
+# nothing else: no WiFi, no Hosts, no Ethernet, no NAT. Its own
+# DeviceSummary says as much, and says it in standard terms:
+#
+#   Device:1.14[](Baseline:1,UDPConnReq:1,GatewayInfo:1,LAN:1,Time:1,
+#   IPPing:1,TraceRoute:1,Download:1,Upload:1,MemoryStatus:1,
+#   XMPPBasic:1,XMPPConnReq:1),VoiceService:1.0[1](Endpoint:1,SIPEndpoint:1)
+#
+# Two things follow, and this file is both of them.
+#
+# The voice table. baseline-tr181-cwmp binds voice-tr104i2, which maps
+# the canonicals onto TR-104 issue 2 (`VoiceService.1.CallControl.Line.{i}`).
+# This firmware speaks issue 1 (`VoiceService.1.VoiceProfile.1.Line.{i}`),
+# so every voice canonical resolved to a path the device does not have
+# and the line read as absent while it was registered and idle. The
+# table is voice-tr104-device; nothing else about the binding changes.
+#
+# The page. Without a profile of its own an ATA falls through to
+# baseline-tr181-ui, which is gateway shaped: it renders Interfaces,
+# WiFi, Network map, Port forwards and Remote access, five sections this
+# hardware can never fill, and no Voice section at all. The only thing
+# the device does was the one thing the page did not show.
+#
+# Scoped to HT801 because that is the model in service. The HT802,
+# HT812, HT814 and HT818 are the same family with more FXS ports; add
+# the product class here and a line per port to the voice section when
+# one appears, rather than listing models nobody has seen.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: grandstream-ht80x-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "oui", operator: In, values: ["EC74D7"]}
+      - {key: "productClass", operator: In, values: ["HT801"]}
+      - {key: "protocol:cwmp", operator: Exists}
+  parameterMappings:
+    - device-info-tr181
+    - firmware-tr181
+    - mgmt-tr181
+    - voice-tr104-device
+    - diagnostics-tr181
+    - netdiag-tr181
