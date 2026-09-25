@@ -1,11 +1,17 @@
 # Fallback topology rule for TR-098-only devices that don't expose
 # EasyMesh DataElements. Walks InternetGatewayDevice.LANDevice.1.Hosts.Host.*
-# to emit a flat gateway + clients graph.
+# to emit a flat gateway plus clients graph.
 #
-# No extender hierarchy — TR-098 doesn't carry one without vendor
+# No extender hierarchy: TR-098 doesn't carry one without vendor
 # extensions. Operators with vendor-specific mesh trees (Arris HNC,
-# Sagemcom equivalents) ship a per-vendor script (e.g., arris-hnc.ts)
+# Sagemcom equivalents) ship a per-vendor script (e.g. arris-hnc.ts)
 # that takes precedence on those devices.
+#
+# The client nodes carry the whole standard host record, so the trigger
+# and change hash cover the leaves the script now reads. Without the
+# IPv6 table in triggerPaths a host acquiring a v6 address would not
+# re-run the rule and the graph would keep an address set that is one
+# lease behind.
 apiVersion: telemetry.herder.io/v1alpha1
 kind: EnrichmentRule
 metadata:
@@ -23,9 +29,15 @@ spec:
         operator: Exists
   triggerPaths:
     - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"
+    - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.*"
   changeHash:
     paths:
       - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.MACAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.Active"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.IPAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.IPv4Address.{i}.IPAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.IPv6Address.{i}.IPAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.Layer2Interface"
   coalesceWindow: 60s
   config:
     # includeInactiveHosts: when false (default), Active=false hosts drop
