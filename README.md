@@ -24,6 +24,7 @@ baseline/            Vendor-neutral defaults, keyed by data model
 └── client-wifi-labels.yaml + generic-client-rssi-labels.ts
 
 platform/            Behaviour that is not tied to a vendor or data model
+├── devices/         The addresses a CPE holds, for the devices list lookup
 ├── provisioning/    boot, first_contact and periodic rules with their scripts
 └── topology/        EasyMesh and TR-098 topology enrichment
 
@@ -48,7 +49,7 @@ typo in a global fails when you push it rather than at 3am on a live fleet.
 | `TelemetryProfile` | 14 | Which parameters to collect, and how often |
 | `MappingTable` | 7 | Canonical name to raw CPE path |
 | `MappingProfile` | 7 | Which mapping tables apply to which devices |
-| `EnrichmentRule` | 5 | Per-row telemetry labelling and topology emit |
+| `EnrichmentRule` | 12 | Per-row telemetry labelling, topology emit, and the addresses a CPE holds |
 | `ProvisioningRule` | 3 | What to do on boot, first contact and periodically |
 | `IdentityProfile` | 2 | Populating manufacturer, model and firmware |
 
