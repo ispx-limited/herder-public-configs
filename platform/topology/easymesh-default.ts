@@ -8,6 +8,17 @@
 // hanging off them; clients show up under whichever AP saw them.
 //
 // Hostname / IPv4 / IPv6 cross-ref Device.Hosts.Host.* by MAC.
+//
+// Everything here is read from one telemetry batch. The stored
+// parameter model is not reachable from an enrichment rule, so a path
+// collected on an interval is present in one batch out of however many
+// the interval spans and absent from the rest, and the rule cannot tell
+// "the device does not report this" from "this batch does not carry
+// it". Three paths decide a client's radio (AccessPoint.SSIDReference,
+// SSID.LowerLayers, Radio.OperatingFrequencyBand) and every one of them
+// must be collected at interval 0 for the join below to hold. Where a
+// batch is missing them the rule now says so and falls back rather than
+// guessing: an unresolved band is `other`, not 5 GHz.
 
 (function () {
   const rssiEncoding: string = ctx.configGet<string>("rssiEncoding", "dbm");
@@ -211,6 +222,33 @@
     return undefined;
   }
 
+  // The band a radio runs on, or "" when this batch cannot say.
+  //
+  // Matched on a substring because firmware spells the enum every way
+  // the field allows ("2.4GHz", "2.4 GHz", "5GHz", "5GHz-6GHz"), and
+  // falling back to the channel because OperatingFrequencyBand is the
+  // path most often read on an interval while Channel is not. There is
+  // deliberately no default: a radio whose band this batch cannot
+  // resolve is unknown, and it used to be called 5 GHz, which put every
+  // 2.4 GHz client of every device on the wrong radio on the map.
+  function bandOf(radioIdx: string): string {
+    if (!radioIdx) return "";
+    const base = "Device.WiFi.Radio." + radioIdx + ".";
+    const declared = String(batch.params[base + "OperatingFrequencyBand"] || "");
+    if (declared.indexOf("2.4") >= 0) return "2.4GHz";
+    if (declared.indexOf("6") === 0) return "6GHz";
+    if (declared.indexOf("5") === 0) return "5GHz";
+    const ch = parseInt(String(batch.params[base + "Channel"] || ""), 10);
+    if (!isNaN(ch) && ch > 0 && ch <= 14) return "2.4GHz";
+    if (!isNaN(ch) && ch >= 32 && ch < 200) return "5GHz";
+    return "";
+  }
+
+  function channelOf(radioIdx: string): string {
+    if (!radioIdx) return "";
+    return String(batch.params["Device.WiFi.Radio." + radioIdx + ".Channel"] || "");
+  }
+
   function bssidForAP(apIdx: string): string {
     const ssidRef = batch.params["Device.WiFi.AccessPoint." + apIdx + ".SSIDReference"] || "";
     const m = ssidRef.match(/Device\.WiFi\.SSID\.(\d+)/);
@@ -223,9 +261,25 @@
   // typed). WiFi clients attach to their SSID parent rather than
   // straight to the gateway, giving the panel a Unifi-style tree
   // grouping by SSID + band.
+  //
+  // A VAP that is administratively down is not somewhere a subscriber
+  // can be, so it is not drawn. A gateway carries a radio's worth of
+  // disabled guest and backhaul VAPs and each one was rendering as a
+  // node of its own, several of them named "." because that is what the
+  // firmware puts in an unconfigured SSID. Set includeDisabledSsids to
+  // see them.
+  const includeDisabledSsids: boolean = ctx.configGet<boolean>("includeDisabledSsids", false);
+
   interface SsidMeta { bssid: string; name: string; band: string; radioIdx: string; }
   const ssidByIdx: Record<string, SsidMeta> = {};
+  // A client is only parented to an SSID node that was drawn. Parenting
+  // it to one that was skipped would hang it off an id no node carries,
+  // and the graph walk drops an edge whose endpoint is missing, so the
+  // client would disappear from the map rather than move up a level.
+  const emittedSsids: Record<string, boolean> = {};
   const ssidEntries = batch.matches("Device.WiFi.SSID.*");
+  let ssidsSeen = 0;
+  let ssidsWithBand = 0;
   for (let i = 0; i < ssidEntries.length; i++) {
     const s = ssidEntries[i];
     const ssidIdx = s.$indexes.SSID;
@@ -235,19 +289,30 @@
     const lowerLayers = (s.LowerLayers as string | undefined) || "";
     const radioMatch = lowerLayers.match(/Device\.WiFi\.Radio\.(\d+)/);
     const radioIdx = radioMatch ? radioMatch[1] : "";
-    const bandRaw = radioIdx
-      ? (batch.params["Device.WiFi.Radio." + radioIdx + ".OperatingFrequencyBand"] || "")
-      : "";
-    let band = "5GHz";
-    if (bandRaw === "2.4GHz") band = "2.4GHz";
-    else if (bandRaw === "6GHz") band = "6GHz";
+    const band = bandOf(radioIdx);
+    const channel = channelOf(radioIdx);
 
+    // Recorded whatever its state, so a client associated to a VAP the
+    // firmware reports as down still resolves its band and channel.
     ssidByIdx[ssidIdx] = { bssid, name: ssidName, band, radioIdx };
+    ssidsSeen++;
+    if (band !== "") ssidsWithBand++;
+
+    const enable = String(s.Enable === undefined ? "" : s.Enable);
+    const status = String(s.Status === undefined ? "" : s.Status);
+    const down = enable === "false" || enable === "0"
+      || (status !== "" && status !== "Up");
+    if (!includeDisabledSsids && (down || ssidName === "")) continue;
+
+    emittedSsids[bssid] = true;
     topology.addNode({
       id: bssid,
       type: "ssid",
       hostname: ssidName,
-      properties: { name: ssidName, band, radio_idx: radioIdx },
+      ssid: ssidName,
+      band: bandLabel(band),
+      channel: channel || undefined,
+      radio: radioIdx || undefined,
     });
     topology.addEdge({
       parent: gatewayMAC,
@@ -257,10 +322,26 @@
     });
   }
 
-  function bandToEdgeType(band: string): "wifi_2g" | "wifi_5g" | "wifi_6g" {
+  // An unresolved band is `other`, not the busiest guess. An edge typed
+  // wifi_5g is read as a fact by everything downstream of the graph.
+  function bandToEdgeType(band: string): "wifi_2g" | "wifi_5g" | "wifi_6g" | "other" {
     if (band === "2.4GHz") return "wifi_2g";
     if (band === "6GHz") return "wifi_6g";
-    return "wifi_5g";
+    if (band === "5GHz") return "wifi_5g";
+    return "other";
+  }
+
+  // A map drawn without these is not wrong in a way anyone can see: the
+  // clients are all there, on one radio, with no channel. Saying it
+  // makes the cause reachable from the device page instead of from a
+  // reading of the telemetry profile.
+  if (ssidsSeen > 0 && ssidsWithBand === 0) {
+    enrichment.warn(
+      "easymesh-default: no radio band resolved for any of " + ssidsSeen +
+      " SSIDs. Device.WiFi.SSID.{i}.LowerLayers and " +
+      "Device.WiFi.Radio.{i}.OperatingFrequencyBand must be collected at " +
+      "interval 0 for a client to carry its band and channel.",
+    );
   }
 
   function ssidForAP(apIdx: string): SsidMeta | null {
@@ -288,7 +369,8 @@
       id: ifaceMac,
       type: "interface",
       hostname: ifaceName,
-      properties: { name: ifaceName, path: ifacePath },
+      name: ifaceName,
+      path: ifacePath,
     });
     topology.addEdge({
       parent: gatewayMAC,
@@ -313,16 +395,38 @@
     if (!includeInactive && isInactive(s.Active)) continue;
 
     const apIdx = s.$indexes.AccessPoint;
-    const ssidMeta = ssidForAP(apIdx);
-    const parentNodeId = ssidMeta ? ssidMeta.bssid : gatewayMAC;
-    const edgeType = ssidMeta ? bandToEdgeType(ssidMeta.band) : "wifi_5g";
-
     const hostMeta = hostByMAC[clientMAC];
+
+    // Which radio this station is on, by the two routes the data model
+    // offers. The access point's SSIDReference is the direct one. When
+    // that path is not in this batch the host table's Layer1Interface
+    // names either the SSID or the radio itself, which is enough for
+    // the band and the channel even though it cannot name the VAP.
+    // Without the fallback a batch missing one path produced a map of
+    // clients hung off the gateway with no SSID, no band and no
+    // channel, on a device reporting all three.
+    let ssidMeta = ssidForAP(apIdx);
+    let radioIdx = ssidMeta ? ssidMeta.radioIdx : "";
+    if (!ssidMeta && hostMeta) {
+      const viaSsid = hostMeta.layer1.match(/Device\.WiFi\.SSID\.(\d+)/);
+      if (viaSsid && ssidByIdx[viaSsid[1]]) {
+        ssidMeta = ssidByIdx[viaSsid[1]];
+        radioIdx = ssidMeta.radioIdx;
+      } else {
+        const viaRadio = hostMeta.layer1.match(/Device\.WiFi\.Radio\.(\d+)/);
+        if (viaRadio) radioIdx = viaRadio[1];
+      }
+    }
+
+    const band = ssidMeta ? ssidMeta.band : bandOf(radioIdx);
+    const chan = channelOf(radioIdx);
+    const parentNodeId = ssidMeta && emittedSsids[ssidMeta.bssid]
+      ? ssidMeta.bssid
+      : gatewayMAC;
+    const edgeType = bandToEdgeType(band);
+
     const staBase = "Device.WiFi.AccessPoint." + apIdx + ".AssociatedDevice." +
       s.$indexes.AssociatedDevice + ".";
-    const chan = ssidMeta && ssidMeta.radioIdx
-      ? batch.params["Device.WiFi.Radio." + ssidMeta.radioIdx + ".Channel"]
-      : undefined;
 
     topology.addNode({
       id: clientMAC,
@@ -344,7 +448,7 @@
       // session on every device. The live signal series is the
       // per-edge rssi_dbm metric emitted below.
       ssid: ssidMeta ? ssidMeta.name || undefined : undefined,
-      band: ssidMeta ? bandLabel(ssidMeta.band) : undefined,
+      band: bandLabel(band),
       channel: chan || undefined,
       signal_dbm: str(s.SignalStrength),
       rate_down_kbps: str(s.LastDataDownlinkRate),
@@ -456,19 +560,29 @@
     if (!bssid) continue;
     const ssidName = (apEntry.SSID as string | undefined) || "";
 
-    const bandPath = "Device.WiFi.MultiAP.APDevice." + apIdx +
-      ".Radio." + radioIdx + ".OperatingFrequencyBand";
-    const bandRaw = batch.params[bandPath] || "";
-    let band = "5GHz";
-    if (bandRaw === "2.4GHz") band = "2.4GHz";
-    else if (bandRaw === "6GHz") band = "6GHz";
+    const meshBase = "Device.WiFi.MultiAP.APDevice." + apIdx +
+      ".Radio." + radioIdx + ".";
+    const declared = String(batch.params[meshBase + "OperatingFrequencyBand"] || "");
+    const meshChannel = String(batch.params[meshBase + "Channel"] || "");
+    let band = "";
+    if (declared.indexOf("2.4") >= 0) band = "2.4GHz";
+    else if (declared.indexOf("6") === 0) band = "6GHz";
+    else if (declared.indexOf("5") === 0) band = "5GHz";
+    else {
+      const ch = parseInt(meshChannel, 10);
+      if (!isNaN(ch) && ch > 0 && ch <= 14) band = "2.4GHz";
+      else if (!isNaN(ch) && ch >= 32 && ch < 200) band = "5GHz";
+    }
 
     meshSsidByLoc[apIdx + "/" + radioIdx + "/" + apEntryIdx] = { bssid, band, ssid: ssidName };
     topology.addNode({
       id: bssid,
       type: "ssid",
       hostname: ssidName,
-      properties: { name: ssidName, band, location: "extender:" + apIdx },
+      ssid: ssidName,
+      band: bandLabel(band),
+      channel: meshChannel || undefined,
+      location: "extender:" + apIdx,
     });
     topology.addEdge({
       parent: parentExtender,
@@ -493,15 +607,29 @@
     const parentExtender = extenderByIndex[apIdx];
     if (!parentExtender && !meshSsid) continue;
     const parentNodeId = meshSsid ? meshSsid.bssid : (parentExtender as string);
-    const meshEdgeType = meshSsid ? bandToEdgeType(meshSsid.band) : "wifi_5g";
+    const meshEdgeType = meshSsid ? bandToEdgeType(meshSsid.band) : "other";
 
     const hostMeta = hostByMAC[clientMAC];
+    const meshStaBase = "Device.WiFi.MultiAP.APDevice." + apIdx + ".Radio." +
+      radioIdx + ".AP." + apEntryIdx + ".AssociatedDevice." +
+      s.$indexes.AssociatedDevice + ".";
     topology.addNode({
       id: clientMAC,
       type: "client",
-      hostname: hostMeta ? hostMeta.hostname : undefined,
-      ipv4: hostMeta ? hostMeta.ipv4 : undefined,
-      ipv6: hostMeta ? hostMeta.ipv6 : undefined,
+      hostname: hostMeta ? hostMeta.hostname || undefined : undefined,
+      ipv4: hostMeta ? hostMeta.ipv4 || undefined : undefined,
+      ipv6: hostMeta ? hostMeta.ipv6 || undefined : undefined,
+      address_source: hostMeta ? hostMeta.addressSource || undefined : undefined,
+      lease_remaining_s: hostMeta ? hostMeta.lease || undefined : undefined,
+      interface_type: "Wi-Fi",
+      ssid: meshSsid ? meshSsid.ssid || undefined : undefined,
+      band: meshSsid ? bandLabel(meshSsid.band) : undefined,
+      signal_dbm: str(s.SignalStrength),
+      rate_down_kbps: str(s.LastDataDownlinkRate),
+      rate_up_kbps: str(s.LastDataUplinkRate),
+      retransmissions: str(s.Retransmissions),
+      bytes_down: batch.params[meshStaBase + "Stats.BytesReceived"] || undefined,
+      bytes_up: batch.params[meshStaBase + "Stats.BytesSent"] || undefined,
     });
 
     topology.addEdge({

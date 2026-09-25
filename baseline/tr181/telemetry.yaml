@@ -170,10 +170,16 @@ spec:
       interval: 900
     - path: "Device.WiFi.Radio.{i}.Status"
       interval: 900
+    # Band and channel are read every session, not on the 15 minute
+    # dial the rest of the radio's slow state sits on. A topology rule
+    # sees one telemetry batch and cannot reach the stored model, so a
+    # batch without these is a batch whose clients have no band and no
+    # channel, and the graph they feed is per-batch. Two parameters per
+    # radio.
     - path: "Device.WiFi.Radio.{i}.OperatingFrequencyBand"
-      interval: 900
+      interval: 0
     - path: "Device.WiFi.Radio.{i}.Channel"
-      interval: 900
+      interval: 0
     - path: "Device.WiFi.Radio.{i}.OperatingStandards"
       interval: 3600
     - path: "Device.WiFi.Radio.{i}.OperatingChannelBandwidth"
@@ -496,9 +502,9 @@ spec:
     - path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.Enable"
       interval: 900
     - path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.OperatingFrequencyBand"
-      interval: 900
+      interval: 0
     - path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.Channel"
-      interval: 900
+      interval: 0
     - path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.BSSID"
       interval: 0
     - path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.SSID"
