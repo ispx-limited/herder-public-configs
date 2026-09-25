@@ -1,3 +1,14 @@
+# Here rather than under vendors/arris because it reuses the platform
+# normalizer beside it. A source can be rooted at a subtree, and one
+# rooted at vendors/arris cannot see platform/, so a vendor file that
+# references a platform asset makes that whole subtree unsourceable:
+# the sync fails with "references asset ... but no such file exists in
+# the source" and the vendor gets nothing at all. A vendor subtree has
+# to be self-contained.
+#
+# The profile is still vendor scoped by its selector; only its location
+# moved.
+#
 # Ping on the ARRIS NVG, with the address family the standard TR-098
 # object cannot express.
 #
