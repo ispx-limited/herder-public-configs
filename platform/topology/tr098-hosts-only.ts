@@ -29,6 +29,18 @@
 // identifies nothing off its own segment, so it is noise in a panel and
 // useless as a target for a diagnostic.
 //
+// The radio a client is on comes from the association table, which is
+// also where its signal and rate live. WLANConfiguration.{i} carries
+// the SSID, the channel and the band; AssociatedDevice.{j} under it
+// names the station by MAC. Joining the two gives a client the network
+// it is actually on rather than the one the host table guessed.
+//
+// The signal leaf is config, not a name in this file. TR-098 defines no
+// per-station signal leaf, so every vendor puts it somewhere different
+// and a generic rule that hardcoded one would be a vendor rule wearing
+// a baseline's name. `signalLeaves` lists the leaves to try in order
+// and is empty here; a vendor rule sets it.
+//
 // The band is resolved, not assumed. This rule used to call every
 // wireless client wifi_5g, which put 2.4 GHz clients on the wrong radio
 // in every view built on the graph. Layer2Interface names the
@@ -113,6 +125,48 @@
     else if (!isNaN(ch) && ch >= 32) bandByWLAN[idx] = "wifi_5g";
   }
 
+  // Which SSID, channel and band each WLANConfiguration instance is.
+  interface Radio { ssid: string; channel: string; band: string }
+  const radioByWLAN: Record<string, Radio> = {};
+  for (const idx in bandByWLAN) {
+    if (!Object.prototype.hasOwnProperty.call(bandByWLAN, idx)) continue;
+    radioByWLAN[idx] = {
+      ssid: String(batch.params[WLAN + idx + ".SSID"] || ""),
+      channel: String(batch.params[WLAN + idx + ".Channel"] || ""),
+      band: bandByWLAN[idx],
+    };
+  }
+
+  // The association table: which station is on which radio, and what
+  // that radio reports about it.
+  const signalLeaves: string[] = ctx.configGet<string[]>("signalLeaves", []);
+  interface Station { wlan: string; signal: string; rate: string }
+  const staByMAC: Record<string, Station> = {};
+  const assoc = batch.matches(WLAN + "*.AssociatedDevice.*");
+  for (let i = 0; i < assoc.length; i++) {
+    const a = assoc[i];
+    const staMAC = String(a.AssociatedDeviceMACAddress || "").toLowerCase();
+    if (!staMAC) continue;
+    let signal = "";
+    for (let k = 0; k < signalLeaves.length; k++) {
+      const v = a[signalLeaves[k]];
+      if (typeof v === "string" && v !== "") { signal = v; break; }
+    }
+    staByMAC[staMAC] = {
+      wlan: a.$indexes.WLANConfiguration,
+      signal: signal,
+      rate: String(a.LastDataTransmitRate || ""),
+    };
+  }
+
+  // The band as an operator reads it, not as an edge type.
+  function bandLabel(edge: string): string | undefined {
+    if (edge === "wifi_2g") return "2.4 GHz";
+    if (edge === "wifi_5g") return "5 GHz";
+    if (edge === "wifi_6g") return "6 GHz";
+    return undefined;
+  }
+
   const hosts = batch.matches(HOSTS + "*");
   for (let i = 0; i < hosts.length; i++) {
     const h = hosts[i];
@@ -147,6 +201,9 @@
     const lease = parseInt(String(h.LeaseTimeRemaining || ""), 10);
     const ifType = (h.InterfaceType as string | undefined) || "";
 
+    const sta = staByMAC[mac];
+    const radio = sta ? radioByWLAN[sta.wlan] : undefined;
+
     topology.addNode({
       id: mac,
       type: "client",
@@ -161,6 +218,11 @@
       address_source: (h.AddressSource as string | undefined) || undefined,
       interface_type: ifType || undefined,
       lease_remaining_s: !isNaN(lease) ? lease : undefined,
+      ssid: radio ? radio.ssid || undefined : undefined,
+      channel: radio ? radio.channel || undefined : undefined,
+      band: radio ? bandLabel(radio.band) : undefined,
+      signal_dbm: sta && sta.signal !== "" ? sta.signal : undefined,
+      rate_kbps: sta && sta.rate !== "" ? sta.rate : undefined,
     });
 
     // Wired where the host says so, otherwise the band of the WLAN it
@@ -170,6 +232,8 @@
       || (h.Layer1Interface as string | undefined) || "";
     if (ifType.indexOf("Ethernet") >= 0 || layer2.indexOf("LANEthernetInterfaceConfig") >= 0) {
       edgeType = "ethernet";
+    } else if (radio) {
+      edgeType = radio.band;
     } else {
       const m = /WLANConfiguration\.(\d+)/.exec(layer2);
       if (m && bandByWLAN[m[1]]) edgeType = bandByWLAN[m[1]];

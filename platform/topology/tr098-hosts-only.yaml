@@ -49,4 +49,10 @@ spec:
     # includeInactiveHosts: when false (default), Active=false hosts drop
     # out of the graph.
     includeInactiveHosts: false
+    # Which leaf under AssociatedDevice.{j} carries the station's signal,
+    # tried in order. Empty here on purpose: TR-098 defines no such leaf,
+    # so every vendor puts it somewhere different and a baseline that
+    # named one would be a vendor rule wearing a baseline's name. A
+    # vendor rule sets it, e.g. ["X_0000C5_RSSI"].
+    signalLeaves: []
   script: tr098-hosts-only.ts
