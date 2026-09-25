@@ -7,11 +7,9 @@
 # Sagemcom equivalents) ship a per-vendor script (e.g. arris-hnc.ts)
 # that takes precedence on those devices.
 #
-# The client nodes carry the whole standard host record, so the trigger
-# and change hash cover the leaves the script now reads. Without the
-# IPv6 table in triggerPaths a host acquiring a v6 address would not
-# re-run the rule and the graph would keep an address set that is one
-# lease behind.
+# The change hash covers the leaves the script reads, so a host
+# acquiring an address re-runs the rule instead of leaving the graph an
+# address set behind.
 apiVersion: telemetry.herder.io/v1alpha1
 kind: EnrichmentRule
 metadata:
@@ -27,9 +25,17 @@ spec:
     matchExpressions:
       - key: dataModel:igd
         operator: Exists
+  # Hosts.Host only. The rule needs the host table and the gateway's own
+  # MAC to build a graph at all, and both arrive together on a
+  # collecting session. Adding WLANConfiguration here made the rule fire
+  # on WiFi-only batches too, where there is no host table and no
+  # gateway MAC, so every one of those runs bailed without emitting: the
+  # rule looked busy and the map never changed. The band is read from
+  # WLANConfiguration when the batch happens to carry it and the edge is
+  # `other` when it does not, which is the right trade for a fallback
+  # rule.
   triggerPaths:
     - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"
-    - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.*"
   changeHash:
     paths:
       - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.MACAddress"
