@@ -205,10 +205,18 @@ spec:
       interval: 900
     - path: "Device.WiFi.SSID.{i}.SSID"
       interval: 900
+    # Every batch, not hourly. Both are structural and neither changes,
+    # but the topology rule keys its SSID nodes on the BSSID and skips
+    # any entry without one, and LowerLayers is the only link from an
+    # SSID to the radio carrying its channel and band. Fetched hourly
+    # they are absent from all but one batch in twelve, so the rule
+    # runs against a batch with no BSSID, builds no SSID nodes, and
+    # every client on the map resolves no network, no band and no
+    # channel. Seen on an X5042 in service.
     - path: "Device.WiFi.SSID.{i}.BSSID"
-      interval: 3600
+      interval: 0
     - path: "Device.WiFi.SSID.{i}.LowerLayers"
-      interval: 3600
+      interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesSent"
       interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesReceived"
@@ -244,6 +252,17 @@ spec:
     - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.OperatingStandard"
       interval: 0
     - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Active"
+      interval: 0
+    # Retransmissions and the byte counters complete what a station
+    # panel shows. Standard TR-181, reported by hardware in service and
+    # never asked for, so the map could show a client's signal and its
+    # rates but not how much it had actually moved or how hard the
+    # radio was working to do it.
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Retransmissions"
+      interval: 0
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesSent"
+      interval: 0
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesReceived"
       interval: 0
 ---
 # Telemetry profile: TR-181 Ethernet interfaces.
