@@ -1,0 +1,82 @@
+# The device page for a Grandstream HT80x analogue telephone adapter.
+#
+# Without a profile of its own an ATA falls through to
+# baseline-tr181-ui, which is gateway shaped: it renders Interfaces,
+# WiFi, Network map, Port forwards and Remote access, five sections
+# this hardware can never fill, and no Voice section at all. The only
+# thing the device does was the one thing the page did not show.
+#
+# Deliberately short. A section that cannot hold data is worse than a
+# missing one: it teaches an operator that empty panels are normal
+# here, and then a real outage looks like the furniture.
+#
+# The mapping half is vendors/grandstream/ht80x.yaml, and it matters:
+# this firmware speaks TR-104 issue 1, so the Voice section resolves
+# only through the voice-tr104-device table that profile binds.
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: grandstream-ht80x-ui
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "oui", operator: In, values: ["EC74D7"]}
+      - {key: "productClass", operator: In, values: ["HT801"]}
+  sections:
+    - key: overview
+      title: Overview
+      icon: gauge
+      component: overview
+    - key: status
+      title: Device status
+      icon: info
+      component: form
+      config:
+        groups:
+          - title: Identity
+            fields:
+              - {label: Manufacturer, canonical: canonical.device.manufacturer}
+              - {label: Model, canonical: canonical.device.model_name}
+              - {label: Product class, canonical: canonical.device.product_class}
+              - {label: Serial number, canonical: canonical.device.serial_number}
+              - {label: Hardware version, canonical: canonical.device.hardware_version}
+              - {label: Firmware, canonical: canonical.device.software_version}
+              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
+    - key: voice
+      title: Voice
+      icon: phone
+      component: stack
+      config:
+        sections:
+          - key: voice-lines
+            title: Lines
+            component: lines
+            config:
+              lines:
+                - {id: line1, label: Line 1, entity: canonical.voice.line.1}
+          - key: voice-service
+            title: Voice service
+            component: module
+            config:
+              module: voice
+    - key: actions
+      title: Actions
+      icon: zap
+      component: actions
+    - key: action-log
+      title: Action log
+      icon: history
+      component: tasks
+    - key: events
+      title: Events
+      icon: scroll-text
+      component: events
+    - key: compliance
+      title: Compliance
+      icon: shield-alert
+      component: compliance
+    - key: maintenance
+      title: Maintenance
+      icon: wrench
+      component: maintenance
