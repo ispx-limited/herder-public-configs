@@ -245,6 +245,19 @@ declare global {
     addTag(tag: string): void;
     removeTag(tag: string): void;
 
+    /**
+     * Enrichment only. Stage an address the device reports as its
+     * own, keyed by the parameter it was read from, for the devices
+     * list's `address=` lookup. MAC, IPv4 and IPv6 are accepted in any
+     * usual spelling and stored in one canonical form; a value that is
+     * not an address, or is the zero MAC, unspecified, loopback,
+     * link-local or multicast, is dropped as a guardrail error. An
+     * empty value clears what the path reported before. Applied after
+     * the run's rows are written; a failed script drops its staged
+     * addresses. 32 per run.
+     */
+    addAddress(path: string, value: string): void;
+
     inGroup(path: string): boolean;
     listGroups(): string[];
     addToGroup(path: string): void;

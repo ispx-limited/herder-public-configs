@@ -1,0 +1,63 @@
+# The addresses a managed CPE holds, for the devices list's lookup.
+#
+# An operator with an address in hand (a WAN IP from a RADIUS log or an
+# abuse report, the MAC printed on the unit) wants the CPE that has it.
+# The address lives in a parameter whose instance numbers differ per
+# vendor and per service: one gateway carries its IPv4 service on
+# WANIPConnection.2, a PPPoE unit on WANPPPConnection.1, a TR-181 one
+# on Device.IP.Interface.6, so no fixed path finds it fleet-wide. This
+# rule names the parameters that carry an address of the CPE itself
+# and stages each one with device.addAddress; Herder stores them in one
+# canonical spelling and `GET /api/v1/devices?address=` matches on it.
+#
+# Only addresses the device reports as ITS OWN belong here: the WAN
+# connections, the IP interfaces (the LAN gateway address included: it
+# is the CPE's, and a search for it simply matches every CPE that uses
+# it), the Ethernet interfaces' MACs. Never the host table, the
+# associated-device tables or a neighbour scan, which name other
+# units. Link-local, loopback and unspecified addresses are dropped at
+# staging, so every IPv6 interface's fe80:: never reaches the table.
+#
+# Vendor paths outside the standard trees (an IPv6 address a TR-098
+# firmware keeps under a vendor prefix) go in a vendor rule that stages
+# the same call.
+#
+# The change hash covers the leaves the script reads, so the periodic
+# Inform that repeats an unchanged ExternalIPAddress (a TR-098 forced
+# Inform parameter) skips the run, and a WAN that renumbers re-runs it.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: device-addresses
+spec:
+  priority: 100
+  deviceSelector:
+    matchExpressions:
+      - key: oui
+        operator: Exists
+  triggerPaths:
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.ExternalIPAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.ExternalIPAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.MACAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.MACAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANEthernetInterfaceConfig.MACAddress"
+    - "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.MACAddress"
+    - "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
+    - "Device.IP.Interface.{i}.IPv6Address.{i}.IPAddress"
+    - "Device.PPP.Interface.{i}.IPCP.LocalIPAddress"
+    - "Device.Ethernet.Interface.{i}.MACAddress"
+    - "Device.Ethernet.Link.{i}.MACAddress"
+  changeHash:
+    paths:
+      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.ExternalIPAddress"
+      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.ExternalIPAddress"
+      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.MACAddress"
+      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.MACAddress"
+      - "InternetGatewayDevice.WANDevice.{i}.WANEthernetInterfaceConfig.MACAddress"
+      - "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.MACAddress"
+      - "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
+      - "Device.IP.Interface.{i}.IPv6Address.{i}.IPAddress"
+      - "Device.PPP.Interface.{i}.IPCP.LocalIPAddress"
+      - "Device.Ethernet.Interface.{i}.MACAddress"
+      - "Device.Ethernet.Link.{i}.MACAddress"
+  script: addresses.ts
