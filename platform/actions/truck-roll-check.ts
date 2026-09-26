@@ -374,14 +374,18 @@ if (tr098) {
   const accessType = p[common + "WANAccessType"];
   const physical = p[common + "PhysicalLinkStatus"];
 
+  // The Ethernet WAN object is optional in TR-098 and absent on some
+  // firmware; the common object's PhysicalLinkStatus is then the only
+  // physical reading, and it is enough to say whether the link is up.
   const ethPrefix = "InternetGatewayDevice.WANDevice.1.WANEthernetInterfaceConfig.";
-  const ethPresent = p[ethPrefix + "Status"] !== undefined || p[ethPrefix + "Enable"] !== undefined;
+  const ethObject = p[ethPrefix + "Status"] !== undefined || p[ethPrefix + "Enable"] !== undefined;
   const ethStatus = p[ethPrefix + "Status"];
+  const ethPresent = ethObject || (accessType === "Ethernet" && physical !== undefined);
   candidates.push({
     name: "ethernet",
     present: ethPresent && accessType !== "DSL",
     enabled: ethPresent && (p[ethPrefix + "Enable"] === undefined || truthy(p[ethPrefix + "Enable"])) && ethStatus !== "Disabled",
-    up: ethPresent && ethStatus === "Up",
+    up: ethPresent && (ethStatus === "Up" || (ethStatus === undefined && physical === "Up")),
     skipDetail: accessType === "DSL" ? "WANAccessType is DSL" : stepState("ethernet") === "error" && stepFault("ethernet") ? "no Ethernet WAN object" : "Ethernet readings not collected",
     evaluate: () => {
       const values: Record<string, unknown> = { status: ethStatus ?? null, physical_link: physical ?? null, max_bit_rate: p[ethPrefix + "MaxBitRate"] ?? null, duplex: p[ethPrefix + "DuplexMode"] ?? null };
@@ -390,7 +394,7 @@ if (tr098) {
         failed = true;
         reason("eth_link_down", "P", "blocking", "The Ethernet WAN reports " + (ethStatus ?? physical) + ".", values);
       }
-      check("ethernet", failed ? "fail" : "pass", failed ? "Ethernet WAN link down" : "Ethernet WAN link up", values);
+      check("ethernet", failed ? "fail" : "pass", failed ? "Ethernet WAN link down" : ethObject ? "Ethernet WAN link up" : "physical link up", values);
     },
   });
 
@@ -690,7 +694,7 @@ if (score) {
     reason("wifi_poor", "C", "blocking", "The Wi-Fi experience dimension scores " + wifi + ".", values);
     check("experience", "fail", "wifi " + wifi, values);
   } else {
-    check("experience", "pass", score.score === null ? "scored, no overall" : "overall " + score.score, values);
+    check("experience", "pass", score.score === null ? "scored, no overall" : "overall " + Math.round(score.score * 10) / 10, values);
   }
 } else {
   check("experience", "skipped", "no experience score", {});
@@ -808,7 +812,7 @@ if (hasReason("device_unreachable")) {
   summary = "Fix remotely: " + reasons.filter((r) => r.code === "wifi_poor")[0].finding + " The line is healthy.";
 } else if (supportingOnly) {
   verdict = "inconclusive";
-  summary = "Readings are healthy now; " + reasons.map((r) => r.finding).join(" ") + " Re-run when it recurs.";
+  summary = "Readings are healthy now. " + reasons.map((r) => r.finding).join(" ") + " Re-run when it recurs.";
 } else if (findCheck("reachability") && findCheck("reachability")!.status === "unknown" && !wanUp) {
   verdict = "inconclusive";
   summary = "The line is healthy and the connection could not be confirmed.";
