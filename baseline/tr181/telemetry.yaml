@@ -219,6 +219,8 @@ spec:
     # runs against a batch with no BSSID, builds no SSID nodes, and
     # every client on the map resolves no network, no band and no
     # channel. Seen on an X5042 in service.
+    - path: "Device.WiFi.SSID.{i}.Alias"
+      interval: 3600
     - path: "Device.WiFi.SSID.{i}.BSSID"
       interval: 0
     - path: "Device.WiFi.SSID.{i}.LowerLayers"
@@ -313,6 +315,14 @@ spec:
       interval: 0
     - path: "Device.Ethernet.Interface.{i}.Upstream"
       interval: 0
+    # TR-181's own operator-assignable handle. This firmware reports
+    # Name as an internal object path
+    # ("Device/Ethernet/Interfaces/Interface[PHY1_WAN]") and Alias as
+    # the short token inside it, so the alias is the only thing on a
+    # CPE fit to key a device profile's port names on. It is also
+    # stable where the instance number is not.
+    - path: "Device.Ethernet.Interface.{i}.Alias"
+      interval: 3600
     - path: "Device.Ethernet.Interface.{i}.MACAddress"
       interval: 0
     # The Link MAC is what other devices on the LAN see this one as,

@@ -310,6 +310,7 @@
       type: "ssid",
       hostname: ssidName,
       ssid: ssidName,
+      alias: String(s.Alias || "") || undefined,
       band: bandLabel(band),
       channel: channel || undefined,
       radio: radioIdx || undefined,
@@ -365,11 +366,17 @@
     const ifaceName = (ifaceEntry.Name as string | undefined) || ("eth" + ifaceIdx);
     const ifacePath = "Device.Ethernet.Interface." + ifaceIdx;
     ifaceByPath[ifacePath] = { mac: ifaceMac, name: ifaceName, path: ifacePath };
+    // The alias is what a device profile keys its port names on. The
+    // Name this firmware reports is an internal object path, and the
+    // alias is the short token inside it, so both are emitted and the
+    // console prefers the operator's name, then the alias, then this.
+    const ifaceAlias = String(ifaceEntry.Alias || "");
     topology.addNode({
       id: ifaceMac,
       type: "interface",
       hostname: ifaceName,
       name: ifaceName,
+      alias: ifaceAlias || undefined,
       path: ifacePath,
     });
     topology.addEdge({
