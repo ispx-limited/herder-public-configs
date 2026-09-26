@@ -59,6 +59,15 @@ spec:
     # number that says whether a quiet device is broken or simply on a
     # long interval. Credentials in this subtree are deliberately absent:
     # a collected password is a password in telemetry history.
+    # Where this CPE will go next. Read every session, because it is
+    # the one parameter whose staleness is unrecoverable: a device sent
+    # to an address it cannot reach never contacts this ACS again, and
+    # without the value in the store there is no way to tell a unit
+    # that was pointed somewhere wrong from one that was unplugged.
+    # A migration moves this field on every device in the fleet, which
+    # is exactly when not knowing it costs the most.
+    - path: "Device.ManagementServer.URL"
+      interval: 0
     - path: "Device.ManagementServer.PeriodicInformEnable"
       interval: 3600
     - path: "Device.ManagementServer.PeriodicInformInterval"
