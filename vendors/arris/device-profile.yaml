@@ -151,3 +151,97 @@ spec:
       title: Maintenance
       icon: wrench
       component: maintenance
+---
+# The device page for an Arris X5042 mesh extender.
+#
+# Without a profile of its own it falls through to baseline-tr181-ui,
+# which is gateway shaped, and the WAN group there is not merely empty
+# on this hardware: it is wrong. canonical.interface.wan.status finds
+# its instance by looking for a /32 IPv4 address, the shape a PPP
+# session has, and canonical.interface.wan.mac by looking for the
+# ethernet interface reporting Upstream true. An extender has neither,
+# so both aliases fall through to their fallbackIndex of 1 and the page
+# labels the LAN bridge's status as the WAN link and a downstream
+# interface's MAC as the WAN MAC. On the unit this was written against,
+# Device.Ethernet.Interface.1.Upstream reads 0 and its MAC was being
+# shown as the WAN's.
+#
+# A panel that is confidently wrong costs more than a missing one: an
+# operator reads "Link status: Up" and believes the uplink was checked.
+# There is no WAN group here, and Port forwards and Remote access are
+# gone with it; both are gateway functions.
+#
+# What is kept is what the hardware does: its radios, the clients on
+# them and the map they form. Selected on product class alone, never
+# the OUI, which differs between purchase batches of the same model.
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: arris-x5042-ui
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["X5042"]}
+  sections:
+    - key: overview
+      title: Overview
+      icon: gauge
+      component: overview
+    - key: status
+      title: Device status
+      icon: info
+      component: form
+      config:
+        groups:
+          - title: Identity
+            fields:
+              - {label: Manufacturer, canonical: canonical.device.manufacturer}
+              - {label: Model, canonical: canonical.device.model_name}
+              - {label: Product class, canonical: canonical.device.product_class}
+              - {label: Serial number, canonical: canonical.device.serial_number}
+              - {label: Hardware version, canonical: canonical.device.hardware_version}
+              - {label: Firmware, canonical: canonical.device.software_version}
+              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
+          - title: Management
+            fields:
+              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
+              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
+    - key: wifi
+      title: WiFi
+      icon: wifi
+      component: stack
+      config:
+        sections:
+          - key: wifi-neighbours
+            title: RF neighbours
+            component: neighbours
+          - key: wifi-radios
+            title: WiFi
+            component: module
+            config:
+              module: wifi
+    - key: network-map
+      title: Network map
+      icon: network
+      component: topology
+    - key: actions
+      title: Actions
+      icon: zap
+      component: actions
+    - key: action-log
+      title: Action log
+      icon: history
+      component: tasks
+    - key: events
+      title: Events
+      icon: scroll-text
+      component: events
+    - key: compliance
+      title: Compliance
+      icon: shield-alert
+      component: compliance
+    - key: maintenance
+      title: Maintenance
+      icon: wrench
+      component: maintenance

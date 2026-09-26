@@ -105,3 +105,88 @@ spec:
       title: Maintenance
       icon: wrench
       component: maintenance
+---
+# The device page for the Sagemcom Fast281 and Fast381 extenders.
+#
+# The same correction the Arris X5042 profile makes, for the same
+# reason: baseline-tr181-ui is gateway shaped, its WAN group resolves
+# through aliases that look for a PPP session's /32 and an ethernet
+# interface reporting Upstream true, and an extender has neither. The
+# aliases fall back to index 1 and the page presents the LAN bridge and
+# a downstream interface as the WAN. Wrong values cost more than
+# missing ones.
+#
+# Port forwards and Remote access go with it. What is left is the
+# radios, the clients on them and the map they form, which is what
+# these units are on the network for.
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: sagemcom-extender-ui
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["Fast281", "Fast381"]}
+  sections:
+    - key: overview
+      title: Overview
+      icon: gauge
+      component: overview
+    - key: status
+      title: Device status
+      icon: info
+      component: form
+      config:
+        groups:
+          - title: Identity
+            fields:
+              - {label: Manufacturer, canonical: canonical.device.manufacturer}
+              - {label: Model, canonical: canonical.device.model_name}
+              - {label: Product class, canonical: canonical.device.product_class}
+              - {label: Serial number, canonical: canonical.device.serial_number}
+              - {label: Hardware version, canonical: canonical.device.hardware_version}
+              - {label: Firmware, canonical: canonical.device.software_version}
+              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
+          - title: Management
+            fields:
+              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
+              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
+    - key: wifi
+      title: WiFi
+      icon: wifi
+      component: stack
+      config:
+        sections:
+          - key: wifi-neighbours
+            title: RF neighbours
+            component: neighbours
+          - key: wifi-radios
+            title: WiFi
+            component: module
+            config:
+              module: wifi
+    - key: network-map
+      title: Network map
+      icon: network
+      component: topology
+    - key: actions
+      title: Actions
+      icon: zap
+      component: actions
+    - key: action-log
+      title: Action log
+      icon: history
+      component: tasks
+    - key: events
+      title: Events
+      icon: scroll-text
+      component: events
+    - key: compliance
+      title: Compliance
+      icon: shield-alert
+      component: compliance
+    - key: maintenance
+      title: Maintenance
+      icon: wrench
+      component: maintenance
