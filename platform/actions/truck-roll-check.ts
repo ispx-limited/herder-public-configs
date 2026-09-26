@@ -241,7 +241,9 @@ if (tr181) {
       if (errs !== null && pkts !== null && pkts > 0 && errs / pkts > ethErrorRatioMax) {
         reason("eth_errors", "P", "supporting", "Receive errors on the upstream port: " + errs + " of " + pkts + " packets.", values);
       }
-      if (lastChange !== null && uptime !== null && lastChange < ethFlapSeconds && uptime > lastChange + 300) {
+      // LastChange of 0 is "unsupported" on more firmware than it is
+      // "just now"; only a positive value is a reading.
+      if (lastChange !== null && lastChange > 0 && uptime !== null && lastChange < ethFlapSeconds && uptime > lastChange + 300) {
         reason("eth_link_flapped", "P", "supporting", "The upstream link changed state " + lastChange + " seconds ago on a CPE up for " + uptime + ".", values);
       }
       check("ethernet", failed ? "fail" : "pass", failed ? "upstream port fault" : "upstream port up", values);
@@ -474,7 +476,7 @@ function evaluateDsl(d: DslReadings): void {
     reason("dsl_attenuation_high", "P", "blocking", "Downstream attenuation " + dsAttenDb + " dB is above the " + attenMax + " dB maximum.", values);
   }
   const showtimeMin = cfgNum("dsl_showtime_min_seconds", 3600);
-  if (d.showtimeStart !== null && uptime !== null && d.showtimeStart < showtimeMin && uptime - d.showtimeStart > 300) {
+  if (d.showtimeStart !== null && d.showtimeStart > 0 && uptime !== null && d.showtimeStart < showtimeMin && uptime - d.showtimeStart > 300) {
     reason("dsl_unstable", "P", "supporting", "The line retrained " + d.showtimeStart + " seconds ago on a CPE up for " + uptime + ".", values);
   } else if (d.retrains !== null && d.totalStart !== null && d.totalStart > 3600) {
     const perDay = d.retrains / (d.totalStart / 86400);
