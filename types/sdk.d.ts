@@ -556,8 +556,18 @@ declare global {
     readonly runId: string;
     /**
      * Every parameter named by a step's `collect`, keyed by the raw path
-     * the device reported. Missing values are absent rather than empty,
-     * so check before converting.
+     * the device reported (a canonical name in `collect` still comes
+     * back under the device's own path). Missing values are absent
+     * rather than empty, so check before converting.
+     *
+     * The engine's own bookkeeping lands here too, one key per step:
+     * `error.<step>` (the message of a failed optional step),
+     * `failure.<step>` (`fault`, `unreachable` or `error`),
+     * `skipped.<step>` (`unreachable` once an earlier optional step
+     * found nobody home, `no_profile` when a `run` step had no
+     * implementation for this device) and `result.<step>` (a `run`
+     * step's normalized result as JSON text). A capability run as a
+     * step writes its keys under `<step>.<its step>`.
      */
     readonly params: Readonly<Record<string, string>>;
     /**
@@ -567,6 +577,83 @@ declare global {
      * not declare is never here.
      */
     readonly inputs: Readonly<Record<string, string>>;
+    /**
+     * The normalized result of every capability this profile ran as a
+     * step (`run: ping`), keyed by the step name, already parsed. `{}`
+     * when the profile ran none. A capability running inside another
+     * never sees its parent's results.
+     */
+    readonly results: Readonly<Record<string, unknown>>;
+    /**
+     * The device record's read-only facts, the same shape the `device`
+     * global carries on every other script surface, without its
+     * mutators. Under `action` rather than at the top level so a
+     * normalizer's type-check cannot offer it `device.set`.
+     */
+    readonly device: ActionDevice;
+    /**
+     * What the platform knew about the device before this run took
+     * its readings, from its own tables: last contact, presence,
+     * events, faults and score over the profile's `context.window`
+     * (a week by default). Every section is present; a section the
+     * deployment cannot fill is empty or null, never absent.
+     */
+    readonly context: ActionContext;
+  }
+
+  interface ActionDevice {
+    readonly id: string;
+    readonly oui: string;
+    readonly serialNumber: string;
+    readonly manufacturer?: string;
+    readonly model?: string;
+    readonly firmware?: string;
+    readonly tags: ReadonlyArray<string>;
+    readonly metadata: Readonly<Record<string, unknown>>;
+  }
+
+  interface ActionContext {
+    /** How far back events and faults were read, in seconds. */
+    readonly windowSeconds: number;
+    /** RFC 3339 timestamps, null when the device has never done the thing. */
+    readonly contact: {
+      readonly lastInform: string | null;
+      readonly lastBoot: string | null;
+      readonly sessionSince: string | null;
+    };
+    /** null when the device has never been marked silent, which reads as heard. */
+    readonly presence: { readonly state: "silent" | "heard"; readonly since: string } | null;
+    /**
+     * Newest first, at most 50. `kind` is `silent`, `heard`, `reboot` or
+     * `firmware_changed`; `detail` is the event's own body (a reboot's
+     * `cause` is `requested` or `spontaneous`, a firmware change carries
+     * `from` and `to`).
+     */
+    readonly events: ReadonlyArray<{
+      readonly kind: string;
+      readonly at: string;
+      readonly detail: Readonly<Record<string, unknown>>;
+    }>;
+    /** The count in the window, and the newest ten. */
+    readonly faults: {
+      readonly count: number;
+      readonly recent: ReadonlyArray<{
+        readonly at: string;
+        readonly source: string;
+        readonly code: string;
+        readonly message: string;
+      }>;
+    };
+    /** null when no scoring rule has scored the device. */
+    readonly score: {
+      readonly score: number | null;
+      readonly prev: number | null;
+      readonly delta: number | null;
+      readonly worstDimension: string | null;
+      readonly worstScore: number | null;
+      readonly dimensions: Readonly<Record<string, number>>;
+      readonly scoredAt: string | null;
+    } | null;
   }
 
   /**
