@@ -93,17 +93,12 @@ spec:
   deviceSelector:
     matchExpressions:
       - {key: "productClass", operator: In, values: ["Fast281", "Fast381"]}
-  # Names for the map only, which is why these carry an alias and no
-  # entity: there is no Interfaces section on this page to draw a
-  # faceplate from, and the canonical.interface.* aliases are the
-  # things that resolve wrongly on this hardware in the first place.
-  #
-  # Both sockets are LAN side. A mesh node reaches the gateway over
-  # wireless backhaul or over one of these, and nothing the CPE
-  # reports says which, so neither is called WAN.
-  ports:
-    - {id: eth1, label: LAN1, kind: ethernet, alias: PHY1}
-    - {id: eth2, label: LAN2, kind: ethernet, alias: PHY2}
+  # No port inventory. These units report their ethernet sockets in
+  # the data model but publish no interface nodes in their topology,
+  # so there is nothing on the map to name, and the page has no
+  # Interfaces section to draw a faceplate from either. Checked on a
+  # Fast281 and a Fast381 in service: both graphs carry the gateway,
+  # its SSIDs and the clients, and nothing else.
   dropSections: [interfaces, port-forwards, remote-access]
   sections:
     # No WAN group. See the note above: on this hardware it is not
