@@ -17,6 +17,21 @@ spec:
     matchExpressions:
       - key: "dataModel:device"
         operator: Exists
+  # The sockets and radios of a generic TR-181 gateway, declared once
+  # for the whole profile. The Interfaces faceplate draws them and the
+  # network map names its nodes from them, so a model's ports are one
+  # list rather than one per surface.
+  #
+  # No aliases here: a port's alias is what a particular CPE calls it
+  # (PHY1_WAN on one vendor's firmware), and a baseline that matches
+  # every Device.* device cannot know the vocabulary. A vendor profile
+  # extending this one supplies them, and until one does the map falls
+  # back to the alias the CPE itself reported.
+  ports:
+    - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
+    - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
+    - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
+    - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
   sections:
     - key: overview
       title: Overview
@@ -50,12 +65,6 @@ spec:
       title: Interfaces
       icon: ethernet-port
       component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
     # The radios and the air they run in, on one page: a channel is only
     # a good choice against what else is on it, and the neighbour scan is
     # the only thing that says what else is there.
@@ -122,14 +131,8 @@ spec:
       icon: wrench
       component: maintenance
 ---
-# The same page with an Oriel Home section, for the gateways that carry the
-# Oriel Home app.
-#
-# A device profile replaces rather than extends, so every section the
-# baseline shows is restated here to keep it. That restatement is what
-# scoping a section costs. The alternative is an Oriel Home tab on every
-# TR-181 device, which on a gateway without the app reads "Nothing
-# resolved for this device."
+# The same page with an Oriel Home section, for the gateways that carry
+# the Oriel Home app.
 #
 # The selector is a tag rather than anything the app itself reports.
 # Whether a household has the smart-home product is the operator's
@@ -137,7 +140,7 @@ spec:
 # the same way ring and SLA tags arrive; a section bound to live
 # install state would come and go through an upgrade.
 #
-# Priority 20: above the baseline it restates, below every vendor
+# Priority 20: above the baseline it extends, below every vendor
 # profile, so vendor hardware keeps its own page and adds the section
 # itself when it runs the app.
 apiVersion: deviceprofiles.herder.io/v1alpha1
@@ -146,6 +149,7 @@ metadata:
   name: oriel-home-ui
 spec:
   priority: 20
+  extends: baseline-tr181-ui
   deviceSelector:
     matchExpressions:
       - key: "dataModel:device"
@@ -153,112 +157,9 @@ spec:
       - key: "tag:app:oriel-home"
         operator: Exists
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
-    - key: status
-      title: Device status
-      icon: info
-      component: form
-      config:
-        groups:
-          - title: Identity
-            fields:
-              - {label: Manufacturer, canonical: canonical.device.manufacturer}
-              - {label: Model, canonical: canonical.device.model_name}
-              - {label: Product class, canonical: canonical.device.product_class}
-              - {label: Serial number, canonical: canonical.device.serial_number}
-              - {label: Hardware version, canonical: canonical.device.hardware_version}
-              - {label: Firmware, canonical: canonical.device.software_version}
-              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
-          - title: WAN
-            fields:
-              - {label: Link status, canonical: canonical.interface.wan.status}
-              - {label: WAN IP address, canonical: canonical.interface.wan.ip_address}
-              - {label: WAN MAC, canonical: canonical.interface.wan.mac}
-          - title: Management
-            fields:
-              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
-              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
-    - key: interfaces
-      title: Interfaces
-      icon: ethernet-port
-      component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
-    # The radios and the air they run in, on one page: a channel is only
-    # a good choice against what else is on it, and the neighbour scan is
-    # the only thing that says what else is there.
-    - key: wifi
-      title: WiFi
-      icon: wifi
-      component: stack
-      config:
-        sections:
-          - key: wifi-neighbours
-            title: RF neighbours
-            component: neighbours
-          - key: wifi-radios
-            title: WiFi
-            component: module
-            config:
-              module: wifi
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: compliance
-      title: Compliance
-      icon: shield-alert
-      component: compliance
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: port-forwards
-      title: Port forwards
-      icon: arrow-left-right
-      component: module
-      config:
-        module: port-forwards
     - key: oriel-home
       title: Oriel Home
       icon: house
       component: module
       config:
         module: oriel-home
-    - key: remote-access
-      title: Remote access
-      icon: shield
-      component: module
-      config:
-        module: remote-access
-        # Where the gateway's own UI answers, assembled from the WAN
-        # address plus this module's port and protocol. Declared here
-        # rather than inferred: which address a management UI listens on
-        # is an operator's question, and a console that guessed would be
-        # wrong on any deployment that terminates elsewhere. The console
-        # classifies the address and says plainly when it is private or
-        # behind CGNAT, so a link that cannot work does not look like one
-        # that can.
-        link:
-          address: canonical.interface.wan.ip_address
-          port: port
-          protocol: protocol
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance

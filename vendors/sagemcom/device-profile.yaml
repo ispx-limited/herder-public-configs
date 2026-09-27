@@ -1,23 +1,44 @@
-# Device UI profile for the Sagemcom FAST5598 (TR-181): the full
-# section showcase on Device.* hardware, including an access-point
-# table the TR-098 profiles cannot offer. Rendered by the demo
-# instance's TR-181 simulator.
+# Device UI profile for the Sagemcom FAST5598 (TR-181).
+#
+# The TR-181 baseline with three corrections: this hardware has one
+# ethernet LAN socket rather than an unknown number, it carries a voice
+# service, and it has no port-forwarding module. Everything else the
+# baseline decides, which is the point of extending rather than
+# copying it.
 apiVersion: deviceprofiles.herder.io/v1alpha1
 kind: DeviceProfile
 metadata:
   name: sagemcom-fast5598-ui
 spec:
   priority: 50
+  extends: baseline-tr181-ui
   deviceSelector:
     matchExpressions:
       - key: productClass
         operator: In
         values: [FAST5598]
+  # Two ethernet sockets and two radios, read off a unit in service
+  # rather than assumed: Device.Ethernet.Interface has exactly two
+  # instances, so the baseline's `canonical.interface.lan.*` wildcard
+  # is replaced with the one socket that exists.
+  #
+  # The aliases are this firmware's own handles. It reports the WAN
+  # interface's Name as
+  # "Device/Ethernet/Interfaces/Interface[PHY1_WAN]" and its Alias as
+  # "PHY1_WAN", so the alias is the only string on the CPE fit to key a
+  # name on, and it survives a firmware upgrade that renumbers the
+  # table.
+  ports:
+    - {id: wan, label: WAN, kind: wan, alias: PHY1_WAN, entity: canonical.interface.wan}
+    - {id: lan, label: LAN, kind: ethernet, alias: PHY2, entity: canonical.interface.lan.1}
+    - {id: wifi24, label: 2.4 GHz, kind: wifi, alias: WLAN_2_4, entity: canonical.wifi.radio.1}
+    - {id: wifi5, label: 5 GHz, kind: wifi, alias: WLAN_5, entity: canonical.wifi.radio.2}
+  dropSections:
+    # No port forwarding module on this hardware.
+    - port-forwards
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
+    # No hardware version: this firmware does not report one, and a
+    # field that is always blank teaches an operator to skim the group.
     - key: status
       title: Device status
       icon: info
@@ -41,70 +62,12 @@ spec:
             fields:
               - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
               - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
-    - key: interfaces
-      title: Interfaces
-      icon: ethernet-port
-      component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
-    - key: wifi
-      title: WiFi
-      icon: wifi
-      component: module
-      config:
-        module: wifi
     - key: voice
       title: Voice
       icon: phone
       component: module
       config:
         module: voice
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: compliance
-      title: Compliance
-      icon: shield-alert
-      component: compliance
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: remote-access
-      title: Remote access
-      icon: shield
-      component: module
-      config:
-        module: remote-access
-        # Where the gateway's own UI answers, assembled from the WAN
-        # address plus this module's port and protocol. Declared here
-        # rather than inferred: which address a management UI listens on
-        # is an operator's question, and a console that guessed would be
-        # wrong on any deployment that terminates elsewhere. The console
-        # classifies the address and says plainly when it is private or
-        # behind CGNAT, so a link that cannot work does not look like one
-        # that can.
-        link:
-          address: canonical.interface.wan.ip_address
-          port: port
-          protocol: protocol
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance
 ---
 # The device page for the Sagemcom Fast281 and Fast381 extenders.
 #
@@ -116,23 +79,35 @@ spec:
 # a downstream interface as the WAN. Wrong values cost more than
 # missing ones.
 #
-# Port forwards and Remote access go with it. What is left is the
-# radios, the clients on them and the map they form, which is what
-# these units are on the network for.
+# Port forwards and Remote access go with it, and Interfaces with them:
+# the faceplate's WAN tile reads through the same wrong alias. What is
+# left is the radios, the clients on them and the map they form, which
+# is what these units are on the network for.
 apiVersion: deviceprofiles.herder.io/v1alpha1
 kind: DeviceProfile
 metadata:
   name: sagemcom-extender-ui
 spec:
   priority: 50
+  extends: baseline-tr181-ui
   deviceSelector:
     matchExpressions:
       - {key: "productClass", operator: In, values: ["Fast281", "Fast381"]}
+  # Names for the map only, which is why these carry an alias and no
+  # entity: there is no Interfaces section on this page to draw a
+  # faceplate from, and the canonical.interface.* aliases are the
+  # things that resolve wrongly on this hardware in the first place.
+  #
+  # Both sockets are LAN side. A mesh node reaches the gateway over
+  # wireless backhaul or over one of these, and nothing the CPE
+  # reports says which, so neither is called WAN.
+  ports:
+    - {id: eth1, label: LAN1, kind: ethernet, alias: PHY1}
+    - {id: eth2, label: LAN2, kind: ethernet, alias: PHY2}
+  dropSections: [interfaces, port-forwards, remote-access]
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
+    # No WAN group. See the note above: on this hardware it is not
+    # empty, it is wrong.
     - key: status
       title: Device status
       icon: info
@@ -152,41 +127,3 @@ spec:
             fields:
               - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
               - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
-    - key: wifi
-      title: WiFi
-      icon: wifi
-      component: stack
-      config:
-        sections:
-          - key: wifi-neighbours
-            title: RF neighbours
-            component: neighbours
-          - key: wifi-radios
-            title: WiFi
-            component: module
-            config:
-              module: wifi
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: compliance
-      title: Compliance
-      icon: shield-alert
-      component: compliance
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance
