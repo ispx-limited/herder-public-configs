@@ -11,6 +11,15 @@ spec:
     matchExpressions:
       - key: "dataModel:igd"
         operator: Exists
+  # As in baseline-tr181-ui: one port inventory for the profile, read
+  # by the Interfaces faceplate and by the network map. No aliases,
+  # because IGD hardware varies and the vendor profile is where a
+  # model's own handles belong.
+  ports:
+    - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
+    - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
+    - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
+    - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
   sections:
     - key: overview
       title: Overview
@@ -45,12 +54,6 @@ spec:
       title: Interfaces
       icon: ethernet-port
       component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
     # The radios and the air they run in, on one page: a channel is only
     # a good choice against what else is on it, and the neighbour scan is
     # the only thing that says what else is there.

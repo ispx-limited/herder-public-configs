@@ -5,20 +5,23 @@
 # the USP fleet sims (SimSub, SimOps, SimUSP), which run TR-181 over
 # USP and have no CWMP management surface, so their profile skips the
 # canonical.mgmt.* fields.
+#
+# All three extend their baseline and state only what a simulator does
+# differently: it reports fewer identity fields than real hardware, it
+# has no neighbour scan to stack beside the radios, and it has neither
+# a port-forwarding nor a remote-access module.
 apiVersion: deviceprofiles.herder.io/v1alpha1
 kind: DeviceProfile
 metadata:
   name: cpe-sim-tr098-ui
 spec:
   priority: 100
+  extends: baseline-tr098-ui
   deviceSelector:
     matchLabels:
       productClass: "GenericIGD"
+  dropSections: [port-forwards, remote-access]
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
     - key: status
       title: Device status
       icon: info
@@ -36,46 +39,15 @@ spec:
             fields:
               - {label: Link status, canonical: canonical.interface.wan.status}
               - {label: WAN IP address, canonical: canonical.interface.wan.ip_address}
-    - key: interfaces
-      title: Interfaces
-      icon: ethernet-port
-      component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
+    # The radios alone. A simulator publishes no neighbour scan, so the
+    # baseline's stack would put an empty pane above the thing being
+    # demonstrated.
     - key: wifi
       title: WiFi
       icon: wifi
       component: module
       config:
         module: wifi
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: compliance
-      title: Compliance
-      icon: shield-alert
-      component: compliance
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance
 ---
 apiVersion: deviceprofiles.herder.io/v1alpha1
 kind: DeviceProfile
@@ -83,14 +55,12 @@ metadata:
   name: cpe-sim-tr181-ui
 spec:
   priority: 100
+  extends: baseline-tr181-ui
   deviceSelector:
     matchLabels:
       productClass: "GenericGateway"
+  dropSections: [compliance, port-forwards, remote-access]
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
     - key: status
       title: Device status
       icon: info
@@ -108,42 +78,12 @@ spec:
             fields:
               - {label: Link status, canonical: canonical.interface.wan.status}
               - {label: WAN IP address, canonical: canonical.interface.wan.ip_address}
-    - key: interfaces
-      title: Interfaces
-      icon: ethernet-port
-      component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
     - key: wifi
       title: WiFi
       icon: wifi
       component: module
       config:
         module: wifi
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance
 ---
 # The USP fleet sims: TR-181 over USP, no ManagementServer, so no
 # Management form group; everything else is the standard showcase.
@@ -153,6 +93,7 @@ metadata:
   name: cpe-sim-fleet-ui
 spec:
   priority: 60
+  extends: baseline-tr181-ui
   deviceSelector:
     matchExpressions:
       - key: manufacturer
@@ -160,11 +101,8 @@ spec:
         values: [CpeLabs]
       - key: "protocol:usp"
         operator: Exists
+  dropSections: [compliance, port-forwards, remote-access]
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
     - key: status
       title: Device status
       icon: info
@@ -178,39 +116,9 @@ spec:
               - {label: Serial number, canonical: canonical.device.serial_number}
               - {label: Firmware, canonical: canonical.device.software_version}
               - {label: Uptime, canonical: canonical.device.uptime, format: duration}
-    - key: interfaces
-      title: Interfaces
-      icon: ethernet-port
-      component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
     - key: wifi
       title: WiFi
       icon: wifi
       component: module
       config:
         module: wifi
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance

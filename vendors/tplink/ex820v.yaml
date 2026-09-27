@@ -9,121 +9,35 @@
 # That is the whole reason device profiles are selector-scoped. A
 # capability that some hardware has and most does not belongs to a
 # profile for that hardware, not to a baseline with a caveat.
-#
-# Everything else here matches the baseline, deliberately: a vendor
-# profile replaces rather than extends, so the sections an operator
-# expects on every device have to be restated to keep them.
 apiVersion: deviceprofiles.herder.io/v1alpha1
 kind: DeviceProfile
 metadata:
   name: tplink-ex820v-ui
 spec:
   priority: 50
+  extends: baseline-tr181-ui
   deviceSelector:
     matchExpressions:
       - key: productClass
         operator: In
         values: [EX820v]
+  # The baseline's inventory plus the two FXS ports, which is why this
+  # model declares one at all: a voice line is a socket on the back of
+  # the unit and belongs on the faceplate with the others.
+  ports:
+    - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
+    - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
+    - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
+    - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
+    - {id: voice1, label: Line 1, kind: voice, entity: canonical.voice.line.1}
+    - {id: voice2, label: Line 2, kind: voice, entity: canonical.voice.line.2}
+  dropSections:
+    # No port forwarding module on this hardware.
+    - port-forwards
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
-    - key: status
-      title: Device status
-      icon: info
-      component: form
-      config:
-        groups:
-          - title: Identity
-            fields:
-              - {label: Manufacturer, canonical: canonical.device.manufacturer}
-              - {label: Model, canonical: canonical.device.model_name}
-              - {label: Product class, canonical: canonical.device.product_class}
-              - {label: Serial number, canonical: canonical.device.serial_number}
-              - {label: Hardware version, canonical: canonical.device.hardware_version}
-              - {label: Firmware, canonical: canonical.device.software_version}
-              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
-          - title: WAN
-            fields:
-              - {label: Link status, canonical: canonical.interface.wan.status}
-              - {label: WAN IP address, canonical: canonical.interface.wan.ip_address}
-              - {label: WAN MAC, canonical: canonical.interface.wan.mac}
-          - title: Management
-            fields:
-              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
-              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
-    - key: interfaces
-      title: Interfaces
-      icon: ethernet-port
-      component: ports
-      config:
-        ports:
-          - {id: wan, label: WAN, kind: wan, entity: canonical.interface.wan}
-          - {id: lan, kind: ethernet, entity: canonical.interface.lan.*}
-          - {id: wifi24, label: 2.4 GHz, kind: wifi, entity: canonical.wifi.radio.1}
-          - {id: wifi5, label: 5 GHz, kind: wifi, entity: canonical.wifi.radio.2}
-          - {id: voice1, label: Line 1, kind: voice, entity: canonical.voice.line.1}
-          - {id: voice2, label: Line 2, kind: voice, entity: canonical.voice.line.2}
-    - key: wifi
-      title: WiFi
-      icon: wifi
-      component: stack
-      config:
-        sections:
-          - key: wifi-neighbours
-            title: RF neighbours
-            component: neighbours
-          - key: wifi-radios
-            title: WiFi
-            component: module
-            config:
-              module: wifi
     - key: voice
       title: Voice
       icon: phone
       component: module
       config:
         module: voice
-    - key: network-map
-      title: Network map
-      icon: network
-      component: topology
-    - key: compliance
-      title: Compliance
-      icon: shield-alert
-      component: compliance
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: remote-access
-      title: Remote access
-      icon: shield
-      component: module
-      config:
-        module: remote-access
-        # Where the gateway's own UI answers, assembled from the WAN
-        # address plus this module's port and protocol. Declared here
-        # rather than inferred: which address a management UI listens on
-        # is an operator's question, and a console that guessed would be
-        # wrong on any deployment that terminates elsewhere. The console
-        # classifies the address and says plainly when it is private or
-        # behind CGNAT, so a link that cannot work does not look like one
-        # that can.
-        link:
-          address: canonical.interface.wan.ip_address
-          port: port
-          protocol: protocol
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance

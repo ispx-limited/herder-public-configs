@@ -19,14 +19,14 @@ metadata:
   name: grandstream-ht80x-ui
 spec:
   priority: 50
+  extends: baseline-tr181-ui
   deviceSelector:
     matchExpressions:
       - {key: "productClass", operator: In, values: ["HT801"]}
+  dropSections: [interfaces, wifi, network-map, port-forwards, remote-access]
   sections:
-    - key: overview
-      title: Overview
-      icon: gauge
-      component: overview
+    # Identity only. An ATA has no WAN group to show and no management
+    # URL worth a row beside two telephone lines.
     - key: status
       title: Device status
       icon: info
@@ -59,23 +59,3 @@ spec:
             component: module
             config:
               module: voice
-    - key: actions
-      title: Actions
-      icon: zap
-      component: actions
-    - key: action-log
-      title: Action log
-      icon: history
-      component: tasks
-    - key: events
-      title: Events
-      icon: scroll-text
-      component: events
-    - key: compliance
-      title: Compliance
-      icon: shield-alert
-      component: compliance
-    - key: maintenance
-      title: Maintenance
-      icon: wrench
-      component: maintenance
