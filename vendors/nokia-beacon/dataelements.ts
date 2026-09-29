@@ -16,8 +16,13 @@
 // blank) is the gateway; the rest are extenders, each linked to the
 // gateway by its MultiAPDevice.Backhaul, coloured by that backhaul's
 // signal. Clients hang off the node whose radio's BSS they associate
-// to. Signal is emitted only for a real negative dBm, so an idle
-// station reporting 0 does not paint as the strongest link.
+// to. Signal is RCPI on these units (Data Elements' SignalStrength,
+// 0-220, dBm = raw/2 - 110; the fleet reads 68-162) and is converted
+// before it is emitted; the encoding is the rule's rssiEncoding config
+// key, as in platform/topology/easymesh-default. A raw 0 is the
+// no-measurement placeholder and is never emitted, so an idle station
+// does not paint as the strongest link. The first version kept only
+// negative raw values and therefore emitted no signal on any edge.
 
 (function () {
   function isInactive(v: unknown): boolean {
@@ -26,11 +31,14 @@
   function mac(s: unknown): string {
     return typeof s === "string" ? s.trim().toLowerCase().replace(/-/g, ":") : "";
   }
+  const rssiEncoding = String(ctx.configGet("rssiEncoding", "rcpi"));
   function edgeRssi(sig: unknown, parent: string, child: string): void {
     if (typeof sig !== "string" || sig === "") return;
     const raw = parseFloat(sig);
-    if (isNaN(raw) || raw === 0 || raw >= 0) return;
-    topology.addEdgeMetric("rssi_dbm", raw, { parent: parent, child: child });
+    if (isNaN(raw) || raw === 0) return;
+    const rssi = rssiEncoding === "rcpi" ? raw / 2 - 110 : raw;
+    if (rssi >= 0) return;
+    topology.addEdgeMetric("rssi_dbm", rssi, { parent: parent, child: child });
   }
 
   // Discover the root: whichever DataElements prefix this device reports.

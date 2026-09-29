@@ -22,4 +22,8 @@ spec:
       - "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength"
       - "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength"
   coalesceWindow: 60s
+  # Beacons report Data Elements SignalStrength as RCPI (0-220); the
+  # scripts convert with raw/2 - 110. Set dbm for a firmware that reports dBm.
+  config:
+    rssiEncoding: rcpi
   script: dataelements-clients.ts
