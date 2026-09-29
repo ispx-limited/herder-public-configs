@@ -29,6 +29,11 @@ username, which is how a duplicate left by an earlier pass is cleaned up.
 It does not touch the incumbent ACS's account unless that is the only
 instance the firmware has, which is the Sagemcom case below.
 
+The same script serves TR-098 and TR-181: the XMPP object is the same
+shape under `InternetGatewayDevice.` and `Device.`, and a vendor's mesh
+is commonly both (a Nokia Beacon 2 manages over the first, a Beacon 3.1
+over the second). The root is read off the device.
+
 ## What you must supply
 
 - `domain`: a name with an A record the CPE can resolve, and a
@@ -39,6 +44,14 @@ instance the firmware has, which is the Sagemcom case below.
 - `acsJid`: your ACS's own JID, `acs@<domain>`.
 - A selector. The shipped one matches a `tag:xmpp` that nothing has, so
   an unedited adoption is inert.
+- `portParam` and `port`, when the firmware does not find the port by
+  SRV. The standard object has no port field; Nokia Beacons carry it
+  in `X_ALU_COM_XMPP_Port` with a default of 443, the console, and a
+  Beacon given an account without the port sits at `Status: Disabled`
+  with every wake answered `service-unavailable`. Set
+  `portParam: "X_ALU_COM_XMPP_Port"` and `port: "5222"` for them. A
+  fleet of Beacon 2 (TR-098) and Beacon 3.1 (TR-181) lost every wake
+  to a hand-written rule that set the port on one root only.
 - An XMPP server. `herder_xmpp: true` in the collection, port open from
   the CPE ranges, and STARTTLS configured if you want it (Herder
   v0.40.11 or later; earlier releases could not complete a bind for a
