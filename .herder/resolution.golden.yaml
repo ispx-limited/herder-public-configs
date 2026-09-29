@@ -1145,574 +1145,548 @@ devices:
       wifi_scan: wifi-scan-arris(50)
   - device: arris-x5042
     labels:
-      dataModel:igd: ""
+      dataModel:device: ""
       manufacturer: ARRIS
       oui: 0000C5
       productClass: X5042
       protocol:cwmp: ""
     mapping:
-      name: baseline-tr098
+      name: baseline-tr181-cwmp
+      decidedBy: priority
       candidates:
-        - baseline-tr098(10/1)
+        - baseline-tr181-cwmp(20/2)
+        - baseline-tr181(10/1)
+        - dataelements-wifi-rf(1/1)
     deviceProfile:
       name: arris-x5042-ui
       decidedBy: priority
       candidates:
         - arris-x5042-ui(50/1)
-        - baseline-tr098-ui(10/1)
+        - baseline-tr181-ui(10/1)
     telemetry:
       profiles:
-        - arris-remote-access
-        - arris-wan-tr098
-        - arris-wifi-tr098
-        - tr098-lan-eth
-        - tr098-lan-hosts
-        - tr098-nat
-        - tr098-system
-        - tr098-voice
-        - tr098-wan
-        - tr098-wifi
+        - dataelements-wifi-rf
+        - dataelements-wifi-scan
+        - tr181-ethernet
+        - tr181-hosts
+        - tr181-ip
+        - tr181-multiap
+        - tr181-nat
+        - tr181-system
+        - tr181-voice
+        - tr181-voice-i1
+        - tr181-wifi
+        - tr181-wifi-neighbors
+        - tr181-wifi-rf
       parameters:
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.X_0000C5_Status
-          source: arris-remote-access
-          interval: 0
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.X_0000C5_ACL
-          source: arris-remote-access
-          interval: 0
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.X_0000C5_IdleTimeout
-          source: arris-remote-access
-          interval: 0
-        - path: InternetGatewayDevice.UserInterface.User.3.Username
-          source: arris-remote-access
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Stats.EthernetErrorsReceived
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Stats.EthernetPacketsReceived
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Uptime
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.DeviceInfo.UpTime
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.ESS.1.ESSName
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceMACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_SignalStrength
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_RSSI
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.ClientRSSI
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.MACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Type
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Model
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.SoftwareVersion
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.SSID
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*.MACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*.RSSI
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*.TxPHYRate
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.MACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.STAStatus
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BandSupport
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.DualBandCapable
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.LastSteerTime
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SelfSteerCount
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BTMAttempts
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BTMSuccesses
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BlacklistAttempts
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BlacklistSuccesses
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SteeringUnfriendly
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiChannelUtilizationEvents
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiLinkQualityEvents
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BHUtilizationEvents
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.Hosts.Host.*.X_0000C5_LastActive
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_CurrentBitRate
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_CurrentDuplexMode
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_OperatingChannelBandwidth
-          source: arris-wifi-tr098
+        - path: Device.WiFi.DataElements.Network.ControllerID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Class
+          source: dataelements-wifi-rf
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.*.X_0000C5_CurrentBitRate
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.*.X_0000C5_CurrentDuplexMode
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.*.X_0000C5_OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.DiagnosticsState
-          source: arris-wifi-tr098
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
+          source: dataelements-wifi-rf
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.ResultNumberOfEntries
-          source: arris-wifi-tr098
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Transmit
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveSelf
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveOther
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesReceived
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: dataelements-wifi-scan
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.Radio
-          source: arris-wifi-tr098
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: dataelements-wifi-scan
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: dataelements-wifi-scan
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: dataelements-wifi-scan
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.BSSID
-          source: arris-wifi-tr098
+        - path: Device.Ethernet.Interface.*.Enable
+          source: tr181-ethernet
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.Channel
-          source: arris-wifi-tr098
+        - path: Device.Ethernet.Interface.*.Status
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Upstream
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Alias
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Link.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.LowerLayers
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.MaxBitRate
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.DuplexMode
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.CurrentBitRate
+          source: tr181-ethernet
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.SignalStrength
-          source: arris-wifi-tr098
+        - path: Device.Ethernet.Interface.*.Stats.BytesSent
+          source: tr181-ethernet
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.OperatingFrequencyBand
-          source: arris-wifi-tr098
+        - path: Device.Ethernet.Interface.*.Stats.BytesReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Hosts.HostNumberOfEntries
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Active
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.HostName
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.IPAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.PhysAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.AddressSource
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer1Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.IP.Interface.*.Enable
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Status
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Type
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LowerLayers
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LastChange
+          source: tr181-ip
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.Bandwidth
-          source: arris-wifi-tr098
+        - path: Device.IP.Interface.*.IPv4Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv4Address.*.SubnetMask
+          source: tr181-ip
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
-          source: tr098-lan-eth
+        - path: Device.IP.Interface.*.IPv4Address.*.AddressingType
+          source: tr181-ip
+          interval: 3600
+        - path: Device.IP.Interface.*.IPv6Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv6Address.*.Origin
+          source: tr181-ip
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ManufacturerOUI
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ModelName
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SerialNumber
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SoftwareVersion
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Enable
+          source: tr181-multiap
           interval: 900
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Status
-          source: tr098-lan-eth
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.OperatingFrequencyBand
+          source: tr181-multiap
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.MACAddress
-          source: tr098-lan-eth
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Channel
+          source: tr181-multiap
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.MaxBitRate
-          source: tr098-lan-eth
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.BSSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.SSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.ID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.NAT.PortMappingNumberOfEntries
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Enable
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Status
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Description
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Protocol
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.ExternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalClient
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.RemoteHost
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.LeaseDuration
+          source: tr181-nat
+          interval: 0
+        - path: Device.DeviceInfo.Manufacturer
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.DuplexMode
-          source: tr098-lan-eth
+        - path: Device.DeviceInfo.ManufacturerOUI
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.BytesSent
-          source: tr098-lan-eth
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.BytesReceived
-          source: tr098-lan-eth
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.PacketsSent
-          source: tr098-lan-eth
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.PacketsReceived
-          source: tr098-lan-eth
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.ErrorsSent
-          source: tr098-lan-eth
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.ErrorsReceived
-          source: tr098-lan-eth
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.HostNumberOfEntries
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.Active
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.HostName
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.IPAddress
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.MACAddress
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.AddressSource
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.InterfaceType
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.Layer2Interface
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.IPv6Address
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.IPv6Address.*.IPAddress
-          source: tr098-lan-hosts
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMappingNumberOfEntries
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingEnabled
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingDescription
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingProtocol
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.ExternalPort
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.InternalPort
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.InternalClient
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.RemoteHost
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingLeaseDuration
-          source: tr098-nat
-          interval: 0
-        - path: InternetGatewayDevice.DeviceInfo.Manufacturer
-          source: tr098-system
+        - path: Device.DeviceInfo.ModelName
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.ManufacturerOUI
-          source: tr098-system
+        - path: Device.DeviceInfo.ProductClass
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.ModelName
-          source: tr098-system
+        - path: Device.DeviceInfo.SerialNumber
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.ProductClass
-          source: tr098-system
+        - path: Device.DeviceInfo.Description
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.SerialNumber
-          source: tr098-system
+        - path: Device.DeviceInfo.HardwareVersion
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.Description
-          source: tr098-system
+        - path: Device.DeviceInfo.SoftwareVersion
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.HardwareVersion
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.SoftwareVersion
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.ManagementServer.PeriodicInformEnable
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.ManagementServer.PeriodicInformInterval
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.Port
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.Protocol
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.UserInterface.RemoteAccess.SupportedProtocols
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.MemoryStatus.Total
-          source: tr098-system
-          interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.MemoryStatus.Free
-          source: tr098-system
+        - path: Device.DeviceInfo.UpTime
+          source: tr181-system
           interval: 900
-        - path: InternetGatewayDevice.DeviceInfo.ProcessStatus.CPUUsage
-          source: tr098-system
-          interval: 900
-        - path: InternetGatewayDevice.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Name
-          source: tr098-system
+        - path: Device.ManagementServer.PeriodicInformEnable
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Value
-          source: tr098-system
-          interval: 900
-        - path: InternetGatewayDevice.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Status
-          source: tr098-system
-          interval: 900
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.Status
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.CallState
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.Enable
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.DirectoryNumber
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.SIP.AuthUserName
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.SIP.RegistrarServer
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.SIP.ProxyServer
-          source: tr098-voice
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.WANAccessType
-          source: tr098-wan
+        - path: Device.ManagementServer.PeriodicInformInterval
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.PhysicalLinkStatus
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.EnabledForInternet
-          source: tr098-wan
+        - path: Device.ManagementServer.ConnReqJabberID
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.Layer1UpstreamMaxBitRate
-          source: tr098-wan
+        - path: Device.UserInterface.RemoteAccess.Enable
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.Layer1DownstreamMaxBitRate
-          source: tr098-wan
+        - path: Device.UserInterface.RemoteAccess.Port
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalBytesSent
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalBytesReceived
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalPacketsSent
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalPacketsReceived
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ConnectionStatus
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ConnectionType
-          source: tr098-wan
+        - path: Device.UserInterface.RemoteAccess.Protocol
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Uptime
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.LastConnectionError
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.AddressingType
-          source: tr098-wan
+        - path: Device.UserInterface.RemoteAccess.SupportedProtocols
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ExternalIPAddress
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.SubnetMask
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.DefaultGateway
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.DNSServers
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.MACAddress
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.NATEnabled
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetBytesSent
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetBytesReceived
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetPacketsSent
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetPacketsReceived
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ConnectionStatus
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ConnectionType
-          source: tr098-wan
+        - path: Device.DeviceInfo.MemoryStatus.Total
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Uptime
-          source: tr098-wan
+        - path: Device.DeviceInfo.MemoryStatus.Free
+          source: tr181-system
           interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.LastConnectionError
-          source: tr098-wan
+        - path: Device.DeviceInfo.ProcessStatus.CPUUsage
+          source: tr181-system
           interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ExternalIPAddress
-          source: tr098-wan
-          interval: 900
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.DNSServers
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.MACAddress
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.TransportType
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.PPPoEACName
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.PPPoEServiceName
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Username
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetBytesSent
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetBytesReceived
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetPacketsSent
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetPacketsReceived
-          source: tr098-wan
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Status
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Enable
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.SSID
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.BSSID
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Channel
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Standard
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.BeaconType
-          source: tr098-wifi
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.PossibleChannels
-          source: tr098-wifi
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Name
+          source: tr181-system
           interval: 3600
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AutoChannelEnable
-          source: tr098-wifi
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Value
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Status
+          source: tr181-system
+          interval: 900
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Status
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.BasicAuthenticationMode
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.CallStatus
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.WPAEncryptionModes
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Enable
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.IEEE11iEncryptionModes
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.DirectoryNumber
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.SSIDAdvertisementEnabled
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.SIP.Client.*.AuthUserName
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TransmitPower
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.SIP.Network.*.RegistrarServer
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Stats.BytesSent
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.SIP.Network.*.ProxyServer
+          source: tr181-voice
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Stats.BytesReceived
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Status
+          source: tr181-voice-i1
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TotalBytesSent
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.CallState
+          source: tr181-voice-i1
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TotalBytesReceived
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Enable
+          source: tr181-voice-i1
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TotalAssociations
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.DirectoryNumber
+          source: tr181-voice-i1
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDeviceNumberOfEntries
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.SIP.AuthUserName
+          source: tr181-voice-i1
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceMACAddress
-          source: tr098-wifi
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.RegistrarServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.ProxyServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.WiFi.Radio.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.OperatingFrequencyBand
+          source: tr181-wifi
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceIPAddress
-          source: tr098-wifi
+        - path: Device.WiFi.Radio.*.Channel
+          source: tr181-wifi
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceAuthenticationState
-          source: tr098-wifi
+        - path: Device.WiFi.Radio.*.OperatingStandards
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.OperatingChannelBandwidth
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.SupportedFrequencyBands
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.PossibleChannels
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.SupportedOperatingChannelBandwidths
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.AutoChannelEnable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Stats.BytesSent
+          source: tr181-wifi
           interval: 0
-        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.LastDataTransmitRate
-          source: tr098-wifi
+        - path: Device.WiFi.Radio.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.SSID
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Alias
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.LowerLayers
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Enable
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDReference
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDAdvertisementEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModeEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModesSupported
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDeviceNumberOfEntries
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.AuthenticationState
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataUplinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.OperatingStandard
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Retransmissions
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.DiagnosticsState
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.ResultNumberOfEntries
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Radio
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.BSSID
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Channel
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.SignalStrength
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingFrequencyBand
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingChannelBandwidth
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Noise
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.Radio.*.ChannelUtilization
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.Noise
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.FCSErrorCount
+          source: tr181-wifi-rf
           interval: 0
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
-      - arris-hnc-topology(100)
       - device-addresses(100)
+      - easymesh-topology-default(100)
       - topology-identity(100)
-      - arris-client-wifi(50)
-      - tr098-hosts-only-topology(50)
     actions:
-      capacity_test: ""
-      channel_scan: channel-scan-arris(50)
-      check_credentials: ""
-      dns_lookup: dns-lookup-tr098(10)
-      dsl_line_test: dsl-line-test-tr098(5)
-      ping: ping-arris(50)
-      self_test: self-test-tr098(10)
-      server_selection: ""
-      speedtest: speedtest-tr143(10)
-      traceroute: traceroute-tr098(10)
-      udp_echo: ""
-      wifi_scan: wifi-scan-arris(50)
+      capacity_test: capacity-test-tr181(10)
+      channel_scan: ""
+      check_credentials: check-credentials-tr181(10)
+      dns_lookup: dns-lookup-tr181(10)
+      dsl_line_test: dsl-line-test-tr181(5)
+      ping: ping-tr181(10)
+      self_test: self-test-tr181(10)
+      server_selection: server-selection-tr181(10)
+      speedtest: ""
+      traceroute: traceroute-tr181(10)
+      udp_echo: udp-echo-tr181(10)
+      wifi_scan: wifi-scan-tr181(10)
   - device: grandstream-gwn7062
     labels:
       dataModel:device: ""
@@ -8676,6 +8650,1642 @@ devices:
       traceroute: traceroute-tr181(10)
       udp_echo: udp-echo-tr181(10)
       wifi_scan: wifi-scan-tr181(10)
+  - device: avm-fritzbox-7690
+    labels:
+      dataModel:device: ""
+      manufacturer: AVM
+      oui: 00005E
+      productClass: FRITZBox7690
+      protocol:cwmp: ""
+    mapping:
+      name: baseline-tr181-cwmp
+      decidedBy: priority
+      candidates:
+        - baseline-tr181-cwmp(20/2)
+        - baseline-tr181(10/1)
+        - dataelements-wifi-rf(1/1)
+    deviceProfile:
+      name: baseline-tr181-ui
+      candidates:
+        - baseline-tr181-ui(10/1)
+    telemetry:
+      profiles:
+        - dataelements-wifi-rf
+        - dataelements-wifi-scan
+        - tr181-ethernet
+        - tr181-hosts
+        - tr181-ip
+        - tr181-multiap
+        - tr181-nat
+        - tr181-system
+        - tr181-voice
+        - tr181-voice-i1
+        - tr181-wifi
+        - tr181-wifi-neighbors
+        - tr181-wifi-rf
+      parameters:
+        - path: Device.WiFi.DataElements.Network.ControllerID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Class
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Transmit
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveSelf
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveOther
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesReceived
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: dataelements-wifi-scan
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: dataelements-wifi-scan
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: dataelements-wifi-scan
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: dataelements-wifi-scan
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Enable
+          source: tr181-ethernet
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Status
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Upstream
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Alias
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Link.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.LowerLayers
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.MaxBitRate
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.DuplexMode
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.CurrentBitRate
+          source: tr181-ethernet
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Stats.BytesSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.BytesReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Hosts.HostNumberOfEntries
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Active
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.HostName
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.IPAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.PhysAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.AddressSource
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer1Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.IP.Interface.*.Enable
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Status
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Type
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LowerLayers
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LastChange
+          source: tr181-ip
+          interval: 900
+        - path: Device.IP.Interface.*.IPv4Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv4Address.*.SubnetMask
+          source: tr181-ip
+          interval: 900
+        - path: Device.IP.Interface.*.IPv4Address.*.AddressingType
+          source: tr181-ip
+          interval: 3600
+        - path: Device.IP.Interface.*.IPv6Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv6Address.*.Origin
+          source: tr181-ip
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ManufacturerOUI
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ModelName
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SerialNumber
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SoftwareVersion
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Enable
+          source: tr181-multiap
+          interval: 900
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.OperatingFrequencyBand
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Channel
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.BSSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.SSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.ID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.NAT.PortMappingNumberOfEntries
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Enable
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Status
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Description
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Protocol
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.ExternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalClient
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.RemoteHost
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.LeaseDuration
+          source: tr181-nat
+          interval: 0
+        - path: Device.DeviceInfo.Manufacturer
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ModelName
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.Description
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.HardwareVersion
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.SoftwareVersion
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.UpTime
+          source: tr181-system
+          interval: 900
+        - path: Device.ManagementServer.PeriodicInformEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.PeriodicInformInterval
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.ConnReqJabberID
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Enable
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Port
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Protocol
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.SupportedProtocols
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.MemoryStatus.Total
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.MemoryStatus.Free
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.ProcessStatus.CPUUsage
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Name
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Value
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Status
+          source: tr181-system
+          interval: 900
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Status
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.CallStatus
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Enable
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.DirectoryNumber
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Client.*.AuthUserName
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Network.*.RegistrarServer
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Network.*.ProxyServer
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Status
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.CallState
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Enable
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.DirectoryNumber
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.SIP.AuthUserName
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.RegistrarServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.ProxyServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.WiFi.Radio.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.OperatingFrequencyBand
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.Channel
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.OperatingStandards
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.OperatingChannelBandwidth
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.SupportedFrequencyBands
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.PossibleChannels
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.SupportedOperatingChannelBandwidths
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.AutoChannelEnable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.SSID
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Alias
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.LowerLayers
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Enable
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDReference
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDAdvertisementEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModeEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModesSupported
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDeviceNumberOfEntries
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.AuthenticationState
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataUplinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.OperatingStandard
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Retransmissions
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.DiagnosticsState
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.ResultNumberOfEntries
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Radio
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.BSSID
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Channel
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.SignalStrength
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingFrequencyBand
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingChannelBandwidth
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Noise
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.Radio.*.ChannelUtilization
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.Noise
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.FCSErrorCount
+          source: tr181-wifi-rf
+          interval: 0
+    enrichment:
+      - baseline-experience-score(210)
+      - generic-client-wifi(200)
+      - device-addresses(100)
+      - easymesh-topology-default(100)
+      - topology-identity(100)
+    actions:
+      capacity_test: capacity-test-tr181(10)
+      channel_scan: ""
+      check_credentials: check-credentials-tr181(10)
+      dns_lookup: dns-lookup-tr181(10)
+      dsl_line_test: dsl-line-test-tr181(5)
+      ping: ping-tr181(10)
+      self_test: self-test-tr181(10)
+      server_selection: server-selection-tr181(10)
+      speedtest: ""
+      traceroute: traceroute-tr181(10)
+      udp_echo: udp-echo-tr181(10)
+      wifi_scan: wifi-scan-tr181(10)
+  - device: zyxel-ex5601
+    labels:
+      dataModel:device: ""
+      manufacturer: Zyxel
+      oui: 00005E
+      productClass: EX5601-T0
+      protocol:cwmp: ""
+    mapping:
+      name: baseline-tr181-cwmp
+      decidedBy: priority
+      candidates:
+        - baseline-tr181-cwmp(20/2)
+        - baseline-tr181(10/1)
+        - dataelements-wifi-rf(1/1)
+    deviceProfile:
+      name: baseline-tr181-ui
+      candidates:
+        - baseline-tr181-ui(10/1)
+    telemetry:
+      profiles:
+        - dataelements-wifi-rf
+        - dataelements-wifi-scan
+        - tr181-ethernet
+        - tr181-hosts
+        - tr181-ip
+        - tr181-multiap
+        - tr181-nat
+        - tr181-system
+        - tr181-voice
+        - tr181-voice-i1
+        - tr181-wifi
+        - tr181-wifi-neighbors
+        - tr181-wifi-rf
+      parameters:
+        - path: Device.WiFi.DataElements.Network.ControllerID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Class
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Transmit
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveSelf
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveOther
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesReceived
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: dataelements-wifi-scan
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: dataelements-wifi-scan
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: dataelements-wifi-scan
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: dataelements-wifi-scan
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Enable
+          source: tr181-ethernet
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Status
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Upstream
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Alias
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Link.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.LowerLayers
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.MaxBitRate
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.DuplexMode
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.CurrentBitRate
+          source: tr181-ethernet
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Stats.BytesSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.BytesReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Hosts.HostNumberOfEntries
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Active
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.HostName
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.IPAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.PhysAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.AddressSource
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer1Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.IP.Interface.*.Enable
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Status
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Type
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LowerLayers
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LastChange
+          source: tr181-ip
+          interval: 900
+        - path: Device.IP.Interface.*.IPv4Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv4Address.*.SubnetMask
+          source: tr181-ip
+          interval: 900
+        - path: Device.IP.Interface.*.IPv4Address.*.AddressingType
+          source: tr181-ip
+          interval: 3600
+        - path: Device.IP.Interface.*.IPv6Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv6Address.*.Origin
+          source: tr181-ip
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ManufacturerOUI
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ModelName
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SerialNumber
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SoftwareVersion
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Enable
+          source: tr181-multiap
+          interval: 900
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.OperatingFrequencyBand
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Channel
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.BSSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.SSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.ID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.NAT.PortMappingNumberOfEntries
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Enable
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Status
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Description
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Protocol
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.ExternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalClient
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.RemoteHost
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.LeaseDuration
+          source: tr181-nat
+          interval: 0
+        - path: Device.DeviceInfo.Manufacturer
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ModelName
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.Description
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.HardwareVersion
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.SoftwareVersion
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.UpTime
+          source: tr181-system
+          interval: 900
+        - path: Device.ManagementServer.PeriodicInformEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.PeriodicInformInterval
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.ConnReqJabberID
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Enable
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Port
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Protocol
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.SupportedProtocols
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.MemoryStatus.Total
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.MemoryStatus.Free
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.ProcessStatus.CPUUsage
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Name
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Value
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Status
+          source: tr181-system
+          interval: 900
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Status
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.CallStatus
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Enable
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.DirectoryNumber
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Client.*.AuthUserName
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Network.*.RegistrarServer
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Network.*.ProxyServer
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Status
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.CallState
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Enable
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.DirectoryNumber
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.SIP.AuthUserName
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.RegistrarServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.ProxyServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.WiFi.Radio.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.OperatingFrequencyBand
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.Channel
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.OperatingStandards
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.OperatingChannelBandwidth
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.SupportedFrequencyBands
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.PossibleChannels
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.SupportedOperatingChannelBandwidths
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.AutoChannelEnable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.SSID
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Alias
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.LowerLayers
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Enable
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDReference
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDAdvertisementEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModeEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModesSupported
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDeviceNumberOfEntries
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.AuthenticationState
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataUplinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.OperatingStandard
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Retransmissions
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.DiagnosticsState
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.ResultNumberOfEntries
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Radio
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.BSSID
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Channel
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.SignalStrength
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingFrequencyBand
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingChannelBandwidth
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Noise
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.Radio.*.ChannelUtilization
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.Noise
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.FCSErrorCount
+          source: tr181-wifi-rf
+          interval: 0
+    enrichment:
+      - baseline-experience-score(210)
+      - generic-client-wifi(200)
+      - device-addresses(100)
+      - easymesh-topology-default(100)
+      - topology-identity(100)
+    actions:
+      capacity_test: capacity-test-tr181(10)
+      channel_scan: ""
+      check_credentials: check-credentials-tr181(10)
+      dns_lookup: dns-lookup-tr181(10)
+      dsl_line_test: dsl-line-test-tr181(5)
+      ping: ping-tr181(10)
+      self_test: self-test-tr181(10)
+      server_selection: server-selection-tr181(10)
+      speedtest: ""
+      traceroute: traceroute-tr181(10)
+      udp_echo: udp-echo-tr181(10)
+      wifi_scan: wifi-scan-tr181(10)
+  - device: calix-gigaspire-u6-usp
+    labels:
+      dataModel:device: ""
+      manufacturer: Calix
+      oui: 00005E
+      productClass: GigaSpire-BLAST-u6
+      protocol:usp: ""
+    mapping:
+      name: baseline-tr181
+      decidedBy: priority
+      candidates:
+        - baseline-tr181(10/1)
+        - dataelements-wifi-rf(1/1)
+    deviceProfile:
+      name: baseline-tr181-ui
+      candidates:
+        - baseline-tr181-ui(10/1)
+    telemetry:
+      profiles:
+        - dataelements-wifi-rf
+        - dataelements-wifi-scan
+        - tr181-ethernet
+        - tr181-hosts
+        - tr181-ip
+        - tr181-multiap
+        - tr181-nat
+        - tr181-system
+        - tr181-voice
+        - tr181-voice-i1
+        - tr181-wifi
+        - tr181-wifi-neighbors
+        - tr181-wifi-rf
+        - usp-firmware-operations
+        - usp-software-modules
+        - usp-wan-sampled
+        - usp-wan-status
+        - usp-wifi-realtime
+      parameters:
+        - path: Device.WiFi.DataElements.Network.ControllerID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Class
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Transmit
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveSelf
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ReceiveOther
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: dataelements-wifi-rf
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesReceived
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: dataelements-wifi-scan
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: dataelements-wifi-scan
+          interval: 3600
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: dataelements-wifi-scan
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: dataelements-wifi-scan
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Enable
+          source: tr181-ethernet
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Status
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Upstream
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Alias
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Link.*.MACAddress
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.LowerLayers
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.MaxBitRate
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.DuplexMode
+          source: tr181-ethernet
+          interval: 3600
+        - path: Device.Ethernet.Interface.*.CurrentBitRate
+          source: tr181-ethernet
+          interval: 900
+        - path: Device.Ethernet.Interface.*.Stats.BytesSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.BytesReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.PacketsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsSent
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Ethernet.Interface.*.Stats.ErrorsReceived
+          source: tr181-ethernet
+          interval: 0
+        - path: Device.Hosts.HostNumberOfEntries
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Active
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.HostName
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.IPAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.PhysAddress
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.AddressSource
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer1Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.IP.Interface.*.Enable
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Status
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.Type
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LowerLayers
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.LastChange
+          source: tr181-ip
+          interval: 900
+        - path: Device.IP.Interface.*.IPv4Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv4Address.*.SubnetMask
+          source: tr181-ip
+          interval: 900
+        - path: Device.IP.Interface.*.IPv4Address.*.AddressingType
+          source: tr181-ip
+          interval: 3600
+        - path: Device.IP.Interface.*.IPv6Address.*.IPAddress
+          source: tr181-ip
+          interval: 0
+        - path: Device.IP.Interface.*.IPv6Address.*.Origin
+          source: tr181-ip
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ManufacturerOUI
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.ModelName
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SerialNumber
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SoftwareVersion
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Enable
+          source: tr181-multiap
+          interval: 900
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.OperatingFrequencyBand
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Channel
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.BSSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.SSID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.MACAddress
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.SignalStrength
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.AP.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.ID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.NAT.PortMappingNumberOfEntries
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Enable
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Status
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Description
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.Protocol
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.ExternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalPort
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.InternalClient
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.RemoteHost
+          source: tr181-nat
+          interval: 0
+        - path: Device.NAT.PortMapping.*.LeaseDuration
+          source: tr181-nat
+          interval: 0
+        - path: Device.DeviceInfo.Manufacturer
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ModelName
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.Description
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.HardwareVersion
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.SoftwareVersion
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.UpTime
+          source: tr181-system
+          interval: 900
+        - path: Device.ManagementServer.PeriodicInformEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.PeriodicInformInterval
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.ConnReqJabberID
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Enable
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Port
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.Protocol
+          source: tr181-system
+          interval: 3600
+        - path: Device.UserInterface.RemoteAccess.SupportedProtocols
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.MemoryStatus.Total
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.MemoryStatus.Free
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.ProcessStatus.CPUUsage
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Name
+          source: tr181-system
+          interval: 3600
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Value
+          source: tr181-system
+          interval: 900
+        - path: Device.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Status
+          source: tr181-system
+          interval: 900
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Status
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.CallStatus
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.Enable
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.CallControl.Line.*.DirectoryNumber
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Client.*.AuthUserName
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Network.*.RegistrarServer
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.SIP.Network.*.ProxyServer
+          source: tr181-voice
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Status
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.CallState
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.Enable
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.DirectoryNumber
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.Line.*.SIP.AuthUserName
+          source: tr181-voice-i1
+          interval: 0
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.RegistrarServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.Services.VoiceService.*.VoiceProfile.*.SIP.ProxyServer
+          source: tr181-voice-i1
+          interval: 3600
+        - path: Device.WiFi.Radio.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.OperatingFrequencyBand
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.Channel
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.OperatingStandards
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.OperatingChannelBandwidth
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.SupportedFrequencyBands
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.PossibleChannels
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.SupportedOperatingChannelBandwidths
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.Radio.*.AutoChannelEnable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.Radio.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Enable
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Status
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.SSID
+          source: tr181-wifi
+          interval: 900
+        - path: Device.WiFi.SSID.*.Alias
+          source: tr181-wifi
+          interval: 3600
+        - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.LowerLayers
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Enable
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDReference
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDAdvertisementEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModeEnabled
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.Security.ModesSupported
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDeviceNumberOfEntries
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.AuthenticationState
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataUplinkRate
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.OperatingStandard
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Retransmissions
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesSent
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesReceived
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.DiagnosticsState
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.ResultNumberOfEntries
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Radio
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.BSSID
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Channel
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.SignalStrength
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingFrequencyBand
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.OperatingChannelBandwidth
+          source: tr181-wifi-neighbors
+          interval: 900
+        - path: Device.WiFi.NeighboringWiFiDiagnostic.Result.*.Noise
+          source: tr181-wifi-neighbors
+          interval: 0
+        - path: Device.WiFi.Radio.*.ChannelUtilization
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.Noise
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.WiFi.Radio.*.Stats.FCSErrorCount
+          source: tr181-wifi-rf
+          interval: 0
+        - path: Device.SoftwareModules.DeploymentUnit.*.Status
+          source: usp-software-modules
+          interval: 0
+        - path: Device.SoftwareModules.ExecutionUnit.*.Status
+          source: usp-software-modules
+          interval: 0
+    enrichment:
+      - baseline-experience-score(210)
+      - generic-client-wifi(200)
+      - device-addresses(100)
+      - easymesh-topology-default(100)
+      - topology-identity(100)
+    actions:
+      capacity_test: capacity-test-tr181(10)
+      channel_scan: ""
+      check_credentials: check-credentials-tr181(10)
+      dns_lookup: dns-lookup-tr181(10)
+      dsl_line_test: dsl-line-test-tr181(5)
+      ping: ping-tr181(10)
+      self_test: self-test-tr181(10)
+      server_selection: server-selection-tr181(10)
+      speedtest: ""
+      traceroute: traceroute-tr181(10)
+      udp_echo: udp-echo-tr181(10)
+      wifi_scan: wifi-scan-tr181(10)
   - device: example-networks-rg2400
     labels:
       dataModel:igd: ""
@@ -10560,7 +12170,6 @@ devices:
       decidedBy: priority
       candidates:
         - cpe-sim-tr181-ui(100/1)
-        - cpe-sim-fleet-ui(60/2)
         - baseline-tr181-ui(10/1)
     telemetry:
       profiles:
@@ -11100,15 +12709,15 @@ devices:
   - device: dev-sim
     labels:
       dataModel:igd: ""
-      manufacturer: GenieACS
+      manufacturer: Huawei Technologies Co., Ltd.
       oui: 202BC1
-      productClass: FakeCPE
+      productClass: BM632w
       protocol:cwmp: ""
     mapping:
       name: dev-sim-tr098
       decidedBy: priority
       candidates:
-        - dev-sim-tr098(100/1)
+        - dev-sim-tr098(100/2)
         - baseline-tr098(10/1)
     deviceProfile:
       name: baseline-tr098-ui
@@ -11529,8 +13138,6 @@ devices:
         - baseline-tr181-ui(10/1)
     telemetry:
       profiles:
-        - arris-wan-tr098
-        - arris-wifi-tr098
         - dataelements-wifi-rf
         - dataelements-wifi-scan
         - tr181-ethernet
@@ -11545,150 +13152,6 @@ devices:
         - tr181-wifi-neighbors
         - tr181-wifi-rf
       parameters:
-        - path: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Stats.EthernetErrorsReceived
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Stats.EthernetPacketsReceived
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Uptime
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.DeviceInfo.UpTime
-          source: arris-wan-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.ESS.1.ESSName
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceMACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_SignalStrength
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_RSSI
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.ClientRSSI
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.MACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Type
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Model
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.SoftwareVersion
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.SSID
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*.MACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*.RSSI
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*.TxPHYRate
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.MACAddress
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.STAStatus
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BandSupport
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.DualBandCapable
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.LastSteerTime
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SelfSteerCount
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BTMAttempts
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BTMSuccesses
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BlacklistAttempts
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BlacklistSuccesses
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SteeringUnfriendly
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiChannelUtilizationEvents
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiLinkQualityEvents
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BHUtilizationEvents
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.Hosts.Host.*.X_0000C5_LastActive
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_CurrentBitRate
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_CurrentDuplexMode
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_OperatingChannelBandwidth
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.*.X_0000C5_CurrentBitRate
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.*.X_0000C5_CurrentDuplexMode
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.*.X_0000C5_OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.DiagnosticsState
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.ResultNumberOfEntries
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.Radio
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.BSSID
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.Channel
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.SignalStrength
-          source: arris-wifi-tr098
-          interval: 0
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.OperatingFrequencyBand
-          source: arris-wifi-tr098
-          interval: 900
-        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.*.Bandwidth
-          source: arris-wifi-tr098
-          interval: 900
         - path: Device.WiFi.DataElements.Network.ControllerID
           source: dataelements-wifi-rf
           interval: 3600
@@ -12181,11 +13644,9 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
-      - arris-hnc-topology(100)
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-identity(100)
-      - arris-client-wifi(50)
     actions:
       capacity_test: capacity-test-tr181(10)
       channel_scan: ""

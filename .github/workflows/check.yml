@@ -46,13 +46,7 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
-      - name: Validate and compare to the golden
-        run: herder config resolve . --fleet .herder/fleet.yaml --golden .herder/resolution.golden.yaml --quiet >/dev/null
-      # Reported, not yet gating: the shipped tree carries the
-      # findings this lint was written to catch (Arris rules keyed on
-      # the manufacturer alone, dev-sim on an OUI alone). The cleanup
-      # PR narrows them, regenerates the golden, and replaces both
-      # steps with one `herder config check`, which gates on all three.
-      - name: Vendor lint
-        continue-on-error: true
-        run: herder config lint . --fleet .herder/fleet.yaml --quiet
+      # Type-checking every script in the bundle is the expensive part
+      # of a load, so the three answers come from one load.
+      - name: herder config check
+        run: herder config check . --fleet .herder/fleet.yaml --golden .herder/resolution.golden.yaml --quiet

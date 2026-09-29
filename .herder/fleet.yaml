@@ -32,11 +32,13 @@ devices:
     productClass: NVG599
     dataModels: [igd]
     protocols: [cwmp]
+  # The extender is TR-181; the Arris TR-098 profiles used to match it
+  # on the manufacturer and fault on every path.
   - name: arris-x5042
     oui: "0000C5"
     manufacturer: ARRIS
     productClass: X5042
-    dataModels: [igd]
+    dataModels: [device]
     protocols: [cwmp]
 
   # ---- Grandstream: TR-181 APs, a router and an ATA ------------------
@@ -125,6 +127,28 @@ devices:
     dataModels: [device]
     protocols: [cwmp]
 
+  # ---- The public demo's cohorts with no vendor directory --------------
+  # Baseline-only today; listed so a vendor directory that captures
+  # one of them shows as a row moving.
+  - name: avm-fritzbox-7690
+    oui: "00005E"
+    manufacturer: AVM
+    productClass: FRITZBox7690
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: zyxel-ex5601
+    oui: "00005E"
+    manufacturer: Zyxel
+    productClass: EX5601-T0
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: calix-gigaspire-u6-usp
+    oui: "00005E"
+    manufacturer: Calix
+    productClass: GigaSpire-BLAST-u6
+    dataModels: [device]
+    protocols: [usp]
+
   # ---- Reference hardware on the documentation OUI --------------------
   - name: example-networks-rg2400
     oui: "00005E"
@@ -158,10 +182,11 @@ devices:
     productClass: GenericGateway
     dataModels: [device]
     protocols: [usp]
+  # genieacs-sim ships a real Huawei model's identity.
   - name: dev-sim
     oui: 202BC1
-    manufacturer: GenieACS
-    productClass: FakeCPE
+    manufacturer: Huawei Technologies Co., Ltd.
+    productClass: BM632w
     dataModels: [igd]
     protocols: [cwmp]
 

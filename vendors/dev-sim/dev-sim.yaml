@@ -1,7 +1,10 @@
 # Profile for the dev TR-098 CPE simulator (genieacs-sim).
 #
-# Matches the sim's OUI 202BC1. Includes all TR-098 mappings so
-# provisioning seed scripts work end-to-end in dev.
+# Matches the sim's OUI 202BC1 and product class BM632w together: the
+# OUI is a Huawei block and the sim borrowed a real Huawei model's
+# identity, so on the OUI alone this profile would bind any Huawei
+# unit in that block to the simulator's mappings. Includes all TR-098
+# mappings so provisioning seed scripts work end-to-end in dev.
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingProfile
 metadata:
@@ -11,6 +14,7 @@ spec:
   deviceSelector:
     matchLabels:
       oui: "202BC1"
+      productClass: "BM632w"
   parameterMappings:
     - device-info-tr098
     - mgmt-tr098
