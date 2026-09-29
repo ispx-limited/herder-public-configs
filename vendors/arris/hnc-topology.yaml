@@ -21,6 +21,9 @@ spec:
       - key: manufacturer
         operator: In
         values: [Arris, ARRIS]
+      - key: productClass
+        operator: In
+        values: [NVG578LX, NVG578LX1, NVG448BQ, NVG468MQ, NVG589, NVG599]
   triggerPaths:
     - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*"
     - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"

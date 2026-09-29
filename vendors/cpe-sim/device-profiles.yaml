@@ -1,10 +1,11 @@
 # Device UI profiles for the cpe-labs simulators, so the demo instance
 # and the dev stack show the full section vocabulary on every simulated
 # device. The GenericIGD/GenericGateway tuples are the cpe-sim
-# alternates (see cpe-sim.yaml); the CpeLabs manufacturer match covers
-# the USP fleet sims (SimSub, SimOps, SimUSP), which run TR-181 over
-# USP and have no CWMP management surface, so their profile skips the
-# canonical.mgmt.* fields.
+# alternates (see cpe-sim.yaml); the CpeLabs manufacturer plus the
+# product classes SimSub, SimOps and SimUSP cover the USP fleet sims,
+# which run TR-181 over USP and have no CWMP management surface, so
+# their profile skips the canonical.mgmt.* fields. The product class
+# is named because a manufacturer alone is a catalogue, not a model.
 #
 # All three extend their baseline and state only what a simulator does
 # differently: it reports fewer identity fields than real hardware, it
@@ -99,6 +100,9 @@ spec:
       - key: manufacturer
         operator: In
         values: [CpeLabs]
+      - key: productClass
+        operator: In
+        values: [SimSub, SimOps, SimUSP]
       - key: "protocol:usp"
         operator: Exists
   dropSections: [compliance, port-forwards, remote-access]
