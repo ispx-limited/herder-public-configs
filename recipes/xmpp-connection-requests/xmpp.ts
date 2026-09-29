@@ -37,6 +37,17 @@
     provision.skip("domain and acsJid must be set in the rule config");
     return;
   }
+  // TR-098 and TR-181 alike: the XMPP object is the same shape under
+  // either root, and a mesh of one vendor is commonly both (a Nokia
+  // Beacon 2 manages over InternetGatewayDevice, a Beacon 3.1 over
+  // Device). A rule that knew one root left the other fleet with no
+  // account and, worse, with the incumbent's.
+  const root =
+    device.get("InternetGatewayDevice.DeviceInfo.SoftwareVersion") !== null
+      ? "InternetGatewayDevice."
+      : "Device.";
+  const T = root + "XMPP.Connection.";
+  const MS = root + "ManagementServer.";
 
 
   // Read the table live. These paths are in no evaluation's snapshot:
@@ -49,14 +60,14 @@
   // from the top once they answer.
   // A wildcard fetch answers with a map keyed by full path. The SDK
   // declares fetch as a single value, so the shape is asserted here.
-  const usernames = device.fetch("Device.XMPP.Connection.*.Username") as unknown as
+  const usernames = device.fetch(T + "*.Username") as unknown as
     Record<string, string | number> | null | undefined;
-  const enables = device.fetch("Device.XMPP.Connection.*.Enable") as unknown as
+  const enables = device.fetch(T + "*.Enable") as unknown as
     Record<string, string | number> | null | undefined;
-  const domains = device.fetch("Device.XMPP.Connection.*.Domain") as unknown as
+  const domains = device.fetch(T + "*.Domain") as unknown as
     Record<string, string | number> | null | undefined;
-  const connRef = device.fetch("Device.ManagementServer.ConnReqXMPPConnection");
-  const allowed = device.fetch("Device.ManagementServer.ConnReqAllowedJabberIDs");
+  const connRef = device.fetch(MS + "ConnReqXMPPConnection");
+  const allowed = device.fetch(MS + "ConnReqAllowedJabberIDs");
   if (!usernames || !enables || !domains) return;
 
   // Which instance is ours. The table holds a handful of entries and
@@ -64,7 +75,7 @@
   // than the position.
   let index = 0;
   for (let i = 1; i <= 8; i++) {
-    if (usernames["Device.XMPP.Connection." + i + ".Username"] === cred.username) {
+    if (usernames[T + i + ".Username"] === cred.username) {
       index = i;
       break;
     }
@@ -77,10 +88,10 @@
     let free = 0;
     let lowest = 0;
     for (let i = 1; i <= 8; i++) {
-      const u = usernames["Device.XMPP.Connection." + i + ".Username"];
+      const u = usernames[T + i + ".Username"];
       if (u === undefined) break;
       if (lowest === 0) lowest = i;
-      const e = enables["Device.XMPP.Connection." + i + ".Enable"];
+      const e = enables[T + i + ".Enable"];
       if (e !== "1" && e !== "true") { free = i; break; }
     }
 
@@ -100,14 +111,14 @@
     // fixed; it was never the instance that was wrong.
     const slot0 = free !== 0 ? free : lowest;
     if (slot0 === 0) {
-      device.ensureObject('Device.XMPP.Connection.[Username=="' + cred.username + '"]', {
+      device.ensureObject(T + '[Username=="' + cred.username + '"]', {
         Domain: domain,
         Resource: ctx.configGet("resource", "cpe"),
       });
       provision.log("no XMPP connection table to claim from; created one, writing it on the next pass");
       return;
     }
-    const slot = "Device.XMPP.Connection." + slot0 + ".";
+    const slot = T + slot0 + ".";
     device.set(slot + "Username", cred.username);
     device.set(slot + "Domain", domain);
     device.set(slot + "Resource", ctx.configGet("resource", "cpe"));
@@ -123,7 +134,7 @@
   // second login for the same account, so it goes down.
   for (let i = 1; i <= 8; i++) {
     if (i === index) continue;
-    const dup = "Device.XMPP.Connection." + i + ".";
+    const dup = T + i + ".";
     if (usernames[dup + "Username"] !== cred.username) continue;
     const e = enables[dup + "Enable"];
     if (e === "1" || e === "true") {
@@ -132,7 +143,7 @@
     }
   }
 
-  const conn = "Device.XMPP.Connection." + index + ".";
+  const conn = T + index + ".";
   const enabled = enables[conn + "Enable"];
 
   // A connection that is dialling the wrong server has to be taken
@@ -153,6 +164,26 @@
     device.set(conn + "Enable", true);
   }
 
+  // The port, where the firmware keeps one. The standard object has
+  // none (the CPE is meant to find it by SRV), and firmware that does
+  // not look carries it in a vendor field with its own default: a
+  // Nokia Beacon dials X_ALU_COM_XMPP_Port, 443 unless told otherwise,
+  // which is the console, and sits at Status Disabled for ever. Named
+  // in config because the field is the vendor's; written on every
+  // root, because a rule that set it on one left the other's fleet
+  // silent. Decided against the device's own value, like the rest.
+  const portParam = ctx.configGet("portParam", "");
+  const port = ctx.configGet("port", "");
+  if (portParam !== "" && port !== "") {
+    const have = device.fetch(conn + portParam);
+    if (have !== null && String(have) !== String(port)) {
+      device.set(conn + portParam, Number(port));
+      device.set(conn + "Enable", false);
+      provision.log("XMPP port changed to " + port + "; redialling on the next pass");
+      return;
+    }
+  }
+
   // The connection reference is written on its own terms, not behind
   // the enable. A Fast381 took Enable out of the pass that carried both
   // and left ConnReqXMPPConnection on the incumbent's instance, and the
@@ -160,9 +191,9 @@
   // sat enabled, advertising a connection it was not pointed at. Its
   // own value decides, so a pass that lands one and not the other
   // finishes the job on the next inform.
-  const want = "Device.XMPP.Connection." + index;
+  const want = T + index;
   if (connRef !== want) {
-    device.set("Device.ManagementServer.ConnReqXMPPConnection", want);
+    device.set(MS + "ConnReqXMPPConnection", want);
   }
 
   // Separately again, and for the same reason the reference is: this
@@ -171,6 +202,6 @@
   // when it was provisioned. The ACS's own JID moved with the domain,
   // and a CPE still allowing the old one refuses every wake it sends.
   if (allowed !== acsJid) {
-    device.set("Device.ManagementServer.ConnReqAllowedJabberIDs", acsJid);
+    device.set(MS + "ConnReqAllowedJabberIDs", acsJid);
   }
 })();

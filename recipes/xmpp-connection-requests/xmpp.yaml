@@ -40,5 +40,16 @@ spec:
     acsJid: "acs@CHANGE-ME.example.net"
     # The resource the CPE appends to its JID.
     resource: "cpe"
+    # Where the firmware keeps the port, and the port. The standard
+    # object has none (the CPE is meant to find it by SRV) and a
+    # vendor that does not look carries it in its own field with its
+    # own default. Leave both empty for firmware that finds the port
+    # by SRV. Nokia Beacons (TR-098 and TR-181 alike) need:
+    #   portParam: "X_ALU_COM_XMPP_Port"
+    #   port: "5222"
+    # or they dial 443, the console, and sit at Status Disabled with
+    # every wake answered service-unavailable.
+    portParam: ""
+    port: ""
   priority: 50
   enabled: false

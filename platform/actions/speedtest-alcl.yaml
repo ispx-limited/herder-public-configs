@@ -32,6 +32,13 @@ spec:
     matchExpressions:
       - key: "dataModel:igd"
         operator: Exists
+      # Not on an extender: its firmware rejects DownloadDiagnostics
+      # outright (9005 on every parameter), so the run fails at its
+      # first write. The tag is written by the nokia-beacon-mesh-role
+      # rule from the unit having a LAN connection request URL and no
+      # WAN address, the one difference the data model shows.
+      - key: "tag:mesh:agent"
+        operator: DoesNotExist
 
   config:
     # Download stays time-based (seconds), driven through the URL path.

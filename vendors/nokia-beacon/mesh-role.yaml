@@ -1,0 +1,40 @@
+# Which Beacons are extenders.
+#
+# A Nokia mesh is gateways and agents of the same product class and
+# firmware, and nothing on the device record tells them apart: the
+# agent manages over the same CWMP data model, informs on its own and
+# is offered every capability the gateway is. It has no WAN side,
+# though. Its connection request URL is the LAN address the gateway
+# gave it and it reports no external address, which is what this rule
+# reads, on the parameters every Inform carries. It writes the tag
+# `mesh:agent`, which the speedtest profile selects against: an agent's
+# firmware rejects DownloadDiagnostics outright (fault 9005), so the
+# capability must not be offered on it, and the tag is the one thing a
+# device selector can see. Removed again when the unit gains a WAN
+# address, which is a unit re-cabled as a gateway.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: nokia-beacon-mesh-role
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon 4", "Beacon G6"]}
+  triggerPaths:
+    - "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.ExternalIPAddress"
+    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.ExternalIPAddress"
+    - "Device.ManagementServer.ConnectionRequestURL"
+    - "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
+    - "Device.PPP.Interface.{i}.IPCP.LocalIPAddress"
+  changeHash:
+    paths:
+      - "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"
+      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.ExternalIPAddress"
+      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.ExternalIPAddress"
+      - "Device.ManagementServer.ConnectionRequestURL"
+      - "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
+      - "Device.PPP.Interface.{i}.IPCP.LocalIPAddress"
+  script: mesh-role.ts
