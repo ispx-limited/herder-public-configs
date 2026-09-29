@@ -29,9 +29,6 @@ on:
 permissions:
   contents: read
 
-env:
-  HERDER_VERSION: v0.52.0
-
 jobs:
   check:
     name: Validate, lint, resolve
@@ -39,7 +36,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container:
-      image: ghcr.io/ispx-limited/herder-community:${{ env.HERDER_VERSION }}
+      # A literal, because the image field cannot read the env context.
+      image: ghcr.io/ispx-limited/herder-community:v0.52.0
       credentials:
         username: ispx-herder-pull
         password: ${{ secrets.HERDER_REGISTRY_TOKEN }}
