@@ -89,8 +89,8 @@ CI runs the check on every PR from the Herder image, and you can run it
 locally against any Herder release:
 
 ```bash
-docker run --rm -v "$PWD:/bundle" ghcr.io/ispx-limited/herder-community:v0.52.0 \
-  herder config check /bundle --fleet /bundle/.herder/fleet.yaml \
+docker run --rm -v "$PWD:/bundle" ghcr.io/ispx-limited/herder:v0.52.0 \
+  config check /bundle --fleet /bundle/.herder/fleet.yaml \
   --golden /bundle/.herder/resolution.golden.yaml
 ```
 

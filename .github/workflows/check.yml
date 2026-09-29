@@ -19,6 +19,11 @@
 # (repository secret HERDER_REGISTRY_TOKEN, user ispx-herder-pull),
 # which a pull request from a fork does not receive, so a fork's PR
 # skips the job and a maintainer runs the check on the branch instead.
+#
+# The stock image, not the community one: the community binary is
+# obfuscated with garble and its type-checker crashes the Go 1.26
+# garbage collector (a bad pointer in the heap, about a second in).
+# The stock build on Go 1.25 runs the same check clean.
 name: Check
 
 on:
@@ -37,7 +42,7 @@ jobs:
     timeout-minutes: 15
     container:
       # A literal, because the image field cannot read the env context.
-      image: ghcr.io/ispx-limited/herder-community:v0.52.0
+      image: ghcr.io/ispx-limited/herder:v0.52.0
       credentials:
         username: ispx-herder-pull
         password: ${{ secrets.HERDER_REGISTRY_TOKEN }}
