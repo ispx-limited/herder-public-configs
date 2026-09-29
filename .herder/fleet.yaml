@@ -1,0 +1,209 @@
+# The fleet the golden is computed over: one label set per device
+# family this bundle knows, as the selector engine sees it.
+#
+# `herder config check . --fleet .herder/fleet.yaml --golden
+# .herder/resolution.golden.yaml` validates the bundle, lints it, then
+# resolves every kind for every row here and compares the result to
+# the golden. It lives in a dot directory because the config walker
+# skips those: a YAML file without a kind envelope anywhere else in
+# the tree is a document a sync refuses. A vendor change may move
+# only its own rows; any other row moving is the regression (Herder
+# ADR 0026). A family that is not listed is not protected, so a new
+# vendor's survey adds its rows here before it writes a vendors/
+# directory.
+#
+# Identity fields are what the unit reports in its Inform DeviceId
+# (oui, manufacturer, productClass) and what Herder derives from the
+# first session (dataModels from the tree root, protocols from the
+# transport). Values come from units in service or from the cpe-labs
+# reference profiles modelled on them; a documentation OUI (00005E)
+# marks a family whose real OUI has not been recorded yet.
+devices:
+  # ---- ARRIS: TR-098 gateways and a mesh extender -------------------
+  - name: arris-nvg578lx
+    oui: "0000C5"
+    manufacturer: ARRIS
+    productClass: NVG578LX
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: arris-nvg599
+    oui: "0000C5"
+    manufacturer: ARRIS
+    productClass: NVG599
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: arris-x5042
+    oui: "0000C5"
+    manufacturer: ARRIS
+    productClass: X5042
+    dataModels: [igd]
+    protocols: [cwmp]
+
+  # ---- Grandstream: TR-181 APs, a router and an ATA ------------------
+  - name: grandstream-gwn7062
+    oui: EC74D7
+    manufacturer: Grandstream
+    productClass: GWN7062
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: grandstream-gwn7002
+    oui: EC74D7
+    manufacturer: Grandstream
+    productClass: GWN7002
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: grandstream-ht801
+    oui: EC74D7
+    manufacturer: Grandstream
+    productClass: HT801
+    dataModels: [device]
+    protocols: [cwmp]
+
+  # ---- Nokia: Beacons on both roots, FastMile, a GPON ONT ------------
+  - name: nokia-beacon-2
+    oui: "00005E"
+    manufacturer: ALCL
+    productClass: Beacon 2
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: nokia-beacon-g6
+    oui: "00005E"
+    manufacturer: ALCL
+    productClass: Beacon G6
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: nokia-beacon-3.1
+    oui: "00005E"
+    manufacturer: ALCL
+    productClass: Beacon 3.1
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: nokia-beacon-4
+    oui: "00005E"
+    manufacturer: ALCL
+    productClass: Beacon 4
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: nokia-fastmile-5g
+    oui: "00005E"
+    manufacturer: Nokia
+    productClass: 3TG01797
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: nokia-g2426ga
+    oui: "00005E"
+    manufacturer: Nokia
+    productClass: G-2426G-A
+    dataModels: [device]
+    protocols: [cwmp]
+
+  # ---- Sagemcom: a TR-181 gateway and its extenders -------------------
+  - name: sagemcom-fast5598
+    oui: ECFC2F
+    manufacturer: Sagemcom
+    productClass: FAST5598
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: sagemcom-fast281
+    oui: ECFC2F
+    manufacturer: Sagemcom
+    productClass: Fast281
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: sagemcom-fast381
+    oui: ECFC2F
+    manufacturer: Sagemcom
+    productClass: Fast381
+    dataModels: [device]
+    protocols: [cwmp]
+
+  # ---- TP-Link -------------------------------------------------------
+  - name: tplink-ex820v
+    oui: "00005E"
+    manufacturer: TP-Link
+    productClass: EX820v
+    dataModels: [device]
+    protocols: [cwmp]
+
+  # ---- Reference hardware on the documentation OUI --------------------
+  - name: example-networks-rg2400
+    oui: "00005E"
+    manufacturer: Example Networks
+    productClass: RG2400
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: technicolor-cgm4331com
+    oui: "00005E"
+    manufacturer: Technicolor
+    productClass: CGM4331COM
+    dataModels: [igd]
+    protocols: [cwmp]
+
+  # ---- Simulators ----------------------------------------------------
+  - name: cpe-sim-tr098
+    oui: "00005E"
+    manufacturer: CpeLabs
+    productClass: GenericIGD
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: cpe-sim-tr181
+    oui: "00005E"
+    manufacturer: CpeLabs
+    productClass: GenericGateway
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: cpe-sim-usp
+    oui: "00005E"
+    manufacturer: CpeLabs
+    productClass: GenericGateway
+    dataModels: [device]
+    protocols: [usp]
+  - name: dev-sim
+    oui: 202BC1
+    manufacturer: GenieACS
+    productClass: FakeCPE
+    dataModels: [igd]
+    protocols: [cwmp]
+
+  # ---- A vendor's model nobody has onboarded ---------------------------
+  # What a selector that names the vendor but not the model captures.
+  # These rows should resolve like unknown hardware; a vendor document
+  # appearing on one of them is the capture the lint is for.
+  - name: arris-unknown-model
+    oui: "0000C5"
+    manufacturer: ARRIS
+    productClass: TG9999
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: nokia-unknown-model
+    oui: "00005E"
+    manufacturer: ALCL
+    productClass: XS-9999
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: sagemcom-unknown-model
+    oui: ECFC2F
+    manufacturer: Sagemcom
+    productClass: FAST9999
+    dataModels: [device]
+    protocols: [cwmp]
+
+  # ---- Unknown hardware: what the baseline alone gives ------------------
+  - name: unknown-tr098
+    oui: "001122"
+    manufacturer: Acme
+    productClass: Gateway
+    dataModels: [igd]
+    protocols: [cwmp]
+  - name: unknown-tr181-cwmp
+    oui: "001122"
+    manufacturer: Acme
+    productClass: Gateway
+    dataModels: [device]
+    protocols: [cwmp]
+  - name: unknown-tr181-usp
+    oui: "001122"
+    manufacturer: Acme
+    productClass: Gateway
+    dataModels: [device]
+    protocols: [usp]

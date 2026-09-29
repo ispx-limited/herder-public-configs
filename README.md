@@ -74,6 +74,37 @@ file.
 Adding hardware support usually means one new file under `vendors/`, not
 editing anything in `baseline/`.
 
+## Checking a change
+
+A vendor directory is correct on its own and still wrong for the fleet
+when its selector also matches another vendor's hardware, when it ties
+another document on priority, or when its telemetry profile takes a
+path another profile was collecting. None of that shows in the file; it
+shows in what the whole bundle resolves for every device. So the bundle
+carries the fleet it knows, one label set per device family in
+`.herder/fleet.yaml`, and what it resolves for each of them in
+`.herder/resolution.golden.yaml`.
+
+CI runs the check on every PR from the Herder image, and you can run it
+locally against any Herder release:
+
+```bash
+docker run --rm -v "$PWD:/bundle" ghcr.io/ispx-limited/herder-community:v0.52.0 \
+  herder config check /bundle --fleet /bundle/.herder/fleet.yaml \
+  --golden /bundle/.herder/resolution.golden.yaml
+```
+
+`validate` is what a sync would refuse. `lint` is the vendor rules: a
+`vendors/` document names the model it describes (productClass, or a
+vendor key plus a tag), sits at 50 or above, and does not tie another
+document for any fleet device. `resolve` compares every device's winners
+to the golden and names what moved.
+
+Onboarding a vendor is then: add the device's label set to the fleet,
+write the directory, regenerate the golden with `--update`, and read the
+diff. Only your device's rows may change. A row moving for someone
+else's hardware is the regression, caught before it reaches a fleet.
+
 ## Selectors
 
 Every profile and rule carries a `deviceSelector` deciding which
