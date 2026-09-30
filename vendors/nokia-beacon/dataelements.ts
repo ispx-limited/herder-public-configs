@@ -64,10 +64,17 @@
       if (mac(nodes[i].ID) === controllerId) { gatewayMAC = controllerId; break; }
     }
   }
+  // The Data Elements enum for the operation mode is NotSupported,
+  // SupportedNotEnabled and Running, and only Running is a controller.
+  // A substring match on "enabled" took SupportedNotEnabled, the value
+  // every agent reports, and elected the extender the gateway whenever
+  // the controller's own Running (collected once, it never changes and
+  // so rarely re-enters a batch) was absent. Match the whole word, and
+  // accept the boolean spellings some firmware uses.
   if (!gatewayMAC) {
     for (let i = 0; i < nodes.length; i++) {
       const mode = nodes[i]["MultiAPDevice.EasyMeshControllerOperationMode"] as string | undefined;
-      if (mode && /enabled|^1$|true/i.test(mode)) { gatewayMAC = mac(nodes[i].ID); break; }
+      if (mode && /^(running|enabled|1|true)$/i.test(mode.trim())) { gatewayMAC = mac(nodes[i].ID); break; }
     }
   }
   if (!gatewayMAC) {
