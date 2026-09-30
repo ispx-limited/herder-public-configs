@@ -1,9 +1,8 @@
 # DSL line test: the loop diagnostic that turns "slow DSL" into a
 # physics answer. Meaningless on an Ethernet or fibre estate, essential
-# the day a DSL fleet appears, and the reason it ships at priority 5:
-# it selects on the data model family because nothing better exists to
-# select on until capability discovery lands, and a run on a line-less
-# device fails with the CPE's own error rather than pretending.
+# the day a DSL fleet appears. It selects on the data model family, and
+# Herder offers it only where the device's discovered data model has the
+# DSL diagnostic object, so a fibre or cellular CPE never shows it.
 #
 # The two families disagree about more than the root here: TR-098 runs
 # it per WANDevice with a state parameter spelled LoopDiagnosticsState,
