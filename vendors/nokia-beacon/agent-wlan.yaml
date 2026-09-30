@@ -1,0 +1,337 @@
+# A Beacon extender's radios and Ethernet port, read leaf by leaf.
+#
+# A Nokia Beacon 2 running as a mesh agent answers fault 9005 to any
+# partial-path read of InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+# (GetParameterValues and GetParameterNames alike) while every leaf
+# under it reads fine one at a time, and the same for its Ethernet port
+# and Hosts table. The baseline profiles read those trees as subtrees,
+# so on an agent Herder records the tree as absent and the extender
+# page has no radios, no clients and no port. Its gateway, the same
+# hardware and firmware, serves the subtree read and needs none of
+# this.
+#
+# So the agent's leaves are named one by one. The instance numbers are
+# the Beacon's fixed layout: 1 to 4 are the 2.4 GHz radio and its
+# SSIDs, 5 to 8 the 5 GHz ones. A leaf an instance does not have is
+# rejected once and cached, which is the bisect's job. The associated
+# device table is a wildcard under each instance, which is one
+# GetParameterNames per SSID and is cached the same way if the agent
+# refuses it. Scoped by the mesh:agent tag the mesh-role rule writes,
+# so a gateway keeps its one-round-trip subtree read.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-agent-wlan-tr098
+spec:
+  priority: 50
+  deviceSelector:
+    matchLabels:
+      manufacturer: ALCL
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+      - {key: "dataModel:igd", operator: Exists}
+      - {key: "tag:mesh:agent", operator: Exists}
+  parameters:
+    # --- WLANConfiguration.1 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.2 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.3 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.4 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.5 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.6 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.7 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- WLANConfiguration.8 ---
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Enable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.SSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.BSSID"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Channel"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Standard"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.BeaconType"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AutoChannelEnable"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TransmitPower"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalAssociations"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalBytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalBytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.PossibleChannels"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.{i}.AssociatedDeviceIPAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.{i}.AssociatedDeviceAuthenticationState"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.{i}.LastDataTransmitRate"
+      interval: 0
+    # --- The Ethernet port ---
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Enable"
+      interval: 900
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Status"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.MACAddress"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.MaxBitRate"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.DuplexMode"
+      interval: 3600
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.BytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.BytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.PacketsSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.PacketsReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.ErrorsSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.ErrorsReceived"
+      interval: 0
