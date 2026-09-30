@@ -1,0 +1,84 @@
+# A Beacon extender's page.
+#
+# A Nokia mesh is gateways and agents of the same product class and
+# firmware, so a product class cannot pick the page the way it does for
+# a Sagemcom extender. The nokia-beacon-mesh-role rule tags an agent
+# `mesh:agent` (a LAN connection request URL and no WAN address), and
+# these select on the tag.
+#
+# An agent has no WAN, so the baseline's WAN group reads whatever its
+# aliases fall back to, and Port forwards and Remote access are gateway
+# functions it does not have. Interfaces goes with them for the same
+# reason: its WAN tile is the WAN alias again. What is left is the radios,
+# the clients on them and the map they form, which is what an extender is
+# on the network for. A unit re-cabled as a gateway loses the tag at its
+# next inform and gets the gateway's page back.
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: nokia-beacon-extender-tr098-ui
+spec:
+  priority: 50
+  extends: baseline-tr098-ui
+  deviceSelector:
+    matchLabels:
+      manufacturer: ALCL
+    matchExpressions:
+      - {key: "dataModel:igd", operator: Exists}
+      - {key: "tag:mesh:agent", operator: Exists}
+  dropSections: [interfaces, port-forwards, remote-access]
+  sections:
+    - key: status
+      title: Device status
+      icon: info
+      component: form
+      config:
+        groups:
+          - title: Identity
+            fields:
+              - {label: Manufacturer, canonical: canonical.device.manufacturer}
+              - {label: Model, canonical: canonical.device.model_name}
+              - {label: Product class, canonical: canonical.device.product_class}
+              - {label: Serial number, canonical: canonical.device.serial_number}
+              - {label: Hardware version, canonical: canonical.device.hardware_version}
+              - {label: Firmware, canonical: canonical.device.software_version}
+              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
+          - title: Management
+            fields:
+              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
+              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
+---
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: nokia-beacon-extender-tr181-ui
+spec:
+  priority: 50
+  extends: baseline-tr181-ui
+  deviceSelector:
+    matchLabels:
+      manufacturer: ALCL
+    matchExpressions:
+      - {key: "dataModel:device", operator: Exists}
+      - {key: "tag:mesh:agent", operator: Exists}
+  dropSections: [interfaces, port-forwards, remote-access]
+  sections:
+    - key: status
+      title: Device status
+      icon: info
+      component: form
+      config:
+        groups:
+          - title: Identity
+            fields:
+              - {label: Manufacturer, canonical: canonical.device.manufacturer}
+              - {label: Model, canonical: canonical.device.model_name}
+              - {label: Product class, canonical: canonical.device.product_class}
+              - {label: Serial number, canonical: canonical.device.serial_number}
+              - {label: Hardware version, canonical: canonical.device.hardware_version}
+              - {label: Firmware, canonical: canonical.device.software_version}
+              - {label: Uptime, canonical: canonical.device.uptime, format: duration}
+          - title: Management
+            fields:
+              - {label: Connection request URL, canonical: canonical.mgmt.connection_request_url}
+              - {label: Inform interval, canonical: canonical.mgmt.periodic_inform_interval, format: seconds}
