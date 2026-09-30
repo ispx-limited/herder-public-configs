@@ -1703,11 +1703,14 @@ devices:
         - baseline-tr181(10/1)
         - dataelements-wifi-rf(1/1)
     deviceProfile:
-      name: baseline-tr181-ui
+      name: grandstream-gwn70x2-ui
+      decidedBy: priority
       candidates:
+        - grandstream-gwn70x2-ui(50/2)
         - baseline-tr181-ui(10/1)
     telemetry:
       profiles:
+        - grandstream-gwn-topology
         - grandstream-wifi-clients
         - dataelements-wifi-rf
         - dataelements-wifi-scan
@@ -1723,17 +1726,35 @@ devices:
         - tr181-wifi-neighbors
         - tr181-wifi-rf
       parameters:
+        - path: Device.Ethernet.Interface.*.MACAddress
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDReference
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.SSID.*.LowerLayers
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.SSID.*.SSID
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.SSID.*.BSSID
+          source: grandstream-gwn-topology
+          interval: 0
         - path: Device.WiFi.Radio.*.OperatingFrequencyBand
-          source: grandstream-wifi-clients
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.Radio.*.Channel
+          source: grandstream-gwn-topology
           interval: 0
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
-          source: grandstream-wifi-clients
-          interval: 0
-        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
-          source: grandstream-wifi-clients
+          source: grandstream-gwn-topology
           interval: 0
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
-          source: grandstream-wifi-clients
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+          source: grandstream-gwn-topology
           interval: 0
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
           source: grandstream-wifi-clients
@@ -1804,9 +1825,6 @@ devices:
         - path: Device.Ethernet.Interface.*.Alias
           source: tr181-ethernet
           interval: 3600
-        - path: Device.Ethernet.Interface.*.MACAddress
-          source: tr181-ethernet
-          interval: 0
         - path: Device.Ethernet.Link.*.MACAddress
           source: tr181-ethernet
           interval: 0
@@ -2089,9 +2107,6 @@ devices:
         - path: Device.WiFi.Radio.*.Status
           source: tr181-wifi
           interval: 900
-        - path: Device.WiFi.Radio.*.Channel
-          source: tr181-wifi
-          interval: 0
         - path: Device.WiFi.Radio.*.OperatingStandards
           source: tr181-wifi
           interval: 3600
@@ -2122,18 +2137,9 @@ devices:
         - path: Device.WiFi.SSID.*.Status
           source: tr181-wifi
           interval: 900
-        - path: Device.WiFi.SSID.*.SSID
-          source: tr181-wifi
-          interval: 900
         - path: Device.WiFi.SSID.*.Alias
           source: tr181-wifi
           interval: 3600
-        - path: Device.WiFi.SSID.*.BSSID
-          source: tr181-wifi
-          interval: 0
-        - path: Device.WiFi.SSID.*.LowerLayers
-          source: tr181-wifi
-          interval: 0
         - path: Device.WiFi.SSID.*.Stats.BytesSent
           source: tr181-wifi
           interval: 0
@@ -2141,9 +2147,6 @@ devices:
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.AccessPoint.*.Enable
-          source: tr181-wifi
-          interval: 0
-        - path: Device.WiFi.AccessPoint.*.SSIDReference
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.AccessPoint.*.SSIDAdvertisementEnabled
@@ -2218,6 +2221,7 @@ devices:
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-identity(100)
+      - grandstream-gwn-topology(50)
       - grandstream-wifi-clients(50)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -2248,11 +2252,14 @@ devices:
         - baseline-tr181(10/1)
         - dataelements-wifi-rf(1/1)
     deviceProfile:
-      name: baseline-tr181-ui
+      name: grandstream-gwn70x2-ui
+      decidedBy: priority
       candidates:
+        - grandstream-gwn70x2-ui(50/2)
         - baseline-tr181-ui(10/1)
     telemetry:
       profiles:
+        - grandstream-gwn-topology
         - dataelements-wifi-rf
         - dataelements-wifi-scan
         - tr181-ethernet
@@ -2267,6 +2274,36 @@ devices:
         - tr181-wifi-neighbors
         - tr181-wifi-rf
       parameters:
+        - path: Device.Ethernet.Interface.*.MACAddress
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.SSIDReference
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.SSID.*.LowerLayers
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.SSID.*.SSID
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.SSID.*.BSSID
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.Radio.*.OperatingFrequencyBand
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.Radio.*.Channel
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
+          source: grandstream-gwn-topology
+          interval: 0
+        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+          source: grandstream-gwn-topology
+          interval: 0
         - path: Device.WiFi.DataElements.Network.ControllerID
           source: dataelements-wifi-rf
           interval: 3600
@@ -2333,9 +2370,6 @@ devices:
         - path: Device.Ethernet.Interface.*.Alias
           source: tr181-ethernet
           interval: 3600
-        - path: Device.Ethernet.Interface.*.MACAddress
-          source: tr181-ethernet
-          interval: 0
         - path: Device.Ethernet.Link.*.MACAddress
           source: tr181-ethernet
           interval: 0
@@ -2618,12 +2652,6 @@ devices:
         - path: Device.WiFi.Radio.*.Status
           source: tr181-wifi
           interval: 900
-        - path: Device.WiFi.Radio.*.OperatingFrequencyBand
-          source: tr181-wifi
-          interval: 0
-        - path: Device.WiFi.Radio.*.Channel
-          source: tr181-wifi
-          interval: 0
         - path: Device.WiFi.Radio.*.OperatingStandards
           source: tr181-wifi
           interval: 3600
@@ -2654,18 +2682,9 @@ devices:
         - path: Device.WiFi.SSID.*.Status
           source: tr181-wifi
           interval: 900
-        - path: Device.WiFi.SSID.*.SSID
-          source: tr181-wifi
-          interval: 900
         - path: Device.WiFi.SSID.*.Alias
           source: tr181-wifi
           interval: 3600
-        - path: Device.WiFi.SSID.*.BSSID
-          source: tr181-wifi
-          interval: 0
-        - path: Device.WiFi.SSID.*.LowerLayers
-          source: tr181-wifi
-          interval: 0
         - path: Device.WiFi.SSID.*.Stats.BytesSent
           source: tr181-wifi
           interval: 0
@@ -2673,9 +2692,6 @@ devices:
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.AccessPoint.*.Enable
-          source: tr181-wifi
-          interval: 0
-        - path: Device.WiFi.AccessPoint.*.SSIDReference
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.AccessPoint.*.SSIDAdvertisementEnabled
@@ -2690,9 +2706,6 @@ devices:
         - path: Device.WiFi.AccessPoint.*.AssociatedDeviceNumberOfEntries
           source: tr181-wifi
           interval: 0
-        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
-          source: tr181-wifi
-          interval: 0
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.AuthenticationState
           source: tr181-wifi
           interval: 0
@@ -2702,13 +2715,7 @@ devices:
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataUplinkRate
           source: tr181-wifi
           interval: 0
-        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
-          source: tr181-wifi
-          interval: 0
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.OperatingStandard
-          source: tr181-wifi
-          interval: 0
-        - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.Retransmissions
@@ -2762,6 +2769,7 @@ devices:
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-identity(100)
+      - grandstream-gwn-topology(50)
     actions:
       capacity_test: capacity-test-tr181(10)
       channel_scan: ""
@@ -3766,7 +3774,6 @@ devices:
       - device-addresses(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-mesh-role(50)
       - nokia-beacon-topology(50)
       - tr098-hosts-only-topology(50)
     actions:
@@ -4639,7 +4646,6 @@ devices:
       - device-addresses(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-mesh-role(50)
       - nokia-beacon-topology(50)
       - tr098-hosts-only-topology(50)
     actions:
@@ -5101,7 +5107,6 @@ devices:
       - device-addresses(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-mesh-role(50)
       - nokia-beacon-topology(50)
       - tr098-hosts-only-topology(50)
     actions:
@@ -5673,7 +5678,6 @@ devices:
       - easymesh-topology-default(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-mesh-role(50)
       - nokia-beacon-topology(50)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -6244,7 +6248,6 @@ devices:
       - easymesh-topology-default(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-mesh-role(50)
       - nokia-beacon-topology(50)
     actions:
       capacity_test: capacity-test-tr181(10)
