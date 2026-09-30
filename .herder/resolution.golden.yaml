@@ -3434,6 +3434,12 @@ devices:
         - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
           source: nokia-beacon-mesh-tr098
           interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
           source: tr098-lan-eth
           interval: 900
@@ -4805,6 +4811,12 @@ devices:
         - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
           source: nokia-beacon-mesh-tr098
           interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
           source: tr098-lan-eth
           interval: 900
@@ -5287,6 +5299,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
           source: nokia-beacon-mesh-tr181
           interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr181
+          interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
           source: dataelements-wifi-rf
           interval: 3600
@@ -5311,9 +5329,6 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
           source: dataelements-wifi-rf
           interval: 0
-        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
-          source: dataelements-wifi-rf
-          interval: 3600
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
           source: dataelements-wifi-rf
           interval: 0
@@ -5880,6 +5895,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
           source: nokia-beacon-mesh-tr181
           interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr181
+          interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
           source: dataelements-wifi-rf
           interval: 3600
@@ -5904,9 +5925,6 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
           source: dataelements-wifi-rf
           interval: 0
-        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
-          source: dataelements-wifi-rf
-          interval: 3600
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
           source: dataelements-wifi-rf
           interval: 0

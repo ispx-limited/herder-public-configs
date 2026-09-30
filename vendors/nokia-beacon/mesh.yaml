@@ -43,8 +43,9 @@ spec:
       devicePath: Device.X_ALU-COM_Wifi.WorkMode
 ---
 # The role on every unit, agents included (an agent needs it to be
-# tagged at all); the satellite table and the station signal only where
-# a map is drawn. The gateway's own association table carries
+# tagged at all); the satellite table, the station signal, and each
+# mesh radio's BSSs and operating class (its band) only where a map is
+# drawn. The gateway's own association table carries
 # SignalStrength in dBm on these builds (-75, -89 on a Beacon 2 IJJJ30);
 # RSSI reads a constant 1 and X_ALU-COM_SNR 0, so neither is collected.
 apiVersion: telemetry.herder.io/v1alpha1
@@ -95,6 +96,8 @@ spec:
     - {path: "InternetGatewayDevice.LANDevice.{i}.WLANConfiguration.{i}.AssociatedDevice.{i}.SignalStrength", interval: 0}
     - {path: "InternetGatewayDevice.LANDevice.{i}.WLANConfiguration.{i}.AssociatedDevice.{i}.LastDataDownlinkRate", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.BSSID", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.SSID", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClassProfile.{i}.Class", interval: 0}
 ---
 apiVersion: telemetry.herder.io/v1alpha1
 kind: TelemetryProfile
@@ -114,3 +117,5 @@ spec:
     - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.Status", interval: 0}
     - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.BackhaulStatus", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.BSSID", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.SSID", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClassProfile.{i}.Class", interval: 0}

@@ -138,11 +138,13 @@
       manufacturer: str(n.Manufacturer) || undefined,
       model: str(n.ManufacturerModel) || undefined,
     });
+    // The backhaul as the unit reports it. "None" or nothing is not a
+    // wireless link we know of, so it is drawn as unknown, not as Wi-Fi.
     const linkType = str(n["MultiAPDevice.Backhaul.LinkType"]);
     topology.addEdge({
       parent: gatewayMAC,
       child: id,
-      edge_type: /eth/i.test(linkType) ? "ethernet" : "wifi_backhaul",
+      edge_type: /eth/i.test(linkType) ? "ethernet" : /wi-?fi|wlan|802\.11/i.test(linkType) ? "wifi_backhaul" : "other",
     });
     signal(str(n["MultiAPDevice.Backhaul.Stats.SignalStrength"]), rssiEncoding, gatewayMAC, id);
   }
@@ -164,7 +166,8 @@
       status: str(b.Status) || undefined,
       backhaul_status: str(b.BackhaulStatus) || undefined,
     });
-    topology.addEdge({ parent: gatewayMAC, child: id, edge_type: "wifi_backhaul" });
+    // Nokia's table says nothing about the link type.
+    topology.addEdge({ parent: gatewayMAC, child: id, edge_type: "other" });
   }
 
   // ---- The controller's SSIDs --------------------------------------
@@ -211,6 +214,42 @@
       addSsid(mac(s.BSSID), str(s.SSID), band(rb ? str(batch.params[rb + "OperatingFrequencyBand"]) : "", channel),
         channel, up, s.$indexes.SSID);
     }
+  }
+
+  // ---- Each satellite's own SSIDs (Data Elements) ------------------
+  // A satellite's radios carry BSSs of their own, named and addressed in
+  // Data Elements, and the radio's operating class gives its band
+  // (IEEE 802.11 Annex E: 81 to 84 are 2.4 GHz, 115 to 130 are 5 GHz,
+  // 131 and above 6 GHz). Its clients hang off those SSIDs, as the
+  // controller's hang off its own.
+  function bandOfClass(cls: string): "wifi_2g" | "wifi_5g" | "wifi_6g" | "other" {
+    const c = parseInt(cls, 10);
+    if (isNaN(c)) return "other";
+    if (c >= 81 && c <= 84) return "wifi_2g";
+    if (c >= 115 && c <= 130) return "wifi_5g";
+    if (c >= 131) return "wifi_6g";
+    return "other";
+  }
+  const radioBand: Record<string, string> = {};
+  const classes = batch.matches(DE + "Device.*.Radio.*.CurrentOperatingClassProfile.*");
+  for (let i = 0; i < classes.length; i++) {
+    const c = classes[i];
+    const key = c.$indexes.Device + "." + c.$indexes.Radio;
+    if (!radioBand[key] || radioBand[key] === "other") radioBand[key] = bandOfClass(str(c.Class));
+  }
+  const deSsidByBSSID: Record<string, Ssid> = {};
+  const bsses = batch.matches(DE + "Device.*.Radio.*.BSS.*");
+  for (let i = 0; i < bsses.length; i++) {
+    const b = bsses[i];
+    const bssid = mac(b.BSSID);
+    const node = nodeByDeIndex[b.$indexes.Device];
+    const name = str(b.SSID);
+    if (!bssid || !node || node === gatewayMAC || name === "" || ssidByBSSID[bssid]) continue;
+    const edge = radioBand[b.$indexes.Device + "." + b.$indexes.Radio] || "other";
+    const s: Ssid = { bssid: bssid, name: name, edge: edge, channel: "" };
+    deSsidByBSSID[bssid] = s;
+    topology.addNode({ id: bssid, type: "ssid", hostname: name, ssid: name, band: bandLabel(edge) });
+    topology.addEdge({ parent: node, child: bssid, edge_type: edge as TopologyEdge["edge_type"], bssid: bssid });
   }
 
   // ---- What the host table knows about each client ------------------
@@ -274,16 +313,19 @@
     const node = nodeByDeIndex[s.$indexes.Device] || gatewayMAC;
     const bssid = mac(batch.params[DE + "Device." + s.$indexes.Device + ".Radio." + s.$indexes.Radio +
       ".BSS." + s.$indexes.BSS + ".BSSID"]);
-    let ssid = node === gatewayMAC ? ssidByBSSID[bssid] : undefined;
+    let ssid = node === gatewayMAC ? ssidByBSSID[bssid] : deSsidByBSSID[bssid];
     if (!ssid && node === gatewayMAC && wlanBySTA[id]) {
       const w = ssidByWLAN[wlanBySTA[id]];
       if (w && ssidByBSSID[w.bssid]) ssid = w;
     }
     const parent = ssid ? ssid.bssid : node;
-    client(id, parent, ssid ? ssid.edge : "other", ssid ? ssid.bssid : bssid, {
+    // A station Data Elements lists is wireless whatever else is
+    // missing; its band is its radio's where the SSID did not give it.
+    const band = ssid ? ssid.edge : radioBand[s.$indexes.Device + "." + s.$indexes.Radio] || "other";
+    client(id, parent, band, ssid ? ssid.bssid : bssid, {
       ssid: ssid ? ssid.name : undefined,
-      band: ssid ? bandLabel(ssid.edge) : undefined,
-      channel: ssid ? ssid.channel : undefined,
+      band: bandLabel(band),
+      channel: ssid ? ssid.channel || undefined : undefined,
       signal_dbm: dbm(str(s.SignalStrength), rssiEncoding),
       rate_down_kbps: str(s.LastDataDownlinkRate) || undefined,
     });
