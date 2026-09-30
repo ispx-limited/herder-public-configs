@@ -1,4 +1,5 @@
-// Which Beacons are mesh agents, decided from what the unit has reported.
+// Which Beacons are mesh agents: the unit's own WorkRole where it reports
+// one, otherwise decided from its addresses.
 //
 // An agent has no WAN side: its connection request URL is the LAN
 // address its gateway gave it (RFC 1918, never the ISP's own pool or
@@ -20,19 +21,33 @@
 // serves the TR-098 and the TR-181 units. Tags staged here are written
 // when the rule completes, so hasTag sees them on the next evaluation.
 (function () {
-  const url = String(device.get("canonical.mgmt.connection_request_url") ?? "");
-  if (url === "") return;
-  const host = url.replace(/^[a-z]+:\/\//i, "").replace(/[:/].*$/, "");
-  const lan =
-    /^10\./.test(host) ||
-    /^192\.168\./.test(host) ||
-    /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+  // The unit's own answer first. Every surveyed Beacon build reports
+  // X_ALU-COM_Wifi.WorkRole (Controller or Agent), bound to this
+  // canonical by nokia-beacon-mesh-tr098 and -tr181. The address test
+  // below stays for a unit that has not reported it yet. On its own it
+  // tagged no unit on the fleet it was written for, where agents read
+  // live report WorkRole Agent and WorkMode AP_Bridge.
+  const role = String(device.get("canonical.mesh.work_role") ?? "").toLowerCase();
+  let agent: boolean;
+  if (role === "agent") {
+    agent = true;
+  } else if (role === "controller") {
+    agent = false;
+  } else {
+    const url = String(device.get("canonical.mgmt.connection_request_url") ?? "");
+    if (url === "") return;
+    const host = url.replace(/^[a-z]+:\/\//i, "").replace(/[:/].*$/, "");
+    const lan =
+      /^10\./.test(host) ||
+      /^192\.168\./.test(host) ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(host);
 
-  // An agent's WAN address is stored empty (or refused with 9005 and
-  // never stored, which reads the same); a gateway's is set.
-  const wan = String(device.get("canonical.interface.wan.ip_address") ?? "") !== "";
+    // An agent's WAN address is stored empty (or refused with 9005 and
+    // never stored, which reads the same); a gateway's is set.
+    const wan = String(device.get("canonical.interface.wan.ip_address") ?? "") !== "";
+    agent = lan && !wan;
+  }
 
-  const agent = lan && !wan;
   if (agent && !device.hasTag("mesh:agent")) {
     device.addTag("mesh:agent");
   } else if (!agent && device.hasTag("mesh:agent")) {

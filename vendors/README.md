@@ -13,9 +13,12 @@ Onboarded families:
   client signal banded from the radio rather than the AccessPoint index.
 - **nokia-fastmile** — FastMile 5G Gateway, TR-181; the WAN is the
   cellular interface, mapped as such.
-- **nokia-beacon** — WiFi Beacon 2 / 3.1 / G6, mesh APs on TR-098 and
-  TR-181; the map and radar are drawn from the Wi-Fi DataElements tree,
-  and the TR-098 units get a neighbour scan over the vendor diagnostic.
+- **nokia-beacon** — WiFi Beacon 2 / 3.1 / 4 / G6, mesh APs on TR-098 and
+  TR-181. The map is drawn from the Wi-Fi Data Elements tree where the
+  build has one and from Nokia's satellite table
+  (`X_ALU-COM_BeaconInfo`) where it does not; the unit's own `WorkRole`
+  tells a controller from a satellite. The TR-098 units get a neighbour
+  scan over the vendor diagnostic.
 - **example-networks**, **cpe-sim**, **dev-sim** — reference and
   simulator profiles.
 
