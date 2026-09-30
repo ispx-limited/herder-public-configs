@@ -37,6 +37,11 @@ spec:
     matchExpressions:
       - {key: "manufacturer", operator: In, values: ["ALCL"]}
       - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+      # Not on an extender: the DataElements tree is the controller's,
+      # and an agent faults 9005 on the GetParameterNames above every
+      # wildcard here, nineteen times a session. The tag is written by
+      # the nokia-beacon-mesh-role rule.
+      - {key: "tag:mesh:agent", operator: DoesNotExist}
   parameters:
     - {path: "InternetGatewayDevice.DataElements.Network.ControllerID", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.ID", interval: 0}

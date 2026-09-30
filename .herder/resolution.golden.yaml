@@ -3769,6 +3769,866 @@ devices:
       traceroute: traceroute-tr098(10)
       udp_echo: ""
       wifi_scan: wifi-scan-nokia-beacon(50)
+  - device: nokia-beacon-2-agent
+    labels:
+      dataModel:igd: ""
+      manufacturer: ALCL
+      oui: 00005E
+      productClass: Beacon 2
+      protocol:cwmp: ""
+      tag:mesh:agent: ""
+    mapping:
+      name: nokia-beacon-tr098
+      decidedBy: priority
+      candidates:
+        - nokia-beacon-tr098(50/3)
+        - baseline-tr098(10/1)
+    deviceProfile:
+      name: nokia-beacon-extender-tr098-ui
+      decidedBy: priority
+      candidates:
+        - nokia-beacon-extender-tr098-ui(50/3)
+        - baseline-tr098-ui(10/1)
+    telemetry:
+      profiles:
+        - nokia-beacon-agent-wlan-tr098
+        - tr098-lan-eth
+        - tr098-lan-hosts
+        - tr098-nat
+        - tr098-system
+        - tr098-voice
+        - tr098-wan
+        - tr098-wifi
+      parameters:
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.2.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.SSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.BSSID
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Channel
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.Standard
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.BeaconType
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AutoChannelEnable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TransmitPower
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalAssociations
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalBytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.TotalBytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.PossibleChannels
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.AssociatedDevice.*.LastDataTransmitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Enable
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 900
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Status
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.MACAddress
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.MaxBitRate
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.DuplexMode
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.BytesSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.BytesReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.PacketsSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.PacketsReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.ErrorsSent
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.ErrorsReceived
+          source: nokia-beacon-agent-wlan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
+          source: tr098-lan-eth
+          interval: 900
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Status
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.MACAddress
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.MaxBitRate
+          source: tr098-lan-eth
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.DuplexMode
+          source: tr098-lan-eth
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.BytesSent
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.BytesReceived
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.PacketsSent
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.PacketsReceived
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.ErrorsSent
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Stats.ErrorsReceived
+          source: tr098-lan-eth
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.HostNumberOfEntries
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.Active
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.HostName
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.IPAddress
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.MACAddress
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.AddressSource
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.InterfaceType
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.Layer2Interface
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.IPv6Address
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.Hosts.Host.*.IPv6Address.*.IPAddress
+          source: tr098-lan-hosts
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMappingNumberOfEntries
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingEnabled
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingDescription
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingProtocol
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.ExternalPort
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.InternalPort
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.InternalClient
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.RemoteHost
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.PortMapping.*.PortMappingLeaseDuration
+          source: tr098-nat
+          interval: 0
+        - path: InternetGatewayDevice.DeviceInfo.Manufacturer
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.ManufacturerOUI
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.ModelName
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.ProductClass
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.SerialNumber
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.Description
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.HardwareVersion
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.SoftwareVersion
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.UpTime
+          source: tr098-system
+          interval: 900
+        - path: InternetGatewayDevice.ManagementServer.PeriodicInformEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.PeriodicInformInterval
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.UserInterface.RemoteAccess.Port
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.UserInterface.RemoteAccess.Protocol
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.UserInterface.RemoteAccess.SupportedProtocols
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.MemoryStatus.Total
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.MemoryStatus.Free
+          source: tr098-system
+          interval: 900
+        - path: InternetGatewayDevice.DeviceInfo.ProcessStatus.CPUUsage
+          source: tr098-system
+          interval: 900
+        - path: InternetGatewayDevice.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Name
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Value
+          source: tr098-system
+          interval: 900
+        - path: InternetGatewayDevice.DeviceInfo.TemperatureStatus.TemperatureSensor.*.Status
+          source: tr098-system
+          interval: 900
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.Status
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.CallState
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.Enable
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.DirectoryNumber
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.Line.*.SIP.AuthUserName
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.SIP.RegistrarServer
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.Services.VoiceService.*.VoiceProfile.*.SIP.ProxyServer
+          source: tr098-voice
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.WANAccessType
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.PhysicalLinkStatus
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.EnabledForInternet
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.Layer1UpstreamMaxBitRate
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.Layer1DownstreamMaxBitRate
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalBytesSent
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalBytesReceived
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalPacketsSent
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANCommonInterfaceConfig.TotalPacketsReceived
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ConnectionStatus
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ConnectionType
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Uptime
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.LastConnectionError
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.AddressingType
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.ExternalIPAddress
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.SubnetMask
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.DefaultGateway
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.DNSServers
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.MACAddress
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.NATEnabled
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetBytesSent
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetBytesReceived
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetPacketsSent
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANIPConnection.*.Stats.EthernetPacketsReceived
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ConnectionStatus
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ConnectionType
+          source: tr098-wan
+          interval: 3600
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Uptime
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.LastConnectionError
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.ExternalIPAddress
+          source: tr098-wan
+          interval: 900
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.DNSServers
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.MACAddress
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.TransportType
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.PPPoEACName
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.PPPoEServiceName
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Username
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetBytesSent
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetBytesReceived
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetPacketsSent
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.WANDevice.*.WANConnectionDevice.*.WANPPPConnection.*.Stats.EthernetPacketsReceived
+          source: tr098-wan
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Status
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Enable
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.SSID
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.BSSID
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Channel
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Standard
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.BeaconType
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.PossibleChannels
+          source: tr098-wifi
+          interval: 3600
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AutoChannelEnable
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.BasicAuthenticationMode
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.WPAEncryptionModes
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.IEEE11iEncryptionModes
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.SSIDAdvertisementEnabled
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TransmitPower
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Stats.BytesSent
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.Stats.BytesReceived
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TotalBytesSent
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TotalBytesReceived
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.TotalAssociations
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDeviceNumberOfEntries
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceMACAddress
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceIPAddress
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.AssociatedDeviceAuthenticationState
+          source: tr098-wifi
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.LastDataTransmitRate
+          source: tr098-wifi
+          interval: 0
+    enrichment:
+      - baseline-experience-score(210)
+      - generic-client-wifi(200)
+      - device-addresses(100)
+      - topology-identity(100)
+      - nokia-beacon-clients(50)
+      - nokia-beacon-mesh-role(50)
+      - nokia-beacon-topology(50)
+      - tr098-hosts-only-topology(50)
+    actions:
+      capacity_test: ""
+      channel_scan: ""
+      check_credentials: ""
+      dns_lookup: dns-lookup-tr098(10)
+      dsl_line_test: dsl-line-test-tr098(5)
+      ping: ping-tr098(10)
+      self_test: self-test-tr098(10)
+      server_selection: ""
+      speedtest: speedtest-tr143(10)
+      traceroute: traceroute-tr098(10)
+      udp_echo: ""
+      wifi_scan: wifi-scan-nokia-beacon(50)
   - device: nokia-beacon-g6
     labels:
       dataModel:igd: ""

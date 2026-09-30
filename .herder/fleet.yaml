@@ -68,6 +68,15 @@ devices:
     productClass: Beacon 2
     dataModels: [igd]
     protocols: [cwmp]
+  # The same hardware as a mesh agent: the mesh-role rule's tag is what
+  # selects the extender page and the leaf-by-leaf radio profile.
+  - name: nokia-beacon-2-agent
+    oui: "00005E"
+    manufacturer: ALCL
+    productClass: Beacon 2
+    dataModels: [igd]
+    protocols: [cwmp]
+    tags: [mesh:agent]
   - name: nokia-beacon-g6
     oui: "00005E"
     manufacturer: ALCL
