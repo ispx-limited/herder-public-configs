@@ -12,18 +12,18 @@
 # and commits it, and the reviewer reads the golden diff as the change's
 # blast radius.
 #
-# The check runs from the published Herder image so the resolvers are
+# The check runs from a published Herder image so the resolvers are
 # the ones a running instance uses, not a copy. The pin is the release
-# this bundle ships in; move it when Herder releases. The image is
-# private: the job pulls it with the registry credential ispx issues
-# (repository secret HERDER_REGISTRY_TOKEN, user ispx-herder-pull),
-# which a pull request from a fork does not receive, so a fork's PR
-# skips the job and a maintainer runs the check on the branch instead.
+# this bundle ships in; move it when Herder releases. It is the
+# community image because that one is public: the job needs no
+# credential, so it cannot fail on a revoked token and a pull request
+# from a fork runs it like any other.
 #
-# The stock image, not the community one: the community binary is
-# obfuscated with garble and its type-checker crashes the Go 1.26
-# garbage collector (a bad pointer in the heap, about a second in).
-# The stock build on Go 1.25 runs the same check clean.
+# The community binary is built with garble, and an earlier release of
+# it crashed the Go garbage collector about a second into this check.
+# v0.52.3 ran it ten times clean against this bundle before the switch;
+# if a pin move brings the crash back, the stock image (private, pulled
+# with an ispx-issued credential) runs the same check.
 name: Check
 
 on:
@@ -37,15 +37,11 @@ permissions:
 jobs:
   check:
     name: Validate, lint, resolve
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 15
     container:
       # A literal, because the image field cannot read the env context.
-      image: ghcr.io/ispx-limited/herder:v0.52.0
-      credentials:
-        username: ispx-herder-pull
-        password: ${{ secrets.HERDER_REGISTRY_TOKEN }}
+      image: ghcr.io/ispx-limited/herder-community:v0.52.3
       options: --user root
     steps:
       - uses: actions/checkout@v4
