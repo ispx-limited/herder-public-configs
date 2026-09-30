@@ -1,0 +1,116 @@
+# What a Beacon says about its own mesh, in Nokia's vocabulary.
+#
+# Every Beacon build reports its role under X_ALU-COM_Wifi: WorkRole is
+# Controller on the unit that runs the mesh and Agent on a satellite,
+# and WorkMode is RGW on a routing gateway and AP_Bridge on a satellite.
+# Surveyed on Beacon 2 (HJKJ99, HJLI94, IJJJ30, IJLK06, JJLJ32) and
+# Beacon 3.1 (HJLK95, IJKL03, IJLJ03); an agent's tree is cut down to a
+# handful of objects and still carries both leaves.
+#
+# The controller also keeps a table of its satellites,
+# X_ALU-COM_BeaconInfo.Beacon.{i}, with each one's MAC, serial, firmware
+# and backhaul state. On builds without the Wi-Fi Data Elements tree
+# (Beacon 2 HJKJ99 and IJJJ30) it is the only place the mesh is
+# described, and a satellite that has never informed this ACS appears
+# nowhere else.
+#
+# The role is bound to a canonical so the mesh-role provisioning rule
+# can read it from stored state on either root.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: nokia-beacon-mesh-tr098
+spec:
+  mappings:
+    - canonical: canonical.mesh.work_role
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_Wifi.WorkRole
+    - canonical: canonical.mesh.work_mode
+      valueType: string
+      devicePath: InternetGatewayDevice.X_ALU-COM_Wifi.WorkMode
+---
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: nokia-beacon-mesh-tr181
+spec:
+  mappings:
+    - canonical: canonical.mesh.work_role
+      valueType: string
+      devicePath: Device.X_ALU-COM_Wifi.WorkRole
+    - canonical: canonical.mesh.work_mode
+      valueType: string
+      devicePath: Device.X_ALU-COM_Wifi.WorkMode
+---
+# The role on every unit, agents included (an agent needs it to be
+# tagged at all); the satellite table and the station signal only where
+# a map is drawn. The gateway's own association table carries
+# SignalStrength in dBm on these builds (-75, -89 on a Beacon 2 IJJJ30);
+# RSSI reads a constant 1 and X_ALU-COM_SNR 0, so neither is collected.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-mesh-role-tr098
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+  parameters:
+    - {path: "InternetGatewayDevice.X_ALU-COM_Wifi.WorkRole", interval: 0}
+    - {path: "InternetGatewayDevice.X_ALU-COM_Wifi.WorkMode", interval: 0}
+---
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-mesh-role-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 3.1", "Beacon 4"]}
+  parameters:
+    - {path: "Device.X_ALU-COM_Wifi.WorkRole", interval: 0}
+    - {path: "Device.X_ALU-COM_Wifi.WorkMode", interval: 0}
+---
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-mesh-tr098
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+      - {key: "tag:mesh:agent", operator: DoesNotExist}
+  parameters:
+    - {path: "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.MACAddress", interval: 0}
+    - {path: "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.SerialNumber", interval: 0}
+    - {path: "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.SoftwareVersion", interval: 0}
+    - {path: "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.Status", interval: 0}
+    - {path: "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.BackhaulStatus", interval: 0}
+    - {path: "InternetGatewayDevice.LANDevice.{i}.WLANConfiguration.{i}.AssociatedDevice.{i}.SignalStrength", interval: 0}
+    - {path: "InternetGatewayDevice.LANDevice.{i}.WLANConfiguration.{i}.AssociatedDevice.{i}.LastDataDownlinkRate", interval: 0}
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.BSSID", interval: 0}
+---
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-mesh-tr181
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 3.1", "Beacon 4"]}
+      - {key: "tag:mesh:agent", operator: DoesNotExist}
+  parameters:
+    - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.MACAddress", interval: 0}
+    - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.SerialNumber", interval: 0}
+    - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.SoftwareVersion", interval: 0}
+    - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.Status", interval: 0}
+    - {path: "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.BackhaulStatus", interval: 0}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.BSSID", interval: 0}
