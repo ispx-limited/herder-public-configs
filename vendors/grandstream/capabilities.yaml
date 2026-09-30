@@ -1,0 +1,30 @@
+# What a GWN70x2 cannot do, said once so the page stops offering it.
+#
+# Herder offers a capability to a device when an ActionProfile's
+# selector matches it, and nothing else: it does not check that the
+# parameters the profile writes exist on the device. The TR-181 baseline
+# wifi_scan profile writes Device.WiFi.NeighboringWiFiDiagnostic, which
+# the GWN7062 and GWN7002 do not have (9005 on every unit surveyed), so
+# every GWN page offered a scan that failed with 9003 on click and then
+# retried on every session. The baseline cannot name a vendor, so the
+# opt-out is a tag the baseline profile excludes and this rule sets:
+# tag:wifi-scan:unsupported. A firmware that grows the diagnostic is one
+# selector change here.
+apiVersion: provisioning.herder.io/v1alpha1
+kind: ProvisioningRule
+metadata:
+  name: grandstream-gwn-capabilities
+spec:
+  triggers:
+    - first_contact
+    - boot
+    - periodic
+  deviceSelector:
+    matchLabels:
+      oui: "EC74D7"
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
+  desired:
+    script: "capabilities.ts"
+  priority: 50
+  enabled: true

@@ -1,0 +1,62 @@
+# The network map for a GWN70x2, from the only table it has.
+#
+# This model has no Device.Hosts and no Wi-Fi Alliance Data Elements
+# (both 9005 on every unit surveyed), so neither the EasyMesh nor the
+# hosts topology rule can draw it. What it does have is the standard
+# Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i} table with MAC,
+# Active, SignalStrength and rates, and the SSID and Radio objects that
+# say which band each access point is on. That is enough for a flat map:
+# one gateway, every associated station as a client on the radio it is
+# on, with its signal on the edge. Wired clients cannot appear: the
+# model exposes no host table for them.
+#
+# The telemetry half below collects what the script reads. The
+# grandstream-wifi-clients profile already asks for the association
+# table; this adds the gateway's own MAC and the AccessPoint -> SSID ->
+# Radio chain the band comes from. Both halves are inert until the
+# device answers reads at all, which as of writing (firmware 1.0.9.58
+# and 1.0.11.36) it does not; see the device page audit that produced
+# this file.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: grandstream-gwn-topology
+spec:
+  priority: 50
+  deviceSelector:
+    matchLabels:
+      oui: "EC74D7"
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
+  parameters:
+    - {path: "Device.Ethernet.Interface.{i}.MACAddress", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.SSIDReference", interval: 0}
+    - {path: "Device.WiFi.SSID.{i}.LowerLayers", interval: 0}
+    - {path: "Device.WiFi.SSID.{i}.SSID", interval: 0}
+    - {path: "Device.WiFi.SSID.{i}.BSSID", interval: 0}
+    - {path: "Device.WiFi.Radio.{i}.OperatingFrequencyBand", interval: 0}
+    - {path: "Device.WiFi.Radio.{i}.Channel", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.MACAddress", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Active", interval: 0}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.SignalStrength", interval: 0}
+---
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: grandstream-gwn-topology
+spec:
+  priority: 50
+  deviceSelector:
+    matchLabels:
+      oui: "EC74D7"
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
+  triggerPaths:
+    - "Device.WiFi.AccessPoint.*.AssociatedDevice.*"
+  changeHash:
+    paths:
+      - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.MACAddress"
+      - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Active"
+      - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.SignalStrength"
+  coalesceWindow: 60s
+  script: topology.ts

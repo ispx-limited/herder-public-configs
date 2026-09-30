@@ -64,6 +64,13 @@ spec:
     matchExpressions:
       - key: "dataModel:device"
         operator: Exists
+      # The opt-out. A capability is offered on the selector alone, not
+      # on whether the device holds the parameters the profile writes, so
+      # a TR-181 model without NeighboringWiFiDiagnostic (the Grandstream
+      # GWN70x2) was offered a scan that failed on click. A vendor rule
+      # sets this tag on such hardware; the baseline stays vendor-neutral.
+      - key: "tag:wifi-scan:unsupported"
+        operator: DoesNotExist
 
   # Bounds the whole run. A band sweep is seconds of radio time and the
   # rest is waiting for the CPE to come back and say so, which on a
