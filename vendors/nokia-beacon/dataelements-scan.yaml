@@ -1,0 +1,95 @@
+# Nokia Beacon (TR-098 units): the Wi-Fi Alliance Data Elements
+# channel-scan results, read where the Beacon's own EasyMesh controller
+# leaves them.
+#
+# The TR-098 Beacons (Beacon 2, Beacon G6) expose the full Data Elements
+# tree, rooted at InternetGatewayDevice.DataElements rather than the
+# TR-181 Device.WiFi.DataElements the baseline tables know. Confirmed
+# by schema discovery on a Beacon 2 (firmware 3FE49334JJLJ32): every
+# ChannelScan.{i}.NeighborBSS.{i} attribute the baseline reads is there,
+# plus Utilization, Noise and TimeStamp on the channel.
+#
+# WHY THIS EXISTS BESIDE wifi-scan.yaml.
+#
+# wifi-scan.yaml is the trigger: the vendor NeighboringWiFiDiagnostic an
+# operator invokes, which takes the radios off channel for a moment.
+# This file is the passive half: the controller scans on its own cadence
+# for channel selection anyway, and the results sit in the tree for the
+# asking. A NeighborBSS here also carries what a TR-181 result cannot:
+# the heard AP's own channel utilisation and station count. The graph
+# gets a measurement without a single sweep being requested.
+#
+# DECLARED, NOT BOUND, LIKE THE BASELINE TABLE.
+#
+# The table is deliberately not listed in the nokia-beacon-tr098
+# profile. A table a profile binds resolves per device, and the
+# canonicals here are the same the vendor diagnostic already binds for
+# the trigger; two tables for one canonical in one profile is a
+# conflict. A table that is only declared is what the fleet-wide path
+# lookup the RF neighbourhood graph reads with sees, which is exactly
+# the reach these results need (the same arrangement as
+# baseline/tr181/wifi-scan-dataelements.yaml, whose header says why).
+#
+# THE CHANNEL SITS ONE OBJECT ABOVE THE NEIGHBOUR. The graph detects
+# that from the declared paths and switches to a prefix join for it;
+# nothing needs configuring, and the detection is structural, so the
+# root being InternetGatewayDevice changes nothing.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: wifi-scan-dataelements-nokia-tr098
+spec:
+  mappings:
+    - canonical: canonical.wifi.scan.result.{i}.bssid
+      valueType: string
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.BSSID
+    # Reduced to a salted digest the moment it is read and never stored.
+    # See baseline/tr181/wifi-scan.yaml for why it is declared at all.
+    - canonical: canonical.wifi.scan.result.{i}.ssid
+      valueType: string
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.SSID
+    - canonical: canonical.wifi.scan.result.{i}.rssi
+      valueType: int
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.SignalStrength
+    - canonical: canonical.wifi.scan.result.{i}.bandwidth
+      valueType: string
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.ChannelBandwidth
+    - canonical: canonical.wifi.scan.result.{i}.channel
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.Channel
+
+    - canonical: canonical.wifi.ap.{i}.bssid
+      valueType: string
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.BSSID
+    - canonical: canonical.wifi.ssid.{i}.ssid
+      valueType: string
+      devicePath: InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.SSID
+---
+# The collection half. Nothing reaches device_parameters until a
+# telemetry profile asks, and the graph reads current values. Same four
+# attributes and the same cadence as baseline/dataelements/
+# wifi-scan-telemetry.yaml; SSID is deliberately not collected, for the
+# same reason (a neighbour's network name is third-party personal data).
+#
+# CARDINALITY: NeighborBSS rows are per heard AP per channel per radio.
+# A Beacon 2 in a dense block returns dozens per radio; the set below is
+# what the graph reads and nothing else.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-beacon-dataelements-scan-tr098
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["ALCL"]}
+      - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon G6"]}
+  parameters:
+    - path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.Channel"
+      interval: 900
+    - path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.BSSID"
+      interval: 3600
+    - path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.SignalStrength"
+      interval: 0
+    - path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.ChannelBandwidth"
+      interval: 900

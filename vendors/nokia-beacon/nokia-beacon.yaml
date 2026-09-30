@@ -6,13 +6,16 @@
 # ALCL manufacturer and the product class, restating the baseline tables
 # so the vendor binding does not strip the device of standard coverage.
 #
-# The Beacon 3.1 (TR-181) already resolves its mesh map from
-# WiFi.DataElements and its clients from the standard AssociatedDevice
-# table through the baseline. The TR-098 Beacons expose the same mesh
-# data under a Device.WiFi.DataElements subtree alongside their IGD
-# root; wiring their client signal, topology and neighbour scan onto
-# that tree is the vendor work still to come, added here as tables and
-# rules once each is proven on the hardware.
+# The Beacon 3.1 (TR-181) resolves its mesh map from WiFi.DataElements
+# and its clients from the standard AssociatedDevice table through the
+# baseline. The TR-098 Beacons expose the same Data Elements tree rooted
+# at InternetGatewayDevice.DataElements, which no baseline table knows,
+# so this directory carries the pieces that read it: client signal and
+# topology (dataelements-clients.yaml, dataelements-topology.yaml), the
+# controller's own channel-scan results (dataelements-scan.yaml), and
+# the neighbour scan an operator can trigger, which lives under the
+# vendor diagnostic instead (wifi-scan.yaml). Each was proven on the
+# hardware before it was added.
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingProfile
 metadata:

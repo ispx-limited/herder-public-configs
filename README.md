@@ -165,6 +165,14 @@ A repo-wide tsconfig would put every script in one shared global scope,
 which is not how they run, and it reports false name collisions between
 unrelated scripts. Check per file.
 
+A document names its script (`script:`, `normalize:`) relative to its own
+directory first and to the repository root second, so `script: arris-hnc.ts`
+beside `hnc-topology.yaml` and `normalize: platform/actions/ping.ts` from
+anywhere both resolve. Both forms are valid everywhere from Herder 0.51.1;
+before it the action store accepted only the root-relative form and skipped
+a vendor profile written the other way, with a warning in the log and no
+capability on the device page.
+
 ## Contributing
 
 Vendor support is the most useful thing to add: a `vendors/<name>/` file with
