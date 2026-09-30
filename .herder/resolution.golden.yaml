@@ -3349,6 +3349,8 @@ devices:
       profiles:
         - nokia-beacon-dataelements-scan-tr098
         - nokia-beacon-dataelements-tr098
+        - nokia-beacon-mesh-role-tr098
+        - nokia-beacon-mesh-tr098
         - tr098-lan-eth
         - tr098-lan-hosts
         - tr098-nat
@@ -3401,6 +3403,42 @@ devices:
           interval: 0
         - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.STA.*.LastDataDownlinkRate
           source: nokia-beacon-dataelements-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_Wifi.WorkRole
+          source: nokia-beacon-mesh-role-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_Wifi.WorkMode
+          source: nokia-beacon-mesh-role-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.MACAddress
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.SerialNumber
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.SoftwareVersion
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.Status
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.BackhaulStatus
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.SignalStrength
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
           source: tr098-lan-eth
@@ -3771,10 +3809,10 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - nokia-beacon-topology(150)
       - device-addresses(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-topology(50)
       - tr098-hosts-only-topology(50)
     actions:
       capacity_test: ""
@@ -3813,6 +3851,7 @@ devices:
       profiles:
         - nokia-beacon-agent-wlan-tr098
         - nokia-beacon-dataelements-scan-tr098
+        - nokia-beacon-mesh-role-tr098
         - tr098-lan-eth
         - tr098-lan-hosts
         - tr098-nat
@@ -4274,6 +4313,12 @@ devices:
         - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
           source: nokia-beacon-dataelements-scan-tr098
           interval: 900
+        - path: InternetGatewayDevice.X_ALU-COM_Wifi.WorkRole
+          source: nokia-beacon-mesh-role-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_Wifi.WorkMode
+          source: nokia-beacon-mesh-role-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
           source: tr098-lan-eth
           interval: 900
@@ -4646,7 +4691,6 @@ devices:
       - device-addresses(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-topology(50)
       - tr098-hosts-only-topology(50)
     actions:
       capacity_test: ""
@@ -4682,6 +4726,8 @@ devices:
       profiles:
         - nokia-beacon-dataelements-scan-tr098
         - nokia-beacon-dataelements-tr098
+        - nokia-beacon-mesh-role-tr098
+        - nokia-beacon-mesh-tr098
         - tr098-lan-eth
         - tr098-lan-hosts
         - tr098-nat
@@ -4735,6 +4781,42 @@ devices:
         - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.STA.*.LastDataDownlinkRate
           source: nokia-beacon-dataelements-tr098
           interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_Wifi.WorkRole
+          source: nokia-beacon-mesh-role-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_Wifi.WorkMode
+          source: nokia-beacon-mesh-role-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.MACAddress
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.SerialNumber
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.SoftwareVersion
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.Status
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*.BackhaulStatus
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.SignalStrength
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.AssociatedDevice.*.LastDataDownlinkRate
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
           source: tr098-lan-eth
           interval: 900
@@ -5104,10 +5186,10 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - nokia-beacon-topology(150)
       - device-addresses(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-topology(50)
       - tr098-hosts-only-topology(50)
     actions:
       capacity_test: ""
@@ -5144,6 +5226,8 @@ devices:
     telemetry:
       profiles:
         - nokia-beacon-dataelements-tr181
+        - nokia-beacon-mesh-role-tr181
+        - nokia-beacon-mesh-tr181
         - dataelements-wifi-rf
         - dataelements-wifi-scan
         - tr181-ethernet
@@ -5191,6 +5275,36 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.STA.*.LastDataDownlinkRate
           source: nokia-beacon-dataelements-tr181
           interval: 0
+        - path: Device.X_ALU-COM_Wifi.WorkRole
+          source: nokia-beacon-mesh-role-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_Wifi.WorkMode
+          source: nokia-beacon-mesh-role-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.MACAddress
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.SerialNumber
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.SoftwareVersion
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.Status
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.BackhaulStatus
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr181
+          interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
           source: dataelements-wifi-rf
           interval: 3600
@@ -5215,12 +5329,6 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
           source: dataelements-wifi-rf
           interval: 0
-        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
-          source: dataelements-wifi-rf
-          interval: 3600
-        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
-          source: dataelements-wifi-rf
-          interval: 3600
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
           source: dataelements-wifi-rf
           interval: 0
@@ -5674,11 +5782,11 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - nokia-beacon-topology(150)
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-topology(50)
     actions:
       capacity_test: capacity-test-tr181(10)
       channel_scan: ""
@@ -5714,6 +5822,8 @@ devices:
     telemetry:
       profiles:
         - nokia-beacon-dataelements-tr181
+        - nokia-beacon-mesh-role-tr181
+        - nokia-beacon-mesh-tr181
         - dataelements-wifi-rf
         - dataelements-wifi-scan
         - tr181-ethernet
@@ -5761,6 +5871,36 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.STA.*.LastDataDownlinkRate
           source: nokia-beacon-dataelements-tr181
           interval: 0
+        - path: Device.X_ALU-COM_Wifi.WorkRole
+          source: nokia-beacon-mesh-role-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_Wifi.WorkMode
+          source: nokia-beacon-mesh-role-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.MACAddress
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.SerialNumber
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.SoftwareVersion
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.Status
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.X_ALU-COM_BeaconInfo.Beacon.*.BackhaulStatus
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
+          source: nokia-beacon-mesh-tr181
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: nokia-beacon-mesh-tr181
+          interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.ID
           source: dataelements-wifi-rf
           interval: 3600
@@ -5785,12 +5925,6 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Noise
           source: dataelements-wifi-rf
           interval: 0
-        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
-          source: dataelements-wifi-rf
-          interval: 3600
-        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.SSID
-          source: dataelements-wifi-rf
-          interval: 3600
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.UnicastBytesSent
           source: dataelements-wifi-rf
           interval: 0
@@ -6244,11 +6378,11 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - nokia-beacon-topology(150)
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
-      - nokia-beacon-topology(50)
     actions:
       capacity_test: capacity-test-tr181(10)
       channel_scan: ""

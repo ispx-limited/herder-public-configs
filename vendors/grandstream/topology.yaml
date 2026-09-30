@@ -52,7 +52,7 @@ spec:
     matchExpressions:
       - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
   triggerPaths:
-    - "Device.WiFi.AccessPoint.*.AssociatedDevice.*"
+    - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.*"
   changeHash:
     paths:
       - "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.MACAddress"

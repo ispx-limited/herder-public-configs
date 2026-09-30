@@ -55,32 +55,60 @@ spec:
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.Hostname", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.LastDataDownlinkRate", interval: 0}
 ---
-# The map itself: walk DataElements into gateway, extenders and clients.
-# Scoped to the vendor tuple, not a data model, because the TR-098
-# Beacons carry the tree while registering as igd. Triggers on either
-# root's Device table so it runs whenever the mesh is in the batch.
+# The map itself (topology.ts): the controller, its satellites from Data
+# Elements or Nokia's satellite table, its SSIDs, and every client.
+#
+# Priority 150, above both fallbacks a Beacon also matches
+# (tr098-hosts-only-topology at 50, easymesh-topology-default at 100):
+# the map is the newest snapshot of the highest-priority rule, so this
+# one must emit the whole graph, and it runs on every batch either of
+# them would. Not on an agent, whose map is its controller's; the tag is
+# written by nokia-beacon-mesh-role.
 apiVersion: telemetry.herder.io/v1alpha1
 kind: EnrichmentRule
 metadata:
   name: nokia-beacon-topology
 spec:
-  priority: 50
+  priority: 150
   deviceSelector:
     matchExpressions:
       - {key: "manufacturer", operator: In, values: ["ALCL"]}
       - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon 4", "Beacon G6"]}
+      - {key: "tag:mesh:agent", operator: DoesNotExist}
   triggerPaths:
     - "Device.WiFi.DataElements.Network.Device.*"
+    - "Device.X_ALU-COM_BeaconInfo.Beacon.*"
+    - "Device.WiFi.SSID.*"
+    - "Device.Hosts.Host.*"
     - "InternetGatewayDevice.DataElements.Network.Device.*"
+    - "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.*"
+    - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.*"
+    - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"
   changeHash:
     paths:
       - "Device.WiFi.DataElements.Network.Device.{i}.ID"
       - "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress"
+      - "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.MACAddress"
+      - "Device.X_ALU-COM_BeaconInfo.Beacon.{i}.Status"
+      - "Device.WiFi.SSID.{i}.SSID"
+      - "Device.WiFi.SSID.{i}.Status"
+      - "Device.Hosts.Host.{i}.PhysAddress"
+      - "Device.Hosts.Host.{i}.Active"
       - "InternetGatewayDevice.DataElements.Network.Device.{i}.ID"
       - "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress"
+      - "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.MACAddress"
+      - "InternetGatewayDevice.X_ALU-COM_BeaconInfo.Beacon.{i}.Status"
+      - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.SSID"
+      - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.Status"
+      - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.MACAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.Active"
   coalesceWindow: 60s
-  # Beacons report Data Elements SignalStrength as RCPI (0-220); the
-  # scripts convert with raw/2 - 110. Set dbm for a firmware that reports dBm.
   config:
+    # Data Elements SignalStrength is RCPI on the Beacons (0-220,
+    # dBm = raw/2 - 110). Set dbm for a firmware that reports dBm.
     rssiEncoding: rcpi
-  script: dataelements.ts
+    # The TR-098 association table's SignalStrength, already dBm.
+    staSignalEncoding: dbm
+    includeInactiveHosts: false
+  script: topology.ts

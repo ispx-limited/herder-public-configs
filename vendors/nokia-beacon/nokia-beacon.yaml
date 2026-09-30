@@ -43,6 +43,7 @@ spec:
     - nat-tr181
     - software-tr181
     - oriel-home-tr181
+    - nokia-beacon-mesh-tr181
 ---
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingProfile
@@ -68,3 +69,4 @@ spec:
     - voice-tr104
     - nat-tr098
     - wifi-scan-nokia-beacon
+    - nokia-beacon-mesh-tr098
