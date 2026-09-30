@@ -366,6 +366,14 @@
     const ifaceName = (ifaceEntry.Name as string | undefined) || ("eth" + ifaceIdx);
     const ifacePath = "Device.Ethernet.Interface." + ifaceIdx;
     ifaceByPath[ifacePath] = { mac: ifaceMac, name: ifaceName, path: ifacePath };
+    // A port that carries the gateway's own MAC is the gateway. Some
+    // firmware reports its Data Elements ID and a LAN port's MAC as the
+    // same address (a Nokia Beacon 3.1 does, on eth1), and drawing the
+    // port as a node of its own replaced the gateway node with it: the
+    // map then showed the SSIDs and the other ports hanging off eth1. A
+    // wired host on that port still attaches to the gateway through
+    // ifaceByPath, since the ids are the same.
+    if (ifaceMac === gatewayMAC) continue;
     // The alias is what a device profile keys its port names on. The
     // Name this firmware reports is an internal object path, and the
     // alias is the short token inside it, so both are emitted and the
