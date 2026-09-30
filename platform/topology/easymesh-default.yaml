@@ -12,7 +12,10 @@
 # a follow-up if operators need it.
 #
 # Clients walk AssociatedDevice tables per radio. Hostname / IPv4 /
-# IPv6 cross-ref Device.Hosts.Host.* by MAC.
+# IPv6 cross-ref Device.Hosts.Host.* by MAC. A batch with no
+# association row at all draws its wireless hosts from the host table
+# instead (Layer1Interface names the radio), which is the only place
+# firmware without the table says who is on Wi-Fi.
 #
 # Cost: triggerPaths gates on the wifi / hosts subtree so unrelated
 # Informs skip the script entirely. changeHash on structural fields
@@ -60,6 +63,10 @@ spec:
       - "Device.WiFi.MultiAP.APDevice.{i}.MACAddress"
       - "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.AssociatedDevice.{i}.MACAddress"
       - "Device.Hosts.Host.{i}.PhysAddress"
+      # Where the host table is what places a client on a radio, a host
+      # leaving or changing band is a change to the graph.
+      - "Device.Hosts.Host.{i}.Active"
+      - "Device.Hosts.Host.{i}.Layer1Interface"
   coalesceWindow: 60s
   config:
     # rssiEncoding: "dbm" (default for MultiAP) or "rcpi". RCPI converts
@@ -68,4 +75,14 @@ spec:
     # includeInactiveHosts: when false (default), Hosts.Host.{j}.Active
     # gates client emission so disconnected clients drop out.
     includeInactiveHosts: false
+    # Which leaf under Hosts.Host.{i} carries a wireless host's signal
+    # in dBm, tried in order. Read only for a client drawn from the host
+    # table, and TR-181 defines no such leaf, so every entry is a vendor
+    # extension. They are listed here, not in a vendor rule, because a
+    # device draws one map: a second topology rule on the same device
+    # writes a second snapshot in the same session and the map reads
+    # whichever it finds first. A leaf a device does not report costs
+    # nothing; collecting it is the vendor profile's job.
+    #   X_ALU-COM_WifiRSSI  Nokia FastMile (vendors/nokia-fastmile)
+    hostSignalLeaves: ["X_ALU-COM_WifiRSSI"]
   script: easymesh-default.ts

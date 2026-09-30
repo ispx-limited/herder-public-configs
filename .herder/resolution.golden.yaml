@@ -6417,6 +6417,7 @@ devices:
         - baseline-tr181-ui(10/1)
     telemetry:
       profiles:
+        - nokia-fastmile-wifi-hosts
         - dataelements-wifi-rf
         - dataelements-wifi-scan
         - tr181-ethernet
@@ -6431,6 +6432,21 @@ devices:
         - tr181-wifi-neighbors
         - tr181-wifi-rf
       parameters:
+        - path: Device.Hosts.Host.*.AssociatedDevice
+          source: nokia-fastmile-wifi-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.X_ALU-COM_WifiBand
+          source: nokia-fastmile-wifi-hosts
+          interval: 0
+        - path: Device.Hosts.Host.*.X_ALU-COM_WifiRSSI
+          source: nokia-fastmile-wifi-hosts
+          interval: 0
+        - path: Device.Hosts.X_ALU-COM_NumberOfWifi2GHost
+          source: nokia-fastmile-wifi-hosts
+          interval: 0
+        - path: Device.Hosts.X_ALU-COM_NumberOfWifi5GHost
+          source: nokia-fastmile-wifi-hosts
+          interval: 0
         - path: Device.WiFi.DataElements.Network.ControllerID
           source: dataelements-wifi-rf
           interval: 3600
@@ -6926,6 +6942,7 @@ devices:
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-identity(100)
+      - nokia-fastmile-wifi-clients(50)
     actions:
       capacity_test: capacity-test-tr181(10)
       channel_scan: ""

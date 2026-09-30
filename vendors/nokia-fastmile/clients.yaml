@@ -1,0 +1,64 @@
+# FastMile Wi-Fi clients: the host table is the only place they are.
+#
+# This firmware (1.2202.00.0287) has no association table. It faults
+# 9005 on Device.WiFi.AccessPoint.{i}.AssociatedDevice. and rejects
+# AssociatedDeviceNumberOfEntries, so everything the baseline reads
+# about a station comes back empty and a FastMile's map showed wired
+# clients only, on units with a dozen phones on the radio.
+#
+# What it does report is per host, under Device.Hosts.Host.{i}, as seen
+# on units in service:
+#
+#   Layer1Interface      Device.WiFi.Radio.2 (the radio, not the SSID)
+#   AssociatedDevice     Device.WiFi.AccessPoint.5.AssociatedDevice.11,
+#                        a reference into the table that cannot be read;
+#                        the access point number is what it is good for
+#   X_ALU-COM_WifiBand   "2G" | "5G", empty for a wired host
+#   X_ALU-COM_WifiRSSI   dBm (-36 to -82 on the fleet), 0 for a wired
+#                        host and for a wireless one with no reading
+#
+# The baseline tr181-hosts profile already reads Layer1Interface. This
+# profile adds the rest, every session, because the topology rule and
+# the clients rule below each see one batch and nothing else. The two
+# counters are the unit's own answer to "is anyone on Wi-Fi here".
+#
+# The map itself is platform/topology/easymesh-default, which draws
+# wireless hosts from the host table when a batch has no association
+# row and reads the signal from X_ALU-COM_WifiRSSI.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: nokia-fastmile-wifi-hosts
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["Nokia"]}
+      - {key: "productClass", operator: In, values: ["3TG01797"]}
+  parameters:
+    - {path: "Device.Hosts.Host.{i}.AssociatedDevice", interval: 0}
+    - {path: "Device.Hosts.Host.{i}.X_ALU-COM_WifiBand", interval: 0}
+    - {path: "Device.Hosts.Host.{i}.X_ALU-COM_WifiRSSI", interval: 0}
+    - {path: "Device.Hosts.X_ALU-COM_NumberOfWifi2GHost", interval: 0}
+    - {path: "Device.Hosts.X_ALU-COM_NumberOfWifi5GHost", interval: 0}
+---
+# Per-client signal for the radar and the client views, from the same
+# host rows. The generic rule (200) reads the association table and
+# emits nothing here; this one is the FastMile's only source.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: nokia-fastmile-wifi-clients
+spec:
+  priority: 50
+  deviceSelector:
+    matchExpressions:
+      - {key: "manufacturer", operator: In, values: ["Nokia"]}
+      - {key: "productClass", operator: In, values: ["3TG01797"]}
+  triggerPaths:
+    - "Device.Hosts.Host.*"
+  changeHash:
+    paths:
+      - "Device.Hosts.Host.{i}.X_ALU-COM_WifiRSSI"
+  coalesceWindow: 60s
+  script: clients.ts

@@ -9,6 +9,13 @@
 //
 // Hostname / IPv4 / IPv6 cross-ref Device.Hosts.Host.* by MAC.
 //
+// Firmware with no association table at all (a Nokia FastMile faults
+// 9005 on AccessPoint.{i}.AssociatedDevice. and rejects its entry
+// count) still names the radio each wireless host is on in the host
+// table. When a batch carries no association row, step 7 draws those
+// hosts as Wi-Fi clients, so such a unit's map is not wired clients
+// only.
+//
 // Everything here is read from one telemetry batch. The stored
 // parameter model is not reachable from an enrichment rule, so a path
 // collected on an interval is present in one batch out of however many
@@ -23,6 +30,18 @@
 (function () {
   const rssiEncoding: string = ctx.configGet<string>("rssiEncoding", "dbm");
   const includeInactive: boolean = ctx.configGet<boolean>("includeInactiveHosts", false);
+  // Which leaf under Hosts.Host.{i} carries a wireless host's signal in
+  // dBm, tried in order. TR-181 puts a station's signal on the
+  // association table, so this only matters where step 7 applies, and
+  // every leaf named is a vendor extension.
+  const hostSignalLeaves: string[] = ctx.configGet<string[]>("hostSignalLeaves", []);
+  function hostSignal(h: MatchedEntry): string {
+    for (let k = 0; k < hostSignalLeaves.length; k++) {
+      const v = h[hostSignalLeaves[k]];
+      if (typeof v === "string" && v !== "") return v;
+    }
+    return "";
+  }
 
   // A station the CPE marks not-active has disassociated or gone to
   // sleep; its SignalStrength reads 0, the vendor's "no measurement"
@@ -57,6 +76,11 @@
     layer1: string;
     lease: string;
     addressSource: string;
+    // The host's row in the association table, as the host table
+    // references it, and its signal from hostSignalLeaves. Both are ""
+    // when the batch does not carry them.
+    assoc: string;
+    signal: string;
   }
   const hostByMAC: Record<string, HostMeta> = {};
   const hosts = batch.matches("Device.Hosts.Host.*");
@@ -65,7 +89,10 @@
     const physAddr = (h.PhysAddress as string | undefined) || "";
     const mac = physAddr.toLowerCase();
     if (!mac) continue;
-    if (!includeInactive && (h.Active as string | undefined) === "false") continue;
+    // A TR-069 boolean is "0"/"1" or "false"/"true" on the wire, and
+    // this tested for "false" alone, so a host reported as Active 0
+    // stayed on the map.
+    if (!includeInactive && isInactive(h.Active)) continue;
 
     const v6List = batch.matches(
       "Device.Hosts.Host." + h.$indexes.Host + ".IPv6Address.*.IPAddress",
@@ -79,6 +106,8 @@
       layer1: (h.Layer1Interface as string | undefined) || "",
       lease: (h.LeaseTimeRemaining as string | undefined) || "",
       addressSource: (h.AddressSource as string | undefined) || "",
+      assoc: (h.AssociatedDevice as string | undefined) || "",
+      signal: hostSignal(h),
     };
   }
 
@@ -628,6 +657,7 @@
     const meshStaBase = "Device.WiFi.MultiAP.APDevice." + apIdx + ".Radio." +
       radioIdx + ".AP." + apEntryIdx + ".AssociatedDevice." +
       s.$indexes.AssociatedDevice + ".";
+    emittedClients[clientMAC] = true;
     topology.addNode({
       id: clientMAC,
       type: "client",
@@ -655,5 +685,86 @@
     });
 
     edgeRssi(s.SignalStrength, parentNodeId, clientMAC);
+  }
+
+  // ---- Step 7: Wi-Fi clients only the host table knows ----
+  // The association table is the authority wherever a device has one,
+  // so this runs only for a batch with no association row at all, flat
+  // or mesh. A device that reports the table is drawn exactly as
+  // before.
+  //
+  // What is left is firmware that has no table to report. Its host
+  // table still says which hosts are wireless: Layer1Interface names
+  // the radio (or the SSID) the host is reached through, and
+  // Hosts.Host.{i}.AssociatedDevice, where the batch carries it, names
+  // the access point. Both are standard TR-181. The signal is not, so
+  // it comes from hostSignalLeaves.
+  //
+  // The SSID is resolved by the routes the data model offers, then by
+  // index: an access point whose SSIDReference the firmware does not
+  // report is taken to serve the SSID of the same number, unless that
+  // SSID is known to sit on another radio. A host no route resolves
+  // hangs off the gateway with the band of its radio, which is still
+  // more than the map said about it before.
+  if (flatStations.length === 0 && meshStations.length === 0) {
+    for (const macKey in hostByMAC) {
+      if (emittedClients[macKey]) continue;
+      const hostMeta = hostByMAC[macKey];
+      const viaSsid = hostMeta.layer1.match(/^Device\.WiFi\.SSID\.(\d+)/);
+      const viaRadio = hostMeta.layer1.match(/^Device\.WiFi\.Radio\.(\d+)/);
+      if (!viaSsid && !viaRadio) continue;
+
+      let radioIdx = viaRadio ? viaRadio[1] : "";
+      let ssidMeta: SsidMeta | null = viaSsid ? ssidByIdx[viaSsid[1]] || null : null;
+      if (!ssidMeta) {
+        const viaAP = hostMeta.assoc.match(/^Device\.WiFi\.AccessPoint\.(\d+)\./);
+        if (viaAP) {
+          ssidMeta = ssidForAP(viaAP[1]);
+          const sameIdx = ssidByIdx[viaAP[1]];
+          if (!ssidMeta && sameIdx
+            && (!sameIdx.radioIdx || !radioIdx || sameIdx.radioIdx === radioIdx)) {
+            ssidMeta = sameIdx;
+          }
+        }
+      }
+      if (!radioIdx && ssidMeta) radioIdx = ssidMeta.radioIdx;
+
+      const band = bandOf(radioIdx) || (ssidMeta ? ssidMeta.band : "");
+      const parentNodeId = ssidMeta && emittedSsids[ssidMeta.bssid]
+        ? ssidMeta.bssid
+        : gatewayMAC;
+
+      // dBm, and only a real reading: 0 is the no-measurement
+      // placeholder an idle or departed host is left with.
+      const dbm = parseFloat(hostMeta.signal);
+      const measured = !isNaN(dbm) && dbm < 0;
+
+      topology.addNode({
+        id: macKey,
+        type: "client",
+        hostname: hostMeta.hostname || undefined,
+        ipv4: hostMeta.ipv4 || undefined,
+        ipv6: hostMeta.ipv6 || undefined,
+        address_source: hostMeta.addressSource || undefined,
+        lease_remaining_s: hostMeta.lease || undefined,
+        interface_type: "Wi-Fi",
+        ssid: ssidMeta ? ssidMeta.name || undefined : undefined,
+        band: bandLabel(band),
+        channel: channelOf(radioIdx) || undefined,
+        signal_dbm: measured ? hostMeta.signal : undefined,
+      });
+      emittedClients[macKey] = true;
+
+      topology.addEdge({
+        parent: parentNodeId,
+        child: macKey,
+        edge_type: bandToEdgeType(band),
+        bssid: ssidMeta ? ssidMeta.bssid : undefined,
+      });
+
+      if (measured) {
+        topology.addEdgeMetric("rssi_dbm", dbm, { parent: parentNodeId, child: macKey });
+      }
+    }
   }
 })();
