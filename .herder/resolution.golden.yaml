@@ -3339,6 +3339,7 @@ devices:
         - baseline-tr098-ui(10/1)
     telemetry:
       profiles:
+        - nokia-beacon-dataelements-scan-tr098
         - nokia-beacon-dataelements-tr098
         - tr098-lan-eth
         - tr098-lan-hosts
@@ -3348,6 +3349,18 @@ devices:
         - tr098-wan
         - tr098-wifi
       parameters:
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 900
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 900
         - path: InternetGatewayDevice.DataElements.Network.ControllerID
           source: nokia-beacon-dataelements-tr098
           interval: 0
@@ -3792,6 +3805,7 @@ devices:
     telemetry:
       profiles:
         - nokia-beacon-agent-wlan-tr098
+        - nokia-beacon-dataelements-scan-tr098
         - tr098-lan-eth
         - tr098-lan-hosts
         - tr098-nat
@@ -4241,6 +4255,18 @@ devices:
         - path: InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1.Stats.ErrorsReceived
           source: nokia-beacon-agent-wlan-tr098
           interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 900
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 900
         - path: InternetGatewayDevice.LANDevice.*.LANEthernetInterfaceConfig.*.Enable
           source: tr098-lan-eth
           interval: 900
@@ -4648,6 +4674,7 @@ devices:
         - baseline-tr098-ui(10/1)
     telemetry:
       profiles:
+        - nokia-beacon-dataelements-scan-tr098
         - nokia-beacon-dataelements-tr098
         - tr098-lan-eth
         - tr098-lan-hosts
@@ -4657,6 +4684,18 @@ devices:
         - tr098-wan
         - tr098-wifi
       parameters:
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.Channel
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 900
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.BSSID
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 3600
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.SignalStrength
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 0
+        - path: InternetGatewayDevice.DataElements.Network.Device.*.Radio.*.ScanResult.*.OpClassScan.*.ChannelScan.*.NeighborBSS.*.ChannelBandwidth
+          source: nokia-beacon-dataelements-scan-tr098
+          interval: 900
         - path: InternetGatewayDevice.DataElements.Network.ControllerID
           source: nokia-beacon-dataelements-tr098
           interval: 0
