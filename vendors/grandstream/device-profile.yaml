@@ -59,3 +59,26 @@ spec:
             component: module
             config:
               module: voice
+---
+# GWN7062 and GWN7002 routers. The TR-181 baseline page carries two
+# sections this hardware can never fill: the model has no
+# Device.NAT.PortMapping table and no Device.UserInterface.RemoteAccess
+# object (both refused with 9005 on every unit of a production fleet,
+# firmware 1.0.9.x and 1.0.11.x alike), so the port-forwards and
+# remote-access sections stayed empty and each session logged the
+# refusals. The network map stays: this model has no Device.Hosts and no
+# Data Elements either, so the map is built from the AccessPoint
+# association table by the grandstream-gwn-topology rule.
+apiVersion: deviceprofiles.herder.io/v1alpha1
+kind: DeviceProfile
+metadata:
+  name: grandstream-gwn70x2-ui
+spec:
+  priority: 50
+  extends: baseline-tr181-ui
+  deviceSelector:
+    matchLabels:
+      oui: "EC74D7"
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
+  dropSections: [port-forwards, remote-access]
