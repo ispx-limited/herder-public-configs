@@ -1,5 +1,5 @@
-// yf-xmpp and yf-xmpp-ata: the device's own XMPP account, written the
-// way Herder's CWMP guide does it.
+// The device's own XMPP account, written the way Herder's CWMP guide
+// does it.
 //
 // Triggered on: first_contact, boot, periodic
 //
