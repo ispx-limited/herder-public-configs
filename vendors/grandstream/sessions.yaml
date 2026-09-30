@@ -1,0 +1,114 @@
+# A GWN's collection, spread out.
+#
+# A Grandstream GWN7062 in service takes over a minute to answer its
+# association table and several seconds for each other read, so a
+# session asked for every baseline path on every inform ran out of its
+# collection budget before it reached the clients, and the map stayed
+# empty. The paths the map and the client signal need
+# (grandstream-gwn-topology, grandstream-wifi-clients) stay on every
+# session; everything else the baseline collects from a GWN each session
+# is read hourly instead. It outranks the baseline profiles (10) whose
+# intervals it overrides, and lists none of the vendor's own paths.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: grandstream-gwn-hourly
+spec:
+  priority: 50
+  deviceSelector:
+    matchLabels:
+      oui: "EC74D7"
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["GWN7062", "GWN7002"]}
+  parameters:
+    - {path: "Device.Ethernet.Interface.{i}.LowerLayers", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Stats.BytesReceived", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Stats.BytesSent", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Stats.ErrorsReceived", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Stats.ErrorsSent", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Stats.PacketsReceived", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Stats.PacketsSent", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Status", interval: 3600}
+    - {path: "Device.Ethernet.Interface.{i}.Upstream", interval: 3600}
+    - {path: "Device.Ethernet.Link.{i}.MACAddress", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.Active", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.AddressSource", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.HostName", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.IPAddress", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.Layer1Interface", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.Layer3Interface", interval: 3600}
+    - {path: "Device.Hosts.Host.{i}.PhysAddress", interval: 3600}
+    - {path: "Device.Hosts.HostNumberOfEntries", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.Enable", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.IPv6Address.{i}.IPAddress", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.IPv6Address.{i}.Origin", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.LowerLayers", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.Status", interval: 3600}
+    - {path: "Device.IP.Interface.{i}.Type", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.Description", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.Enable", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.ExternalPort", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.InternalClient", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.InternalPort", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.LeaseDuration", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.Protocol", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.RemoteHost", interval: 3600}
+    - {path: "Device.NAT.PortMapping.{i}.Status", interval: 3600}
+    - {path: "Device.NAT.PortMappingNumberOfEntries", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.CallControl.Line.{i}.CallStatus", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.CallControl.Line.{i}.DirectoryNumber", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.CallControl.Line.{i}.Enable", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.CallControl.Line.{i}.Status", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.SIP.Client.{i}.AuthUserName", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.SIP.Network.{i}.ProxyServer", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.SIP.Network.{i}.RegistrarServer", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.CallState", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.DirectoryNumber", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.Enable", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.SIP.AuthUserName", interval: 3600}
+    - {path: "Device.Services.VoiceService.{i}.VoiceProfile.{i}.Line.{i}.Status", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.AuthenticationState", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.LastDataUplinkRate", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.OperatingStandard", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Retransmissions", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesReceived", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesSent", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.AssociatedDeviceNumberOfEntries", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.Enable", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.SSIDAdvertisementEnabled", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.Security.ModeEnabled", interval: 3600}
+    - {path: "Device.WiFi.AccessPoint.{i}.Security.ModesSupported", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Manufacturer", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.UnicastBytesReceived", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.UnicastBytesSent", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.Noise", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ReceiveOther", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ReceiveSelf", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.SignalStrength", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.Transmit", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.Utilization", interval: 3600}
+    - {path: "Device.WiFi.DataElements.Network.ID", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.MACAddress", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Manufacturer", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.ManufacturerOUI", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.ModelName", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.AssociatedDevice.{i}.LastDataDownlinkRate", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.AssociatedDevice.{i}.MACAddress", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.AssociatedDevice.{i}.SignalStrength", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.BSSID", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.AP.{i}.SSID", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.Channel", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.Radio.{i}.OperatingFrequencyBand", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.SerialNumber", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.SignalStrength", interval: 3600}
+    - {path: "Device.WiFi.MultiAP.APDevice.{i}.SoftwareVersion", interval: 3600}
+    - {path: "Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.Noise", interval: 3600}
+    - {path: "Device.WiFi.NeighboringWiFiDiagnostic.Result.{i}.SignalStrength", interval: 3600}
+    - {path: "Device.WiFi.Radio.{i}.ChannelUtilization", interval: 3600}
+    - {path: "Device.WiFi.Radio.{i}.Stats.BytesReceived", interval: 3600}
+    - {path: "Device.WiFi.Radio.{i}.Stats.BytesSent", interval: 3600}
+    - {path: "Device.WiFi.Radio.{i}.Stats.FCSErrorCount", interval: 3600}
+    - {path: "Device.WiFi.Radio.{i}.Stats.Noise", interval: 3600}
+    - {path: "Device.WiFi.SSID.{i}.Stats.BytesReceived", interval: 3600}
+    - {path: "Device.WiFi.SSID.{i}.Stats.BytesSent", interval: 3600}
