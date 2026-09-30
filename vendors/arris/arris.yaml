@@ -81,6 +81,9 @@ spec:
 # constrained. Arris/CommScope ships under multiple OUI blocks, and
 # the X_0000C5_* paths are self-selecting anyway (a non-Arris CPE
 # wouldn't expose these paths even if it matched the manufacturer).
+# The product class is: these are TR-098 paths, and Arris also makes
+# TR-181 hardware (the X5042 extender reports manufacturer ARRIS), on
+# which every one of them faults. The list is the mapping profile's.
 apiVersion: telemetry.herder.io/v1alpha1
 kind: TelemetryProfile
 metadata:
@@ -92,6 +95,9 @@ spec:
       - key: manufacturer
         operator: In
         values: [Arris, ARRIS]
+      - key: productClass
+        operator: In
+        values: [NVG578LX, NVG578LX1, NVG448BQ, NVG468MQ, NVG589, NVG599]
   parameters:
     # --- Mesh ESS identity ---
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.ESS.1.ESSName"
@@ -248,6 +254,9 @@ spec:
       - key: manufacturer
         operator: In
         values: [Arris, ARRIS]
+      - key: productClass
+        operator: In
+        values: [NVG578LX, NVG578LX1, NVG448BQ, NVG468MQ, NVG589, NVG599]
   script: arris-client-rssi-labels.ts
 ---
 # WAN posture for the experience score's wan dimension: the error rate
@@ -264,6 +273,9 @@ spec:
       - key: manufacturer
         operator: In
         values: [Arris, ARRIS]
+      - key: productClass
+        operator: In
+        values: [NVG578LX, NVG578LX1, NVG448BQ, NVG468MQ, NVG589, NVG599]
   parameters:
     - path: "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Stats.EthernetErrorsReceived"
       interval: 0

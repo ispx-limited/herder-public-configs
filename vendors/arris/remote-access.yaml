@@ -48,6 +48,9 @@ spec:
     matchExpressions:
       - key: "dataModel:igd"
         operator: Exists
+      - key: productClass
+        operator: In
+        values: [NVG578LX, NVG578LX1, NVG448BQ, NVG468MQ, NVG589, NVG599]
   parameters:
     - path: "InternetGatewayDevice.UserInterface.RemoteAccess.X_0000C5_Status"
       interval: 0
