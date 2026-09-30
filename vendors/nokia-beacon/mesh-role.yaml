@@ -12,29 +12,26 @@
 # capability must not be offered on it, and the tag is the one thing a
 # device selector can see. Removed again when the unit gains a WAN
 # address, which is a unit re-cabled as a gateway.
-apiVersion: telemetry.herder.io/v1alpha1
-kind: EnrichmentRule
+apiVersion: provisioning.herder.io/v1alpha1
+kind: ProvisioningRule
 metadata:
   name: nokia-beacon-mesh-role
 spec:
-  priority: 50
+  # A provisioning rule, not an enrichment rule: the decision needs the
+  # connection request URL and the WAN address together, and an
+  # enrichment batch carries only what this session collected (an
+  # extender's carries two parameters). Provisioning scripts read the
+  # device's stored state through device.get, which is what the first
+  # version of this script called from the wrong surface.
+  triggers:
+    - first_contact
+    - boot
+    - periodic
   deviceSelector:
     matchExpressions:
       - {key: "manufacturer", operator: In, values: ["ALCL"]}
       - {key: "productClass", operator: In, values: ["Beacon 2", "Beacon 3.1", "Beacon 4", "Beacon G6"]}
-  triggerPaths:
-    - "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"
-    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.ExternalIPAddress"
-    - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.ExternalIPAddress"
-    - "Device.ManagementServer.ConnectionRequestURL"
-    - "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
-    - "Device.PPP.Interface.{i}.IPCP.LocalIPAddress"
-  changeHash:
-    paths:
-      - "InternetGatewayDevice.ManagementServer.ConnectionRequestURL"
-      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.ExternalIPAddress"
-      - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.ExternalIPAddress"
-      - "Device.ManagementServer.ConnectionRequestURL"
-      - "Device.IP.Interface.{i}.IPv4Address.{i}.IPAddress"
-      - "Device.PPP.Interface.{i}.IPCP.LocalIPAddress"
-  script: mesh-role.ts
+  desired:
+    script: "mesh-role.ts"
+  priority: 50
+  enabled: true
