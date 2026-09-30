@@ -5,10 +5,28 @@
 // table, so a client on an extender never reached the radar. The
 // DataElements STA table lists every client on every mesh node, so this
 // emits wifi.client.rssi for all of them. Same root discovery and the
-// same negative-dBm guard as the topology script: an idle station
-// reports 0, which is not a signal.
+// same signal handling as the topology script.
+//
+// THE SIGNAL IS RCPI, NOT dBm. Data Elements defines STA.SignalStrength
+// as an RCPI-style unsigned value (0-220, dBm = raw/2 - 110), and the
+// Beacons report exactly that: a production fleet read 68 to 162, which
+// is -76 to -29 dBm. The first version of this rule kept only negative
+// values, so it emitted nothing for any station on any Beacon and the
+// per-client signal stayed empty fleet-wide. The encoding is a rule
+// config key with the vendor's default, as platform/topology/
+// easymesh-default does, so a firmware that switches to dBm is one
+// line of YAML. A raw 0 is the no-measurement placeholder in both
+// encodings and is never emitted.
 
 (function () {
+  const rssiEncoding = String(ctx.configGet("rssiEncoding", "rcpi"));
+  function toDbm(v: unknown): number | null {
+    if (typeof v !== "string" && typeof v !== "number") return null;
+    const raw = parseFloat(String(v));
+    if (isNaN(raw) || raw === 0) return null;
+    const dbm = rssiEncoding === "rcpi" ? raw / 2 - 110 : raw;
+    return dbm < 0 ? dbm : null;
+  }
   function mac(s: unknown): string {
     return typeof s === "string" ? s.trim().toLowerCase().replace(/-/g, ":") : "";
   }
@@ -43,8 +61,8 @@
       band: BAND[s.$indexes.Radio] || "unknown",
       node: mac(batch.params[root + "Device." + s.$indexes.Device + ".ID"]) || null,
     };
-    const rssi = toInt(s.SignalStrength);
-    if (rssi !== null && rssi < 0) emit("wifi.client.rssi", rssi, labels);
+    const rssi = toDbm(s.SignalStrength);
+    if (rssi !== null) emit("wifi.client.rssi", rssi, labels);
     const dl = toInt(s.LastDataDownlinkRate);
     if (dl !== null && dl > 0) emit("wifi.client.tx_rate", dl, labels);
   }
