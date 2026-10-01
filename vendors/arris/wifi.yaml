@@ -8,8 +8,7 @@
 #
 # The radio slots follow wifi-tr098 exactly, because a width has to
 # land on the same WLANConfiguration instance as the channel it belongs
-# to: slots 1 and 2 are found by band off PossibleChannels, and slots 3
-# to 8 are the instance of the same number.
+# to: slots 1 and 2, found by band off PossibleChannels, and no others.
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingTable
 metadata:
@@ -34,24 +33,6 @@ spec:
         matchType: Prefix
         fallbackIndex: 2
       pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_OperatingChannelBandwidth
-    - canonical: canonical.wifi.radio.3.bandwidth
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.X_0000C5_OperatingChannelBandwidth
-    - canonical: canonical.wifi.radio.4.bandwidth
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.X_0000C5_OperatingChannelBandwidth
-    - canonical: canonical.wifi.radio.5.bandwidth
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.X_0000C5_OperatingChannelBandwidth
-    - canonical: canonical.wifi.radio.6.bandwidth
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.X_0000C5_OperatingChannelBandwidth
-    - canonical: canonical.wifi.radio.7.bandwidth
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.X_0000C5_OperatingChannelBandwidth
-    - canonical: canonical.wifi.radio.8.bandwidth
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.X_0000C5_OperatingChannelBandwidth
     - canonical: canonical.wifi.radio.1.band
       valueType: string
       instanceAlias:
@@ -70,21 +51,3 @@ spec:
         matchType: Prefix
         fallbackIndex: 2
       pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_OperatingFrequencyBand
-    - canonical: canonical.wifi.radio.3.band
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.3.X_0000C5_OperatingFrequencyBand
-    - canonical: canonical.wifi.radio.4.band
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.4.X_0000C5_OperatingFrequencyBand
-    - canonical: canonical.wifi.radio.5.band
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.5.X_0000C5_OperatingFrequencyBand
-    - canonical: canonical.wifi.radio.6.band
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.6.X_0000C5_OperatingFrequencyBand
-    - canonical: canonical.wifi.radio.7.band
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.7.X_0000C5_OperatingFrequencyBand
-    - canonical: canonical.wifi.radio.8.band
-      valueType: string
-      devicePath: InternetGatewayDevice.LANDevice.1.WLANConfiguration.8.X_0000C5_OperatingFrequencyBand
