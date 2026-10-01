@@ -26,7 +26,8 @@ baseline/            Vendor-neutral defaults, keyed by data model
 platform/            Behaviour that is not tied to a vendor or data model
 ├── devices/         The addresses a CPE holds, for the devices list lookup
 ├── provisioning/    boot, first_contact and periodic rules with their scripts
-└── topology/        EasyMesh and TR-098 topology enrichment
+└── topology/        EasyMesh and TR-098 topology enrichment, and the
+                     addresses and gateway that link an extender to its home
 
 recipes/             Useful, generic, and writes to the CPE, so NOT shipped
                      active. Copy one into your own repo and enable it

@@ -68,6 +68,17 @@ spec:
     # the device over XMPP instead of HTTP.
     - path: "Device.ManagementServer.ConnReqJabberID"
       interval: 3600
+    # The gateway a LAN-side device sits behind, as the device learned it
+    # over DHCP (TR-069 Annex F). Filled in by extenders, access points
+    # and ATAs; a gateway does not have the object, and bisect and the
+    # availability cache keep that from poisoning the batch. The
+    # topology-gateway rule turns it into the link to the gateway.
+    - path: "Device.GatewayInfo.ManufacturerOUI"
+      interval: 3600
+    - path: "Device.GatewayInfo.ProductClass"
+      interval: 3600
+    - path: "Device.GatewayInfo.SerialNumber"
+      interval: 3600
     # Remote-access posture. Collected with identity because the fleet
     # question ("how many gateways answer management from the WAN") is
     # a posture question, and the support question needs current state
