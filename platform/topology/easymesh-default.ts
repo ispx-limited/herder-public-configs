@@ -312,7 +312,12 @@
   for (let i = 0; i < ssidEntries.length; i++) {
     const s = ssidEntries[i];
     const ssidIdx = s.$indexes.SSID;
-    const bssid = ((s.BSSID as string | undefined) || "").toLowerCase();
+    // Some firmware fills BSSID on one network per radio and leaves it
+    // empty on the rest, which carry their address in MACAddress. A
+    // network skipped for want of a BSSID took its clients off their
+    // SSID and hung them from the gateway untyped.
+    const bssid = ((s.BSSID as string | undefined) || (s.MACAddress as string | undefined) || "")
+      .toLowerCase();
     if (!bssid) continue;
     const ssidName = (s.SSID as string | undefined) || "";
     const lowerLayers = (s.LowerLayers as string | undefined) || "";

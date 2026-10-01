@@ -234,6 +234,12 @@ spec:
       interval: 3600
     - path: "Device.WiFi.SSID.{i}.BSSID"
       interval: 0
+    # The address of a network whose BSSID the firmware leaves empty. An
+    # X5042 fills BSSID on the first network of each radio only; the
+    # others carry their address here, and without it the topology rule
+    # has no id to draw them under.
+    - path: "Device.WiFi.SSID.{i}.MACAddress"
+      interval: 0
     - path: "Device.WiFi.SSID.{i}.LowerLayers"
       interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesSent"
