@@ -36,7 +36,10 @@ spec:
     - "InternetGatewayDevice.LANDevice.{i}.LANEthernetInterfaceConfig.{i}.MACAddress"
     - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANIPConnection.{i}.MACAddress"
     - "InternetGatewayDevice.WANDevice.{i}.WANConnectionDevice.{i}.WANPPPConnection.{i}.MACAddress"
+    - "InternetGatewayDevice.LANDevice.{i}.WLANConfiguration.{i}.BSSID"
     - "Device.Ethernet.Interface.{i}.MACAddress"
     - "Device.Ethernet.Link.{i}.MACAddress"
+    - "Device.WiFi.SSID.{i}.BSSID"
+    - "Device.WiFi.SSID.{i}.MACAddress"
   coalesceWindow: 60s
   script: identity.ts

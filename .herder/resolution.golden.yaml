@@ -1452,6 +1452,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -1673,6 +1682,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -2126,6 +2136,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -2221,6 +2240,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
       - grandstream-gwn-topology(50)
       - grandstream-wifi-clients(50)
@@ -2672,6 +2692,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -2770,6 +2799,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
       - grandstream-gwn-topology(50)
     actions:
@@ -3095,6 +3125,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -3316,6 +3355,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -5565,6 +5605,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -5787,6 +5836,7 @@ devices:
       - nokia-beacon-topology(150)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
     actions:
@@ -6161,6 +6211,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -6383,6 +6442,7 @@ devices:
       - nokia-beacon-topology(150)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
       - nokia-beacon-clients(50)
     actions:
@@ -6722,6 +6782,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -6943,6 +7012,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
       - nokia-fastmile-wifi-clients(50)
     actions:
@@ -7284,6 +7354,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -7505,6 +7584,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -7838,6 +7918,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -8059,6 +8148,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -8382,6 +8472,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -8603,6 +8702,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -8926,6 +9026,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -9147,6 +9256,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -9470,6 +9580,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -9691,6 +9810,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -10012,6 +10132,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -10233,6 +10362,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -10554,6 +10684,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -10775,6 +10914,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -11100,6 +11240,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -11327,6 +11476,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -12971,6 +13121,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -13192,6 +13351,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -13520,6 +13680,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -13747,6 +13916,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -14480,6 +14650,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -14701,6 +14880,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -15022,6 +15202,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -15243,6 +15432,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -15564,6 +15754,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -15785,6 +15984,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -16516,6 +16716,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -16737,6 +16946,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)
@@ -17062,6 +17272,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.GatewayInfo.ManufacturerOUI
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.ProductClass
+          source: tr181-system
+          interval: 3600
+        - path: Device.GatewayInfo.SerialNumber
+          source: tr181-system
+          interval: 3600
         - path: Device.UserInterface.RemoteAccess.Enable
           source: tr181-system
           interval: 3600
@@ -17289,6 +17508,7 @@ devices:
       - generic-client-wifi(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
+      - topology-gateway(100)
       - topology-identity(100)
     actions:
       capacity_test: capacity-test-tr181(10)

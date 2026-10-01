@@ -1,0 +1,39 @@
+# The gateway a managed LAN-side device names as its own.
+#
+# A device that takes its address from a gateway learns that gateway's
+# identity in the DHCP exchange and reports it under Device.GatewayInfo
+# (TR-069 Annex F): OUI, product class and serial number. An extender,
+# an access point or an ATA with its own management client therefore
+# says outright which gateway it is behind, and the serial it gives is
+# the one that gateway informs with.
+#
+# This rule publishes that as one `topology.gateway` row, and the
+# topology read resolves the OUI and serial to a managed device to find
+# the gateway a device hangs off. It is checked before the address join the
+# topology-identity rule feeds, because it is a statement by the device
+# rather than an inference: it holds when the gateway lists the
+# extender under an address the extender does not report, and when the
+# gateway publishes no graph at all. See
+# docs/public/guides/topology-data-model.md.
+#
+# A device that reports an empty OUI or serial emits nothing. No change hash:
+# the read takes the newest row, and a row that stopped arriving would
+# age out and take the link with it.
+#
+# A vendor that carries the same fact outside the standard object (an
+# EasyMesh controller's serial under a vendor prefix) goes in a vendor
+# rule that emits the same row.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: topology-gateway
+spec:
+  priority: 100
+  deviceSelector:
+    matchExpressions:
+      - key: "dataModel:device"
+        operator: Exists
+  triggerPaths:
+    - "Device.GatewayInfo.SerialNumber"
+  coalesceWindow: 60s
+  script: gateway.ts
