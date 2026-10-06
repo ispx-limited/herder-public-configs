@@ -38,6 +38,10 @@ spec:
     # WiFi phy_rate component: linear 0-100 between floor and ceil Mbps.
     rateFloorMbps: 10
     rateCeilMbps: 100
+    # The standard rate leaves (TR-181 LastDataDownlinkRate, TR-098
+    # LastDataTransmitRate) are kbps. A vendor rule whose firmware
+    # reports Mbps sets this false in its own config block.
+    rateKbps: true
     # WAN error_rate component: 100 at zero errors, 0 at this ratio.
     wanErrorRateCeil: 0.01
     # WAN stability component: 100 at this uptime (seconds), 0 at zero.
