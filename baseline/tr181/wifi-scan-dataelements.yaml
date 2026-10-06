@@ -41,9 +41,22 @@ spec:
     - canonical: canonical.wifi.scan.result.{i}.ssid
       valueType: string
       devicePath: Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.SSID
+    # RCPI, not dBm. Data Elements types SignalStrength as unsignedInt
+    # (0 to 255) and encodes it as 802.11 RCPI, dBm = raw / 2 - 110, the
+    # same encoding the STA table carries (see dataelements-clients.ts
+    # under vendors/nokia-beacon). Stored raw, a reading of 120 is "+120
+    # dBm": louder than any floor and outside the graph's accepted
+    # range, so every Data Elements neighbour was dropped. The mapping
+    # entry carries the conversion, as the noise floor's does.
     - canonical: canonical.wifi.scan.result.{i}.rssi
       valueType: int
       devicePath: Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.SignalStrength
+      transform:
+        pipeline:
+          - type: unit
+            spec:
+              multiplier: 0.5
+              offset: -110
     - canonical: canonical.wifi.scan.result.{i}.bandwidth
       valueType: string
       devicePath: Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ScanResult.{i}.OpClassScan.{i}.ChannelScan.{i}.NeighborBSS.{i}.ChannelBandwidth
