@@ -1,0 +1,43 @@
+# STUN on the CPE, so the ACS can reach it through its NAT (TR-069
+# Annex G).
+#
+# DISABLED AND UNCONFIGURED ON PURPOSE. This rule writes five
+# parameters to every device it matches. Copy it into your own config
+# repository, rename it, set the config below, prove it on one device,
+# then enable it. See ../README.md.
+apiVersion: provisioning.herder.io/v1alpha1
+kind: ProvisioningRule
+metadata:
+  name: stun
+spec:
+  triggers:
+    - first_contact
+    - boot
+    - periodic
+  deviceSelector:
+    # Yours. Left deliberately narrow so a careless adoption matches
+    # nothing rather than the fleet.
+    matchExpressions:
+      - key: "tag:stun"
+        operator: Exists
+  desired:
+    script: "stun.ts"
+  config:
+    # The address the CPE sends its STUN Binding Requests to: Herder's
+    # stun role, on the ACS address. An IP literal or a name the CPE
+    # can resolve; the Annex allows an empty value to mean the ACS
+    # URL's host, but firmware is not uniform about it, so it is
+    # written.
+    stunServer: "CHANGE-ME"
+    # The port the stun role listens on (STUN_LISTEN).
+    port: 3478
+    # Bounds on the keepalive period, in seconds. The CPE sends a
+    # Binding Request at least every maxKeepAlive seconds and never
+    # more often than every minKeepAlive. The maximum has to be shorter
+    # than the NAT's UDP timeout, or the binding closes between
+    # keepalives and the next connection request is dropped: 30 to 180
+    # seconds on consumer gateways, 300 on most carrier-grade NAT.
+    minKeepAlive: 30
+    maxKeepAlive: 120
+  priority: 50
+  enabled: false

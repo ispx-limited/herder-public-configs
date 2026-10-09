@@ -310,6 +310,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -882,6 +891,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -1452,6 +1470,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -2136,6 +2163,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -2692,6 +2728,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -3125,6 +3170,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -3608,6 +3662,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -4487,6 +4550,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -4985,6 +5057,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -5605,6 +5686,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -6211,6 +6301,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -6782,6 +6881,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -7354,6 +7462,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -7918,6 +8035,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -8472,6 +8598,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -9026,6 +9161,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -9580,6 +9724,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -10132,6 +10285,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -10684,6 +10846,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -11240,6 +11411,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -11682,6 +11862,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -12133,6 +12322,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -12552,6 +12750,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -13121,6 +13328,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -13680,6 +13896,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -14084,6 +14309,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -14650,6 +14884,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -15202,6 +15445,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -15754,6 +16006,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -16150,6 +16411,15 @@ devices:
         - path: InternetGatewayDevice.ManagementServer.ConnReqJabberID
           source: tr098-system
           interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.STUNEnable
+          source: tr098-system
+          interval: 3600
+        - path: InternetGatewayDevice.ManagementServer.NATDetected
+          source: tr098-system
+          interval: 0
+        - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
+          source: tr098-system
+          interval: 0
         - path: InternetGatewayDevice.UserInterface.RemoteAccess.Enable
           source: tr098-system
           interval: 3600
@@ -16716,6 +16986,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600
@@ -17272,6 +17551,15 @@ devices:
         - path: Device.ManagementServer.ConnReqJabberID
           source: tr181-system
           interval: 3600
+        - path: Device.ManagementServer.STUNEnable
+          source: tr181-system
+          interval: 3600
+        - path: Device.ManagementServer.NATDetected
+          source: tr181-system
+          interval: 0
+        - path: Device.ManagementServer.UDPConnectionRequestAddress
+          source: tr181-system
+          interval: 0
         - path: Device.GatewayInfo.ManufacturerOUI
           source: tr181-system
           interval: 3600

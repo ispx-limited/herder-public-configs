@@ -62,6 +62,19 @@ spec:
     - canonical: canonical.mgmt.connection_request_jabber_id
       valueType: string
       devicePath: Device.ManagementServer.ConnReqJabberID
+    # Reported once the device has found its NAT binding through the
+    # ACS's STUN server (TR-069 Annex G). With STUNEnable true, Herder
+    # sends a UDP connection request to this address as well as to the
+    # URL above.
+    - canonical: canonical.mgmt.udp_connection_request_address
+      valueType: string
+      devicePath: Device.ManagementServer.UDPConnectionRequestAddress
+    - canonical: canonical.mgmt.stun_enable
+      valueType: boolean
+      devicePath: Device.ManagementServer.STUNEnable
+    - canonical: canonical.mgmt.nat_detected
+      valueType: boolean
+      devicePath: Device.ManagementServer.NATDetected
     - canonical: canonical.mgmt.username
       valueType: string
       devicePath: Device.ManagementServer.Username
