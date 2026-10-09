@@ -69,13 +69,16 @@ spec:
     - path: "Device.ManagementServer.ConnReqJabberID"
       interval: 3600
     # The NAT binding a device with STUN enabled found (TR-069 Annex
-    # G), and whether it is behind a NAT at all. The address is where a
-    # UDP connection request goes, so it is read on every contact: a
-    # binding that moved is only known from the next inform.
+    # G), and whether it is behind a NAT at all. Both are read on every
+    # contact: the address is where a UDP connection request goes and a
+    # binding that moved is only known from the next inform, and both
+    # are written by the device after the session that enabled STUN
+    # has already collected. Change suppression keeps the cost at one
+    # row per change.
     - path: "Device.ManagementServer.STUNEnable"
       interval: 3600
     - path: "Device.ManagementServer.NATDetected"
-      interval: 3600
+      interval: 0
     - path: "Device.ManagementServer.UDPConnectionRequestAddress"
       interval: 0
     # The gateway a LAN-side device sits behind, as the device learned it

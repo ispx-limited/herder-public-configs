@@ -315,7 +315,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -896,7 +896,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -1475,7 +1475,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -2168,7 +2168,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -2733,7 +2733,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -3175,7 +3175,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -3667,7 +3667,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -4555,7 +4555,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -5062,7 +5062,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -5691,7 +5691,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -6306,7 +6306,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -6886,7 +6886,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -7467,7 +7467,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -8040,7 +8040,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -8603,7 +8603,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -9166,7 +9166,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -9729,7 +9729,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -10290,7 +10290,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -10851,7 +10851,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -11416,7 +11416,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -11867,7 +11867,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -12327,7 +12327,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -12755,7 +12755,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -13333,7 +13333,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -13901,7 +13901,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -14314,7 +14314,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -14889,7 +14889,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -15450,7 +15450,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -16011,7 +16011,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -16416,7 +16416,7 @@ devices:
           interval: 3600
         - path: InternetGatewayDevice.ManagementServer.NATDetected
           source: tr098-system
-          interval: 3600
+          interval: 0
         - path: InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress
           source: tr098-system
           interval: 0
@@ -16991,7 +16991,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
@@ -17556,7 +17556,7 @@ devices:
           interval: 3600
         - path: Device.ManagementServer.NATDetected
           source: tr181-system
-          interval: 3600
+          interval: 0
         - path: Device.ManagementServer.UDPConnectionRequestAddress
           source: tr181-system
           interval: 0
