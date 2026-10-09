@@ -38,9 +38,8 @@ UDP as well as to the URL.
   host the UDP connection requests leave from, which Herder's role is.
 - A selector. The shipped one matches a `tag:stun` that nothing has, so
   an unedited adoption is inert.
-- The `stun` role in the deployment's `--roles` and UDP 3478 open from
-  the CPE ranges. The `herder_stun` variable in the collection, or the
-  port in the community compose.
+- The `stun` role in the deployment's `--roles` (`STUN_LISTEN`, default
+  `:3478`) and UDP 3478 open from the CPE ranges.
 - `maxKeepAlive` shorter than the NAT's UDP timeout. The device keeps
   the binding alive by sending a Binding Request at least this often;
   a binding that lapses between keepalives drops the next connection
