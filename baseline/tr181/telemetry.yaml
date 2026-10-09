@@ -68,6 +68,16 @@ spec:
     # the device over XMPP instead of HTTP.
     - path: "Device.ManagementServer.ConnReqJabberID"
       interval: 3600
+    # The NAT binding a device with STUN enabled found (TR-069 Annex
+    # G), and whether it is behind a NAT at all. The address is where a
+    # UDP connection request goes, so it is read on every contact: a
+    # binding that moved is only known from the next inform.
+    - path: "Device.ManagementServer.STUNEnable"
+      interval: 3600
+    - path: "Device.ManagementServer.NATDetected"
+      interval: 3600
+    - path: "Device.ManagementServer.UDPConnectionRequestAddress"
+      interval: 0
     # The gateway a LAN-side device sits behind, as the device learned it
     # over DHCP (TR-069 Annex F). Filled in by extenders, access points
     # and ATAs; a gateway does not have the object, and bisect and the

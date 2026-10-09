@@ -20,7 +20,7 @@ not acceptable however generic it is.
 
 The recipes here are exactly the content that fails that test and is
 still worth having. `xmpp-connection-requests` sets eleven parameters
-on every device it matches. It should never appear on a fleet because
+on every device it matches, and `stun-connection-requests` five. It should never appear on a fleet because
 somebody pointed a source at the wrong path.
 
 ## What a recipe contains

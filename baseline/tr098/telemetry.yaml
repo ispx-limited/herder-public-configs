@@ -66,6 +66,16 @@ spec:
     # the device over XMPP instead of HTTP.
     - path: "InternetGatewayDevice.ManagementServer.ConnReqJabberID"
       interval: 3600
+    # The NAT binding a device with STUN enabled found (TR-069 Annex
+    # G), and whether it is behind a NAT at all. The address is where a
+    # UDP connection request goes, so it is read on every contact: a
+    # binding that moved is only known from the next inform.
+    - path: "InternetGatewayDevice.ManagementServer.STUNEnable"
+      interval: 3600
+    - path: "InternetGatewayDevice.ManagementServer.NATDetected"
+      interval: 3600
+    - path: "InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress"
+      interval: 0
     # Remote-access posture. Collected with identity because the fleet
     # question ("how many gateways answer management from the WAN") is
     # a posture question, and the support question needs current state
