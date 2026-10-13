@@ -1749,6 +1749,7 @@ devices:
       profiles:
         - grandstream-gwn-hourly
         - grandstream-gwn-topology
+        - grandstream-gwn-wifi
         - grandstream-wifi-clients
         - dataelements-wifi-rf
         - dataelements-wifi-scan
@@ -2067,6 +2068,9 @@ devices:
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
           source: grandstream-gwn-topology
           interval: 0
+        - path: Device.WiFi.Radio.*.X_GRANDSTREAM_AvailableChannel
+          source: grandstream-gwn-wifi
+          interval: 3600
         - path: Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
           source: grandstream-wifi-clients
           interval: 0
