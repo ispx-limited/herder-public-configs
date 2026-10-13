@@ -1,0 +1,52 @@
+# The channels a GWN radio can use, read off the vendor leaf.
+#
+# The GWN7062 rejects the standard Device.WiFi.Radio.{i}.PossibleChannels
+# as an unknown parameter (9005 on every unit, retried weekly), along
+# with AutoChannelEnable, OperatingStandards and SupportedFrequencyBands.
+# What the radio can use is under its own prefix instead:
+# X_GRANDSTREAM_AvailableChannel, read-only beside the writable
+# X_GRANDSTREAM_Channel. The baseline canonical mapped onto that leaf
+# gives the Change dialog its channel menu on these units; the baseline
+# capability table stays bound for everything else it maps.
+#
+# The radio slots follow wifi-tr181: slot 1 is the 2.4 GHz radio and
+# slot 2 the 5 GHz one, found by OperatingFrequencyBand, which the GWN
+# reports as 2.4GHz and 5GHz.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: grandstream-gwn-wifi
+spec:
+  priority: 50
+  deviceSelector:
+    matchLabels:
+      oui: "EC74D7"
+    matchExpressions:
+      - {key: "productClass", operator: In, values: ["GWN7062"]}
+  parameters:
+    # Static per firmware and regulatory domain, like PossibleChannels
+    # in the baseline.
+    - {path: "Device.WiFi.Radio.{i}.X_GRANDSTREAM_AvailableChannel", interval: 3600}
+---
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: wifi-grandstream-gwn
+spec:
+  mappings:
+    - canonical: canonical.wifi.radio.1.possible_channels
+      valueType: string
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.X_GRANDSTREAM_AvailableChannel
+    - canonical: canonical.wifi.radio.2.possible_channels
+      valueType: string
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.X_GRANDSTREAM_AvailableChannel

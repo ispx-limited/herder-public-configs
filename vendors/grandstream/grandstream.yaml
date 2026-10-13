@@ -31,6 +31,10 @@ spec:
     - voice-tr104i2
     - wifi-scan-tr181
     - wifi-capability-tr181
+    # The channel list under the vendor prefix; the GWN7062 rejects the
+    # standard PossibleChannels. Listed after the baseline table so its
+    # entries win for the canonicals it maps.
+    - wifi-grandstream-gwn
     - wifi-rf-tr181
     - netdiag-tr181
     - remote-access-tr181
