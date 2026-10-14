@@ -469,107 +469,35 @@ spec:
         matchValue: "6GHz"
         fallbackIndex: 3
       pathTemplate: Device.WiFi.Radio.{index}.OperatingChannelBandwidth
-    - canonical: canonical.wifi.ssid.1.enable
+    - canonical: canonical.wifi.ssid.{i}.enable
       valueType: boolean
-      devicePath: Device.WiFi.SSID.1.Enable
-    - canonical: canonical.wifi.ssid.1.status
+      devicePath: Device.WiFi.SSID.{i}.Enable
+    - canonical: canonical.wifi.ssid.{i}.status
       valueType: string
-      devicePath: Device.WiFi.SSID.1.Status
-    - canonical: canonical.wifi.ssid.1.ssid
+      devicePath: Device.WiFi.SSID.{i}.Status
+    - canonical: canonical.wifi.ssid.{i}.ssid
       valueType: string
-      devicePath: Device.WiFi.SSID.1.SSID
-    - canonical: canonical.wifi.ssid.1.bssid
+      devicePath: Device.WiFi.SSID.{i}.SSID
+    - canonical: canonical.wifi.ssid.{i}.bssid
       valueType: string
-      devicePath: Device.WiFi.SSID.1.BSSID
-    - canonical: canonical.wifi.ssid.2.enable
+      devicePath: Device.WiFi.SSID.{i}.BSSID
+    - canonical: canonical.wifi.ap.{i}.enable
       valueType: boolean
-      devicePath: Device.WiFi.SSID.2.Enable
-    - canonical: canonical.wifi.ssid.2.status
+      devicePath: Device.WiFi.AccessPoint.{i}.Enable
+    - canonical: canonical.wifi.ap.{i}.security_mode
       valueType: string
-      devicePath: Device.WiFi.SSID.2.Status
-    - canonical: canonical.wifi.ssid.2.ssid
-      valueType: string
-      devicePath: Device.WiFi.SSID.2.SSID
-    - canonical: canonical.wifi.ssid.2.bssid
-      valueType: string
-      devicePath: Device.WiFi.SSID.2.BSSID
-    - canonical: canonical.wifi.ssid.3.enable
-      valueType: boolean
-      devicePath: Device.WiFi.SSID.3.Enable
-    - canonical: canonical.wifi.ssid.3.status
-      valueType: string
-      devicePath: Device.WiFi.SSID.3.Status
-    - canonical: canonical.wifi.ssid.3.ssid
-      valueType: string
-      devicePath: Device.WiFi.SSID.3.SSID
-    - canonical: canonical.wifi.ssid.3.bssid
-      valueType: string
-      devicePath: Device.WiFi.SSID.3.BSSID
-    - canonical: canonical.wifi.ssid.4.enable
-      valueType: boolean
-      devicePath: Device.WiFi.SSID.4.Enable
-    - canonical: canonical.wifi.ssid.4.status
-      valueType: string
-      devicePath: Device.WiFi.SSID.4.Status
-    - canonical: canonical.wifi.ssid.4.ssid
-      valueType: string
-      devicePath: Device.WiFi.SSID.4.SSID
-    - canonical: canonical.wifi.ssid.4.bssid
-      valueType: string
-      devicePath: Device.WiFi.SSID.4.BSSID
-    - canonical: canonical.wifi.ap.1.enable
-      valueType: boolean
-      devicePath: Device.WiFi.AccessPoint.1.Enable
-    - canonical: canonical.wifi.ap.1.security_mode
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.1.Security.ModeEnabled
-    - canonical: canonical.wifi.ap.1.client_count
+      devicePath: Device.WiFi.AccessPoint.{i}.Security.ModeEnabled
+    - canonical: canonical.wifi.ap.{i}.client_count
       valueType: unsignedint
-      devicePath: Device.WiFi.AccessPoint.1.AssociatedDeviceNumberOfEntries
-    - canonical: canonical.wifi.ap.2.enable
-      valueType: boolean
-      devicePath: Device.WiFi.AccessPoint.2.Enable
-    - canonical: canonical.wifi.ap.2.security_mode
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.2.Security.ModeEnabled
-    - canonical: canonical.wifi.ap.2.client_count
-      valueType: unsignedint
-      devicePath: Device.WiFi.AccessPoint.2.AssociatedDeviceNumberOfEntries
-    - canonical: canonical.wifi.ap.3.enable
-      valueType: boolean
-      devicePath: Device.WiFi.AccessPoint.3.Enable
-    - canonical: canonical.wifi.ap.3.security_mode
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.3.Security.ModeEnabled
-    - canonical: canonical.wifi.ap.3.client_count
-      valueType: unsignedint
-      devicePath: Device.WiFi.AccessPoint.3.AssociatedDeviceNumberOfEntries
-    - canonical: canonical.wifi.ap.4.enable
-      valueType: boolean
-      devicePath: Device.WiFi.AccessPoint.4.Enable
-    - canonical: canonical.wifi.ap.4.security_mode
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.4.Security.ModeEnabled
+      devicePath: Device.WiFi.AccessPoint.{i}.AssociatedDeviceNumberOfEntries
     # The subscriber's WiFi key. A write flows one way: the plaintext is
     # sealed by the API, opened once inside the protocol adapter and never
     # stored. A mapping entry is not a collection instruction, and no
     # telemetry profile here collects these paths, which is what keeps a
     # fleet-wide store of every subscriber's key from existing.
-    - canonical: canonical.wifi.ap.1.passphrase
+    - canonical: canonical.wifi.ap.{i}.passphrase
       valueType: string
-      devicePath: Device.WiFi.AccessPoint.1.Security.KeyPassphrase
-    - canonical: canonical.wifi.ap.2.passphrase
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.2.Security.KeyPassphrase
-    - canonical: canonical.wifi.ap.3.passphrase
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.3.Security.KeyPassphrase
-    - canonical: canonical.wifi.ap.4.passphrase
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.4.Security.KeyPassphrase
-    - canonical: canonical.wifi.ap.4.client_count
-      valueType: unsignedint
-      devicePath: Device.WiFi.AccessPoint.4.AssociatedDeviceNumberOfEntries
+      devicePath: Device.WiFi.AccessPoint.{i}.Security.KeyPassphrase
 ---
 # Firmware, TR-181.
 #
@@ -768,48 +696,21 @@ spec:
     # Security, supported against enabled. `security_mode` itself is in
     # wifi-tr181; without the supported list next to it, an access point
     # running WPA2 cannot be told apart from one that can do nothing else.
-    - canonical: canonical.wifi.ap.1.security_modes_supported
+    - canonical: canonical.wifi.ap.{i}.security_modes_supported
       valueType: string
-      devicePath: Device.WiFi.AccessPoint.1.Security.ModesSupported
-    - canonical: canonical.wifi.ap.2.security_modes_supported
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.2.Security.ModesSupported
-    - canonical: canonical.wifi.ap.3.security_modes_supported
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.3.Security.ModesSupported
-    - canonical: canonical.wifi.ap.4.security_modes_supported
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.4.Security.ModesSupported
+      devicePath: Device.WiFi.AccessPoint.{i}.Security.ModesSupported
     # The reference chain that says which radio an access point is on.
     # TR-181 splits radio, SSID and access point into three objects, so a
     # client's band is only knowable by following AccessPoint.SSIDReference
     # to an SSID and that SSID's LowerLayers to a radio. Both are followed
     # by VALUE: the mapper says which parameter holds the reference, and
     # the CPE says what it points at.
-    - canonical: canonical.wifi.ap.1.ssid_ref
+    - canonical: canonical.wifi.ap.{i}.ssid_ref
       valueType: string
-      devicePath: Device.WiFi.AccessPoint.1.SSIDReference
-    - canonical: canonical.wifi.ap.2.ssid_ref
+      devicePath: Device.WiFi.AccessPoint.{i}.SSIDReference
+    - canonical: canonical.wifi.ssid.{i}.lower_layers
       valueType: string
-      devicePath: Device.WiFi.AccessPoint.2.SSIDReference
-    - canonical: canonical.wifi.ap.3.ssid_ref
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.3.SSIDReference
-    - canonical: canonical.wifi.ap.4.ssid_ref
-      valueType: string
-      devicePath: Device.WiFi.AccessPoint.4.SSIDReference
-    - canonical: canonical.wifi.ssid.1.lower_layers
-      valueType: string
-      devicePath: Device.WiFi.SSID.1.LowerLayers
-    - canonical: canonical.wifi.ssid.2.lower_layers
-      valueType: string
-      devicePath: Device.WiFi.SSID.2.LowerLayers
-    - canonical: canonical.wifi.ssid.3.lower_layers
-      valueType: string
-      devicePath: Device.WiFi.SSID.3.LowerLayers
-    - canonical: canonical.wifi.ssid.4.lower_layers
-      valueType: string
-      devicePath: Device.WiFi.SSID.4.LowerLayers
+      devicePath: Device.WiFi.SSID.{i}.LowerLayers
     # Per-client capability. OperatingStandard is the standard the client
     # is using on the band it is currently on, which is why the sticky
     # finding infers 5 GHz support from it rather than reading it; see
