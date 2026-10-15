@@ -5,11 +5,19 @@
 // does not need to.
 //
 // THROUGHPUT IS DERIVED, NOT REPORTED. TR-143 gives byte counts and
-// timestamps, not a rate, and the spec is specific about which pair to
-// use: TestBytes over the BOM-to-EOM window. TotalBytes counts protocol
-// overhead and bytes that arrived outside the measured window, and on
-// the ARRIS NVG578LX it can be LOWER than TestBytes on upload, so a
-// naive TotalBytes/duration is wrong in both directions.
+// timestamps, not a rate, and the spec is specific about which pairs
+// go together. A CPE that opens several connections (a Nokia Beacon 2
+// runs four) reports TestBytes*UnderFullLoading over PeriodOfFullLoading,
+// the microseconds during which every connection was moving data; the
+// BOM-to-EOM window also covers the ramp while connections were still
+// opening and the drain after the first one closed, so dividing the
+// full-loading bytes by it underreports (63 Mbps shown for a 108 Mbps
+// transfer on the lab Beacon). A single-connection CPE leaves the
+// full-loading fields at zero and reports TestBytes over BOM-to-EOM.
+// TotalBytes counts protocol overhead and bytes that arrived outside
+// the measured window, and on the ARRIS NVG578LX it can be LOWER than
+// TestBytes on upload, so a naive TotalBytes/duration is wrong in both
+// directions.
 
 interface Result {
   capability: string;
@@ -85,13 +93,18 @@ function probeRate(step: string, kind: string): { mbps: number; bytes: number } 
     const body = JSON.parse(raw) as {
       transfers?: { test: string; ref: string; bytes: number; elapsed_ms: number }[];
     };
-    const t = (body.transfers ?? []).find(
+    // One entry per HTTP request, so a multi-connection CPE shows up
+    // as several transfers with this run's ref. The rate is the sum of
+    // their bytes over the longest one, the aggregate on the wire.
+    const ts = (body.transfers ?? []).filter(
       (x) => x.test.startsWith(kind) && x.ref === action.runId,
     );
-    if (!t || t.elapsed_ms <= 0 || t.bytes <= 0) return null;
+    const bytes = ts.reduce((n, t) => n + t.bytes, 0);
+    const elapsed = ts.reduce((n, t) => Math.max(n, t.elapsed_ms), 0);
+    if (elapsed <= 0 || bytes <= 0) return null;
     return {
-      mbps: Math.round(((t.bytes * 8) / (t.elapsed_ms / 1000) / 1e6) * 100) / 100,
-      bytes: t.bytes,
+      mbps: Math.round(((bytes * 8) / (elapsed / 1000) / 1e6) * 100) / 100,
+      bytes,
     };
   } catch {
     return null;
@@ -109,20 +122,29 @@ const latency = (() => {
   return d >= 0 ? Math.round(d * 100) / 100 : null;
 })();
 
-// Timed tests report the spec-preferred figure under "full loading"
-// (the window with every connection saturated); sized tests report the
-// plain counters. Prefer full-loading when it is present and non-zero.
-const bytesDown =
-  num(p[DL + "TestBytesReceivedUnderFullLoading"]) ||
-  num(p[DL + "TestBytesReceived"]);
-const bytesUp =
-  num(p[UL + "TestBytesSentUnderFullLoading"]) ||
-  num(p[UL + "TestBytesSent"]);
+// The CPE's own figure for one direction: full-loading bytes over
+// PeriodOfFullLoading when the firmware filled both in, else the plain
+// counter over BOM-to-EOM. The bytes travel with the rate so the result
+// never pairs one window's count with the other's duration.
+function cpeRate(prefix: string, testBytes: string): { mbps: number; bytes: number } | null {
+  const flBytes = num(p[prefix + testBytes + "UnderFullLoading"]);
+  const flPeriodUs = num(p[prefix + "PeriodOfFullLoading"]);
+  if (flBytes !== null && flBytes > 0 && flPeriodUs !== null && flPeriodUs > 0) {
+    return {
+      mbps: Math.round(((flBytes * 8) / (flPeriodUs / 1e6) / 1e6) * 100) / 100,
+      bytes: flBytes,
+    };
+  }
+  const bytes = num(p[prefix + testBytes]) || flBytes;
+  const rate = mbps(bytes, p[prefix + "BOMTime"], p[prefix + "EOMTime"]);
+  if (rate === null || bytes === null) return null;
+  return { mbps: rate, bytes };
+}
 
 const dlProbe = probeRate("download", "http_download");
 const ulProbe = probeRate("upload", "http_upload");
-const dlCpe = mbps(bytesDown, p[DL + "BOMTime"], p[DL + "EOMTime"]);
-const ulCpe = mbps(bytesUp, p[UL + "BOMTime"], p[UL + "EOMTime"]);
+const dlCpe = cpeRate(DL, "TestBytesReceived");
+const ulCpe = cpeRate(UL, "TestBytesSent");
 
 const out: Result = {
   capability: action.capability,
@@ -130,11 +152,11 @@ const out: Result = {
   // of the same transfer fills vendor gaps, and the method says which.
   method:
     dlCpe === null && dlProbe !== null ? "tr143-http+server" : "tr143-http",
-  download_mbps: dlCpe ?? dlProbe?.mbps ?? null,
-  upload_mbps: ulCpe ?? ulProbe?.mbps ?? null,
+  download_mbps: dlCpe?.mbps ?? dlProbe?.mbps ?? null,
+  upload_mbps: ulCpe?.mbps ?? ulProbe?.mbps ?? null,
   latency_ms: latency,
-  bytes_down: bytesDown || dlProbe?.bytes || null,
-  bytes_up: bytesUp || ulProbe?.bytes || null,
+  bytes_down: dlCpe?.bytes ?? dlProbe?.bytes ?? null,
+  bytes_up: ulCpe?.bytes ?? ulProbe?.bytes ?? null,
   measured_at: p[DL + "EOMTime"] || p[UL + "EOMTime"] || null,
   limits: {
     // The transfer is terminated by the CPE's own CPU, so on a
