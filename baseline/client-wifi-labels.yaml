@@ -1,16 +1,19 @@
-# Generic per-client WiFi label enrichment.
+# Per-client WiFi labels from the standard trees.
 #
-# Walks standard TR-098 / TR-181 paths only — no vendor X_OUI_*
-# extensions. Emits the same wifi.client.{rssi,tx_rate,rx_rate}
-# metrics that the Arris vendor profile emits, so the bundled
-# tr098-wifi / tr181-wifi dashboards work out-of-the-box on any
-# CPE that ships those standard leaves (the cpe-labs simulators
-# and any baseline CPE without a vendor profile written for it).
+# Walks TR-181, TR-098 and Wi-Fi Data Elements paths only, no vendor
+# X_ extensions, and emits the wifi.client.* metric set that every
+# vendor script maps its own leaves onto: the console's client radar,
+# the RF timeline and the experience score read these names and no
+# others. The script's header lists the set.
 #
-# Selector: every TR-069/TR-369 device that the bundled telemetry
-# profiles already match (no manufacturer constraint). Priority 200
-# so any narrower vendor-specific rule (e.g. arris-client-wifi at
-# priority 50) wins by lower-priority-first resolver order.
+# Every rule whose selector matches a device runs on it, so this rule
+# and a vendor's both run on that vendor's hardware. They complement:
+# this one emits what the standard leaves carry, the vendor's emits what
+# only its X_ leaves carry, under the same names and the same labels, so
+# the labeled query API collapses them to one row per client per metric.
+#
+# Selector: every TR-069/TR-369 device the bundled telemetry profiles
+# match (no manufacturer constraint).
 apiVersion: telemetry.herder.io/v1alpha1
 kind: EnrichmentRule
 metadata:
@@ -21,4 +24,8 @@ spec:
     matchExpressions:
       - key: oui
         operator: Exists
-  script: generic-client-rssi-labels.ts
+  config:
+    # Data Elements STA.SignalStrength is RCPI (0 to 220, dBm = raw/2 - 110)
+    # on every implementation seen. Set dbm for a firmware that reports dBm.
+    dataElementsSignal: rcpi
+  script: client-wifi-labels.ts

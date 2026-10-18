@@ -1,14 +1,21 @@
-# Channel width and frequency band for ARRIS NVG gateways (TR-098).
+# Channel width, frequency band, noise floor and channel utilisation
+# for ARRIS NVG gateways (TR-098).
 #
-# TR-098 declares neither, so the baseline wifi-tr098 table leaves
-# canonical.wifi.radio.{i}.bandwidth and .band unmapped. The NVG data
-# model declares both under its vendor prefix: the width read-write over
-# the TR-181 vocabulary (20MHz, 40MHz, 80MHz, 160MHz, Auto), the band as
-# 2.4GHz or 5GHz.
+# TR-098 declares none of them, so the baseline wifi-tr098 table leaves
+# canonical.wifi.radio.{i}.bandwidth, .band, .noise and .utilization
+# unmapped. The NVG data model declares all four under its vendor
+# prefix: the width read-write over the TR-181 vocabulary (20MHz,
+# 40MHz, 80MHz, 160MHz, Auto), the band as 2.4GHz or 5.0GHz, the noise
+# in dBm on the WLAN, and the utilisation as a percentage on the mesh
+# tree's radio rows.
 #
 # The radio slots follow wifi-tr098 exactly, because a width has to
 # land on the same WLANConfiguration instance as the channel it belongs
 # to: slots 1 and 2, found by band off PossibleChannels, and no others.
+#
+# Utilisation is read from HNC.HNE.1.Radio.{i}, where HNE.1 is the
+# gateway (its Type reads Gateway) and the radio index is the firmware's
+# own order: Radio.1 is the 5 GHz radio and Radio.2 the 2.4 GHz one.
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingTable
 metadata:
@@ -51,3 +58,27 @@ spec:
         matchType: Prefix
         fallbackIndex: 2
       pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_OperatingFrequencyBand
+    - canonical: canonical.wifi.radio.1.noise
+      valueType: int
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_Noise
+    - canonical: canonical.wifi.radio.2.noise
+      valueType: int
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_Noise
+    - canonical: canonical.wifi.radio.1.utilization
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.1.Radio.2.ChanUtilization
+    - canonical: canonical.wifi.radio.2.utilization
+      valueType: unsignedint
+      devicePath: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.1.Radio.1.ChanUtilization

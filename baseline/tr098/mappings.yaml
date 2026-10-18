@@ -391,6 +391,26 @@ spec:
         matchType: Prefix
         fallbackIndex: 2
       pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.AutoChannelEnable
+  # Transmit power as a percentage of full power, which TR-098 does
+  # define on the radio. The one radio-level RF setting it has.
+    - canonical: canonical.wifi.radio.1.tx_power
+      valueType: unsignedint
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.TransmitPower
+    - canonical: canonical.wifi.radio.2.tx_power
+      valueType: unsignedint
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.TransmitPower
   # Byte counters, for the airtime page's counter movement and the
   # timeline's reboot marks. TotalBytesSent/TotalBytesReceived live on
   # WLANConfiguration itself; TR-098's Stats object carries packet and

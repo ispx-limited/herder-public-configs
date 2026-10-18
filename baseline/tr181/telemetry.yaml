@@ -164,7 +164,9 @@ spec:
 #
 # Byte counters only (Stats.BytesSent/BytesReceived) on Radio and
 # SSID — packet counters (Errors, Discards, Unicast, Multicast,
-# Broadcast) excluded as operationally low-value.
+# Broadcast) excluded as operationally low-value. The 802.11 retry
+# counters on SSID.Stats are the exception: they are the radio-side
+# loss signal and nothing else in the model carries it.
 #
 # Intervals are the cost dial: identity and capability fields hourly,
 # slow state and health gauges every 15 minutes, live counters at
@@ -207,6 +209,21 @@ spec:
     - path: "Device.WiFi.Radio.{i}.OperatingStandards"
       interval: 3600
     - path: "Device.WiFi.Radio.{i}.OperatingChannelBandwidth"
+      interval: 900
+    # Transmit power as a percentage of full power. A setting, on the
+    # 15 minute dial with the width.
+    - path: "Device.WiFi.Radio.{i}.TransmitPower"
+      interval: 900
+    # Why the channel last moved and how long ago. The reason is the
+    # fact a DFS ledger otherwise has to infer from a channel that left
+    # the DFS range: Auto_DFS is a radar event, Auto_Dynamic the CPE's
+    # own algorithm, Manual an operator. It changes rarely, so reading
+    # it every contact costs one row per change. The age counts up on
+    # every read and would be a row per contact; 15 minutes is the
+    # resolution a channel-change timeline needs.
+    - path: "Device.WiFi.Radio.{i}.ChannelLastSelectionReason"
+      interval: 0
+    - path: "Device.WiFi.Radio.{i}.ChannelLastChange"
       interval: 900
     # --- Radio capability and the auto-select switch ---
     # The inputs behind the capability grading (band6_idle,
@@ -253,6 +270,14 @@ spec:
       interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesReceived"
       interval: 0
+    # The 802.11 retry counters. TR-181 keeps them per BSS, here, not on
+    # the radio: a radio with two SSIDs has two. Monotonic, read as
+    # deltas, and the pair separates a busy channel (retries up, failed
+    # retries flat) from one where frames are lost outright.
+    - path: "Device.WiFi.SSID.{i}.Stats.RetransCount"
+      interval: 0
+    - path: "Device.WiFi.SSID.{i}.Stats.FailedRetransCount"
+      interval: 0
     # --- AccessPoint config + security mode ---
     - path: "Device.WiFi.AccessPoint.{i}.Enable"
       interval: 0
@@ -295,6 +320,21 @@ spec:
     - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesSent"
       interval: 0
     - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesReceived"
+      interval: 0
+    # The rest of what the standard says about a client, in the same
+    # AssociatedDevice read so they cost no extra round trip. Noise and
+    # SNR are the uplink margin at the CPE, which with the signal says
+    # whether a weak client is far away or in a noisy room. The retry
+    # counter integrates between reads where Retransmissions above is
+    # the last hundred packets. AssociationTime backdates a client's
+    # session to its true start rather than the poll that first saw it.
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Noise"
+      interval: 0
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.SNR"
+      interval: 0
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.RetransCount"
+      interval: 0
+    - path: "Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.AssociationTime"
       interval: 0
 ---
 # Telemetry profile: TR-181 Ethernet interfaces.
@@ -610,6 +650,14 @@ spec:
     # live on Device.WiFi.SSID.{i}.Stats, per BSS), and the path this
     # profile used to name faulted 9005 on every spec-compliant CPE.
     - path: "Device.WiFi.Radio.{i}.Stats.FCSErrorCount"
+      interval: 0
+    # How often the channel moves, and how often radar moved it. Both
+    # monotonic; a delta of more than a handful a day on the first is
+    # channel churn, any delta on the second is a radar event on a DFS
+    # channel, which is the fact the DFS ledger otherwise infers.
+    - path: "Device.WiFi.Radio.{i}.Stats.TotalChannelChangeCount"
+      interval: 0
+    - path: "Device.WiFi.Radio.{i}.Stats.AutoDFSChannelChangeCount"
       interval: 0
 ---
 # Port forwards. The port-forwards service module reads these through

@@ -1,9 +1,11 @@
 // Example Networks RG2400 per-client WiFi label enrichment.
 //
-// Output: per-client labeled rows tagged with client_mac. The family
-// reports client signal under the X_00005E_* vendor spellings on the
-// standard TR-098 AssociatedDevice table; band comes from the
-// WLANConfiguration index (1 = 2.4GHz, 2 = 5GHz on this hardware).
+// Output: per-client labeled rows tagged with client_mac, under the
+// baseline's wifi.client.* names. The family reports client signal as
+// X_00005E_RSSI (dBm) on the standard TR-098 AssociatedDevice table;
+// band comes from the WLANConfiguration index (1 = 2.4GHz, 2 = 5GHz on
+// this hardware). X_00005E_SignalStrength, a percentage, is not emitted:
+// no baseline name carries a percentage signal.
 const WLAN_BAND: Record<string, string> = {
   "1": "2.4GHz",
   "2": "5GHz",
@@ -36,10 +38,6 @@ for (let i = 0; i < clients.length; i++) {
   const rssi = ad.X_00005E_RSSI as string | undefined;
   if (rssi !== undefined && rssi !== "") {
     emit("wifi.client.rssi", toInt(rssi), labels);
-  }
-  const sig = ad.X_00005E_SignalStrength as string | undefined;
-  if (sig !== undefined && sig !== "") {
-    emit("wifi.client.signal", toInt(sig), labels);
   }
   const tx = ad.LastDataTransmitRate as string | undefined;
   if (tx !== undefined && tx !== "") {

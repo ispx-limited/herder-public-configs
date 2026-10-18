@@ -21,7 +21,7 @@ baseline/            Vendor-neutral defaults, keyed by data model
 ├── tr181/           TR-181 (Device.*) mappings and telemetry
 ├── usp/             USP-specific telemetry (pushed and sampled, not polled)
 ├── identity.yaml    Identity enrichment for CWMP and USP
-└── client-wifi-labels.yaml + generic-client-rssi-labels.ts
+└── client-wifi-labels.yaml + client-wifi-labels.ts
 
 platform/            Behaviour that is not tied to a vendor or data model
 ├── devices/         The addresses a CPE holds, for the devices list lookup
@@ -47,12 +47,16 @@ typo in a global fails when you push it rather than at 3am on a live fleet.
 
 | Kind | Count | What it does |
 |------|-------|--------------|
-| `TelemetryProfile` | 14 | Which parameters to collect, and how often |
-| `MappingTable` | 7 | Canonical name to raw CPE path |
-| `MappingProfile` | 7 | Which mapping tables apply to which devices |
-| `EnrichmentRule` | 12 | Per-row telemetry labelling, topology emit, and the addresses a CPE holds |
-| `ProvisioningRule` | 3 | What to do on boot, first contact and periodically |
+| `TelemetryProfile` | 49 | Which parameters to collect, and how often |
+| `MappingTable` | 40 | Canonical name to raw CPE path |
+| `MappingProfile` | 14 | Which mapping tables apply to which devices |
+| `EnrichmentRule` | 14 | Per-row telemetry labelling, topology emit, and the addresses a CPE holds |
+| `ProvisioningRule` | 10 | What to do on boot, first contact and periodically |
 | `IdentityProfile` | 2 | Populating manufacturer, model and firmware |
+| `ActionProfile` | 21 | Diagnostics and tests an operator can run on a CPE |
+| `DeviceProfile` | 15 | What a model looks like: ports, radios, capabilities |
+| `ServiceModule` | 4 | Operator-editable configuration surfaces (port forwards, voice, remote access) |
+| `RFPolicy` | 1 | Channel planning rules for a market |
 
 ## Using it
 

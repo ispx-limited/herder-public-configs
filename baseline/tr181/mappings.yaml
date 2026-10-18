@@ -469,6 +469,85 @@ spec:
         matchValue: "6GHz"
         fallbackIndex: 3
       pathTemplate: Device.WiFi.Radio.{index}.OperatingChannelBandwidth
+    # Transmit power as the percentage of full power the radio runs at.
+    # The posture question (an extender too close to its gateway is one
+    # running at full power a room away) and the knob a plan may turn.
+    - canonical: canonical.wifi.radio.1.tx_power
+      valueType: int
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.TransmitPower
+    - canonical: canonical.wifi.radio.2.tx_power
+      valueType: int
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.TransmitPower
+    - canonical: canonical.wifi.radio.3.tx_power
+      valueType: int
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.TransmitPower
+    # Why the channel last moved and how long ago. Auto_DFS is a radar
+    # event stated by the CPE rather than inferred from the channel it
+    # left; Auto_Dynamic is its own algorithm; Manual is an operator or a
+    # plan. The age is seconds since the move.
+    - canonical: canonical.wifi.radio.1.channel_change_reason
+      valueType: string
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelLastSelectionReason
+    - canonical: canonical.wifi.radio.2.channel_change_reason
+      valueType: string
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelLastSelectionReason
+    - canonical: canonical.wifi.radio.3.channel_change_reason
+      valueType: string
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelLastSelectionReason
+    - canonical: canonical.wifi.radio.1.channel_last_change
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelLastChange
+    - canonical: canonical.wifi.radio.2.channel_last_change
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelLastChange
+    - canonical: canonical.wifi.radio.3.channel_last_change
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.ChannelLastChange
     - canonical: canonical.wifi.ssid.{i}.enable
       valueType: boolean
       devicePath: Device.WiFi.SSID.{i}.Enable
@@ -481,6 +560,15 @@ spec:
     - canonical: canonical.wifi.ssid.{i}.bssid
       valueType: string
       devicePath: Device.WiFi.SSID.{i}.BSSID
+    # The 802.11 retry counters, per BSS because that is where TR-181
+    # keeps them. A radio with two SSIDs has two of each; a reader that
+    # wants the radio's figure adds the SSIDs whose lower_layers name it.
+    - canonical: canonical.wifi.ssid.{i}.stats.retrans_count
+      valueType: unsignedint
+      devicePath: Device.WiFi.SSID.{i}.Stats.RetransCount
+    - canonical: canonical.wifi.ssid.{i}.stats.failed_retrans_count
+      valueType: unsignedint
+      devicePath: Device.WiFi.SSID.{i}.Stats.FailedRetransCount
     - canonical: canonical.wifi.ap.{i}.enable
       valueType: boolean
       devicePath: Device.WiFi.AccessPoint.{i}.Enable
@@ -931,6 +1019,10 @@ spec:
 # per-radio approximation can declare that mapping deliberately on a
 # profile of their own; the baseline does not guess it for them.
 #
+# The channel-change counters are the DFS ledger's facts: a delta on
+# stats.dfs_channel_changes is a radar event the CPE itself counted, and
+# stats.channel_changes against it is churn from everything else.
+#
 # ON ChannelUtilization AND ITS SCALE.
 #
 # TR-181 defines this as a percentage, and CPE in the wild do not all
@@ -999,6 +1091,22 @@ spec:
         matchValue: "2.4GHz"
         fallbackIndex: 1
       pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesReceived
+    - canonical: canonical.wifi.radio.1.stats.channel_changes
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.TotalChannelChangeCount
+    - canonical: canonical.wifi.radio.1.stats.dfs_channel_changes
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "2.4GHz"
+        fallbackIndex: 1
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.AutoDFSChannelChangeCount
     - canonical: canonical.wifi.radio.2.utilization
       valueType: unsignedint
       instanceAlias:
@@ -1039,6 +1147,22 @@ spec:
         matchValue: "5GHz"
         fallbackIndex: 2
       pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesReceived
+    - canonical: canonical.wifi.radio.2.stats.channel_changes
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.TotalChannelChangeCount
+    - canonical: canonical.wifi.radio.2.stats.dfs_channel_changes
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "5GHz"
+        fallbackIndex: 2
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.AutoDFSChannelChangeCount
     - canonical: canonical.wifi.radio.3.utilization
       valueType: unsignedint
       instanceAlias:
@@ -1079,6 +1203,22 @@ spec:
         matchValue: "6GHz"
         fallbackIndex: 3
       pathTemplate: Device.WiFi.Radio.{index}.Stats.BytesReceived
+    - canonical: canonical.wifi.radio.3.stats.channel_changes
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.TotalChannelChangeCount
+    - canonical: canonical.wifi.radio.3.stats.dfs_channel_changes
+      valueType: unsignedint
+      instanceAlias:
+        object: Device.WiFi.Radio.
+        matchBy: OperatingFrequencyBand
+        matchValue: "6GHz"
+        fallbackIndex: 3
+      pathTemplate: Device.WiFi.Radio.{index}.Stats.AutoDFSChannelChangeCount
 ---
 # Remote access to the gateway's own web UI. The rare namespace both
 # data models spell identically: UserInterface.RemoteAccess carries the
