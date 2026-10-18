@@ -16,6 +16,13 @@
 # Utilisation is read from HNC.HNE.1.Radio.{i}, where HNE.1 is the
 # gateway (its Type reads Gateway) and the radio index is the firmware's
 # own order: Radio.1 is the 5 GHz radio and Radio.2 the 2.4 GHz one.
+#
+# Two readings only this firmware has, under the x.arris radio
+# canonicals: the average SNR and the errored packet counter. The data
+# model documents the SNR in tenths of a dB; the bench NVG578LX reports
+# 8 on a radio whose one client sits 24 dB above the noise floor, which
+# is neither 0.8 dB nor 24 dB, so the value is stored as the firmware
+# reports it and no unit is claimed for it.
 apiVersion: mapping.herder.io/v1alpha1
 kind: MappingTable
 metadata:
@@ -82,3 +89,39 @@ spec:
     - canonical: canonical.wifi.radio.2.utilization
       valueType: unsignedint
       devicePath: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.1.Radio.1.ChanUtilization
+    - canonical: canonical.wifi.radio.1.x.arris.average_snr
+      valueType: int
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_AverageSNR
+    - canonical: canonical.wifi.radio.1.x.arris.packets_errored
+      valueType: unsignedint
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "1,"
+        matchType: Prefix
+        fallbackIndex: 1
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_PacketsErrored
+    - canonical: canonical.wifi.radio.2.x.arris.average_snr
+      valueType: int
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_AverageSNR
+    - canonical: canonical.wifi.radio.2.x.arris.packets_errored
+      valueType: unsignedint
+      instanceAlias:
+        object: InternetGatewayDevice.LANDevice.1.WLANConfiguration.
+        matchBy: PossibleChannels
+        matchValue: "36,"
+        matchType: Prefix
+        fallbackIndex: 2
+      pathTemplate: InternetGatewayDevice.LANDevice.1.WLANConfiguration.{index}.X_0000C5_PacketsErrored
