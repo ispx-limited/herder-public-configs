@@ -5,8 +5,11 @@
 // baseline rule runs on the same device and emits what the standard
 // AssociatedDevice table carries (the transmit rate); this one adds the
 // signal, the byte counters, the association age and the steering
-// counters, all vendor leaves on TR-098. Nothing is emitted under a name
-// the baseline does not define.
+// counters, all vendor leaves on TR-098. What only this firmware reports
+// is emitted under wifi.client.x.arris.*: a name with the vendor in it,
+// served by the API and dashboards like any other and read by no fleet
+// view, until a second source or a reader gives the concept a canonical
+// name.
 //
 // Three independent sections, each silent when its tree is not in the
 // batch, so one script covers the firmware variants (some expose the
@@ -112,6 +115,25 @@ for (let si = 0; si < steerStats.length; si++) {
   emitCount("wifi.client.btm_successes", s.BTMSuccesses, slabels);
   emitCount("wifi.client.blacklist_attempts", s.BlacklistAttempts, slabels);
   emitCount("wifi.client.blacklist_successes", s.BlacklistSuccesses, slabels);
+  // The firmware's own steering record beyond attempts and successes.
+  // SteeringUnfriendly is a bit mask (bit 0 the 2.4 GHz radio, bit 1 the
+  // 5 GHz one) the firmware prints as hex. LastSteerTime is documented
+  // as seconds since the last steer, 0 for never; an NVG578LX in
+  // service reports a Unix timestamp instead, so a value that reads as
+  // one is converted against the run's clock.
+  emitCount("wifi.client.x.arris.self_steer_count", s.SelfSteerCount, slabels);
+  emitCount("wifi.client.x.arris.link_quality_events", s.WiFiLinkQualityEvents, slabels);
+  emitCount("wifi.client.x.arris.channel_util_events", s.WiFiChannelUtilizationEvents, slabels);
+  emitCount("wifi.client.x.arris.bh_util_events", s.BHUtilizationEvents, slabels);
+  const steered = toInt(s.LastSteerTime);
+  if (steered !== null && steered > 0) {
+    const since = steered > 1000000000 ? Math.round(Date.now() / 1000) - steered : steered;
+    if (since > 0) emit("wifi.client.x.arris.last_steer_seconds", since, slabels);
+  }
+  if (typeof s.SteeringUnfriendly === "string" && s.SteeringUnfriendly !== "") {
+    const mask = parseInt(s.SteeringUnfriendly, 16);
+    if (!isNaN(mask)) emit("wifi.client.x.arris.steering_unfriendly", mask, slabels);
+  }
 }
 
 // --- 2. Gateway-attached clients ------------------------------------------
@@ -142,11 +164,20 @@ for (let gi = 0; gi < gwAssoc.length; gi++) {
   // 0 on firmware that has the leaf and never fills it (an NVG578LX in
   // service reports 0 for a client associated for hours): no measurement.
   emitPositive("wifi.client.assoc_seconds", ad.X_0000C5_TimeAssociated, gwLabels);
+  // How often the gateway dropped this client, each way. Only this
+  // firmware counts it per client; the sessions reader promotes it.
+  emitCount("wifi.client.x.arris.disassociations", ad.X_0000C5_DisassociationsCount, gwLabels);
+  emitCount("wifi.client.x.arris.deauthentications", ad.X_0000C5_DeauthenticationCount, gwLabels);
 }
 
 // The WLANStats tree keys its rows on the same (WLAN, AssociatedDevice)
-// tuple; ClientRSSI there is the signal on firmware whose
-// AssociatedDevice row lacks X_0000C5_RSSI.
+// tuple. RSSI and Noise there are what the gateway hears, the uplink
+// the canonical signal and noise mean, on firmware whose
+// AssociatedDevice row lacks X_0000C5_RSSI. ClientRSSI and ClientNoise
+// are the client's own readings of the downlink, which only this
+// firmware relays, and LinkQuality its 0 to 100 grade; those are x.arris.
+// The firmware writes 99999 and 9999 for a reading it could not take,
+// which the negative-dBm guard drops.
 const wlanStats = batch.matches(
   "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*",
 );
@@ -157,13 +188,19 @@ for (let ti = 0; ti < wlanStats.length; ti++) {
   if (!stMac) continue;
   const band = resolveBand(wlanIdx);
   if (!band) continue;
-  emitSignal("wifi.client.rssi", st.ClientRSSI, {
+  const stLabels: EmitLabels = {
     client_mac: stMac,
     hostname: hostnameOf(stMac),
     via: "gateway",
     band,
     wlan_idx: wlanIdx,
-  });
+  };
+  emitSignal("wifi.client.rssi", st.RSSI, stLabels);
+  emitSignal("wifi.client.noise", st.Noise, stLabels);
+  emitSignal("wifi.client.x.arris.client_rssi", st.ClientRSSI, stLabels);
+  emitSignal("wifi.client.x.arris.client_noise", st.ClientNoise, stLabels);
+  const lq = toInt(st.LinkQuality);
+  if (lq !== null && lq >= 0 && lq <= 100) emit("wifi.client.x.arris.link_quality", lq, stLabels);
 }
 
 // --- 3. Extender-attached clients (HNC.HNE mesh tree) -----------------------

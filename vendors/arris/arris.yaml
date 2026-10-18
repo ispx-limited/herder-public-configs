@@ -74,11 +74,18 @@ spec:
 #   * Non-Arris paths (X_SAGEMCOM_* and other vendors' X_* prefixes)
 #   * TR-181 Device.* paths (covered by the default tr181-*.yaml set)
 #   * Paths already in the default tr098-*.yaml set
-#   * SummaryStats.STA.*.MaximumNumberOfEntries / NumberNoAP, and the
-#     SelfSteerCount, SteeringUnfriendly and *Events counters: nothing
-#     standard defines them, so no baseline name carries them
+#   * SummaryStats.STA.*.MaximumNumberOfEntries / NumberNoAP
+#     (low operational value)
 #   * AssociatedDevice.X_0000C5_SignalStrength, a percentage beside
 #     the dBm X_0000C5_RSSI the signal is read from
+#
+# What only this firmware reports is collected too and emitted under
+# the x.arris names: the steering counters beyond attempts and
+# successes, a client's disassociation and deauthentication counts, the
+# link quality and the signal as the client itself measures it, and the
+# radio's average SNR and errored packets. The association history is
+# the firmware's own session log, collected raw for the readers that
+# build sessions.
 #   * Generic HNC.HNE.*.* wildcard-at-leaf catch-all (replaced by
 #     the specific STA.* paths underneath)
 #
@@ -125,6 +132,12 @@ spec:
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_TimeAssociated"
       interval: 0
+    # How often the gateway has dropped this client, each way. Monotonic
+    # per association; the disconnect signal the sessions reader wants.
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_DisassociationsCount"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_DeauthenticationCount"
+      interval: 0
     # --- Per-radio RF (vendor leaves; TR-098 has none) ---
     # Noise floor in dBm on each WLAN, read by wifi-arris as
     # canonical.wifi.radio.{i}.noise. Channel utilisation as a
@@ -133,6 +146,13 @@ spec:
     # of every move with its reason; a table, so it is collected raw and
     # diffed by a reader rather than mapped to a scalar.
     - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.X_0000C5_Noise"
+      interval: 0
+    # Average SNR in tenths of a dB and the errored packet counter, per
+    # WLAN; nothing standard carries either on a TR-098 radio, so they
+    # map to the x.arris radio canonicals.
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.X_0000C5_AverageSNR"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.X_0000C5_PacketsErrored"
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.Radio.{i}.ChanUtilization"
       interval: 0
@@ -149,8 +169,26 @@ spec:
     # --- Per-client WLAN stats (Arris RSSI tree) ---
     # The real RSSI path on NVG/SURFboard firmware — AssociatedDevice lives
     # at WLANStats.<wlan>.AssociatedDevice.<ad>.Stats.<n>.ClientRSSI.
+    # RSSI and Noise are what the gateway hears (the uplink, which the
+    # canonical signal means); ClientRSSI and ClientNoise are the
+    # client's own readings of the downlink, which only this firmware
+    # relays, so they ride the x.arris names. LinkQuality is 0 to 100.
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociatedDevice.{i}.Stats.{i}.RSSI"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociatedDevice.{i}.Stats.{i}.Noise"
+      interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociatedDevice.{i}.Stats.{i}.ClientRSSI"
       interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociatedDevice.{i}.Stats.{i}.ClientNoise"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociatedDevice.{i}.Stats.{i}.LinkQuality"
+      interval: 0
+    # The firmware's own log of associations, one row per join with the
+    # client and the time. A session reader diffs it; nothing maps it.
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociationHistory.{i}.MACAddress"
+      interval: 900
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.{i}.AssociationHistory.{i}.AssociationTime"
+      interval: 900
     # --- Mesh node identity (HNC.HNE tree) ---
     # The arris-hnc topology rule roots the mesh off these: HNE.{i}.Type
     # ("Gateway"/extender) + HNE.{i}.MACAddress identify each node, and the
@@ -192,6 +230,21 @@ spec:
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BlacklistAttempts"
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BlacklistSuccesses"
+      interval: 0
+    # The rest of the steering record, only this firmware's and emitted
+    # under x.arris: the client's own moves, the unfriendly flag, the
+    # events that caused steer attempts, and how long since the last one.
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.LastSteerTime"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.SelfSteerCount"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.SteeringUnfriendly"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.WiFiChannelUtilizationEvents"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.WiFiLinkQualityEvents"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BHUtilizationEvents"
       interval: 0
     # --- Host "last active" timestamp (Arris extension) ---
     - path: "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.X_0000C5_LastActive"
@@ -256,7 +309,9 @@ spec:
 #
 # The baseline rule runs on the same device and emits the transmit rate
 # from the standard table under the same labels; the two sets of rows
-# collapse to one per client per metric in the labeled query API.
+# collapse to one per client per metric in the labeled query API. What
+# only this firmware reports is emitted under wifi.client.x.arris.*,
+# the vendor namespace the bundle lint holds every directory to.
 #
 # Depends on the arris-wifi-tr098 telemetry profile above. Without it
 # the script runs and emits nothing.

@@ -6,6 +6,15 @@ win over the baseline without capturing other devices. A vendor profile
 restates the baseline tables it still needs, because binding is
 single-profile.
 
+A vendor feeds the baseline's names from its own leaves (ARRIS feeds
+`wifi.client.rssi` from `X_0000C5_RSSI`), and names what only it has
+with an `x.<name>.` segment inside the tree it extends, `<name>` being
+its directory: `wifi.client.x.arris.deauth_count`,
+`canonical.wifi.radio.1.x.arris.average_snr`. The check's lint holds
+every directory to that: no `x.` name outside `vendors/`, and no
+directory naming another. When a second source or a reader wants the
+concept it gets a canonical name and the `x.` name retires.
+
 Onboarded families:
 
 - **arris** — NVG578LX: X_0000C5 extensions, HNC mesh topology.

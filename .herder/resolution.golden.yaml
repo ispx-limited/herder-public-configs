@@ -73,7 +73,19 @@ devices:
         - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_TimeAssociated
           source: arris-wifi-tr098
           interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_DisassociationsCount
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_DeauthenticationCount
+          source: arris-wifi-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_Noise
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_AverageSNR
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_PacketsErrored
           source: arris-wifi-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.ChanUtilization
@@ -94,9 +106,27 @@ devices:
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.*.ChannelChangeTime
           source: arris-wifi-tr098
           interval: 900
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.RSSI
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.Noise
+          source: arris-wifi-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.ClientRSSI
           source: arris-wifi-tr098
           interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.ClientNoise
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.LinkQuality
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociationHistory.*.MACAddress
+          source: arris-wifi-tr098
+          interval: 900
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociationHistory.*.AssociationTime
+          source: arris-wifi-tr098
+          interval: 900
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.MACAddress
           source: arris-wifi-tr098
           interval: 0
@@ -146,6 +176,24 @@ devices:
           source: arris-wifi-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BlacklistSuccesses
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.LastSteerTime
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SelfSteerCount
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SteeringUnfriendly
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiChannelUtilizationEvents
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiLinkQualityEvents
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BHUtilizationEvents
           source: arris-wifi-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.1.Hosts.Host.*.X_0000C5_LastActive
@@ -663,7 +711,19 @@ devices:
         - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_TimeAssociated
           source: arris-wifi-tr098
           interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_DisassociationsCount
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*.X_0000C5_DeauthenticationCount
+          source: arris-wifi-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_Noise
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_AverageSNR
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.X_0000C5_PacketsErrored
           source: arris-wifi-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.ChanUtilization
@@ -684,9 +744,27 @@ devices:
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.*.ChannelChangeTime
           source: arris-wifi-tr098
           interval: 900
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.RSSI
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.Noise
+          source: arris-wifi-tr098
+          interval: 0
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.ClientRSSI
           source: arris-wifi-tr098
           interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.ClientNoise
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*.LinkQuality
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociationHistory.*.MACAddress
+          source: arris-wifi-tr098
+          interval: 900
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociationHistory.*.AssociationTime
+          source: arris-wifi-tr098
+          interval: 900
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.MACAddress
           source: arris-wifi-tr098
           interval: 0
@@ -736,6 +814,24 @@ devices:
           source: arris-wifi-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BlacklistSuccesses
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.LastSteerTime
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SelfSteerCount
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.SteeringUnfriendly
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiChannelUtilizationEvents
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.WiFiLinkQualityEvents
+          source: arris-wifi-tr098
+          interval: 0
+        - path: InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.*.BHUtilizationEvents
           source: arris-wifi-tr098
           interval: 0
         - path: InternetGatewayDevice.LANDevice.1.Hosts.Host.*.X_0000C5_LastActive
