@@ -1,0 +1,72 @@
+# USP sampled WiFi baseline profile.
+#
+# The per-client and per-radio WiFi measurements, every five minutes,
+# as a Bulk Data profile over the MTP. Subscriptions (wifi-realtime.yaml)
+# carry the events: a client joining, a channel moving. They cannot
+# carry a signal strength or a byte counter, because a value that moves
+# continuously is either a notification storm or, on most agents, a
+# ValueChange the agent declares it will ignore. Without this profile a
+# USP device's WiFi is known only from its first contact and from the
+# events since, and its score rests on one reading.
+#
+# What the set is. Every client leaf the client labels rule reads,
+# including the ones it keys and bands on: MACAddress is the identity,
+# Active says whether the row is a measurement, and SSIDReference,
+# LowerLayers and OperatingFrequencyBand are the chain from an access
+# point to the band it runs on. The rule sees one report as one batch,
+# and a client whose band it cannot resolve in that batch is skipped, so
+# the chain rides in every report rather than being assumed from the
+# first contact. The radio half is the noise floor, the utilisation and
+# the channel-change counters the Spectrum page and the DFS ledger read.
+#
+# Five minutes is the cadence a per-home WiFi picture needs: the busy
+# hour resolves, a client's session is bounded to five minutes, and a
+# fleet of 100k devices is 333 reports a second into the controller,
+# which is an ingestion question and not a device one. `retain: 3`
+# keeps a quarter hour across a broker restart.
+#
+# Selector: `protocol:usp` and `dataModel:device`, as wan-sampled.
+# Priority 10, baseline tier.
+
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: usp-wifi-sampled
+spec:
+  priority: 10
+  deviceSelector:
+    matchExpressions:
+      - key: "protocol:usp"
+        operator: Exists
+      - key: "dataModel:device"
+        operator: Exists
+  sampled:
+    - interval: 300
+      retain: 3
+      parameters:
+        # The band chain and the client identity.
+        - Device.WiFi.Radio.*.OperatingFrequencyBand
+        - Device.WiFi.SSID.*.LowerLayers
+        - Device.WiFi.AccessPoint.*.SSIDReference
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.MACAddress
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.Active
+        # Per client.
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.SignalStrength
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.Noise
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.SNR
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataDownlinkRate
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.LastDataUplinkRate
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.Retransmissions
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.AssociationTime
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesSent
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.BytesReceived
+        - Device.WiFi.AccessPoint.*.AssociatedDevice.*.Stats.RetransCount
+        # Per BSS.
+        - Device.WiFi.SSID.*.Stats.RetransCount
+        - Device.WiFi.SSID.*.Stats.FailedRetransCount
+        # Per radio.
+        - Device.WiFi.Radio.*.Channel
+        - Device.WiFi.Radio.*.ChannelUtilization
+        - Device.WiFi.Radio.*.Stats.Noise
+        - Device.WiFi.Radio.*.Stats.TotalChannelChangeCount
+        - Device.WiFi.Radio.*.Stats.AutoDFSChannelChangeCount

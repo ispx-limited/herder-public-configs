@@ -20,10 +20,24 @@
 #       - `Device.WiFi.SSID.*.SSID`    — SSID rename detection
 #       - `Device.WiFi.Radio.*.Status` — radio state (DFS hits, link
 #                                       bounce, channel hop)
+#       - `Device.WiFi.Radio.*.Channel` and
+#         `Device.WiFi.Radio.*.ChannelLastSelectionReason`
+#                                       — the moment a channel moves and
+#                                       why (Auto_DFS is a radar event),
+#                                       rather than the next poll's diff
 #       - `Device.WiFi.AccessPoint.*.AssociatedDevice.*.AuthenticationState`
 #                                       — per-client auth state flips
 #                                       (associated → authenticated,
 #                                       deauth, etc)
+#
+#   * Event on the three Wi-Fi Data Elements client events,
+#     `Associated!`, `Disassociated!` and `FailedConnection!`. They carry
+#     the 802.11 status and reason codes a join, a leave or a failed
+#     attempt ended with, which no polled table can say: the Data
+#     Elements event data tables are deleted in TR-181 2.20 and the
+#     events are the only remaining source. A device reports failed
+#     connections only when its `ReportUnsuccessfulAssociations` is on,
+#     which is a write and so not the baseline's to make.
 #
 # **Deliberate exclusions** (do not add without amendment):
 #
@@ -32,9 +46,10 @@
 #     configuration. Subscribing produces nothing. Revisit when a real
 #     fleet surfaces vendor configs that honor it.
 #
-#   * Byte counters (`Stats.BytesSent` / `BytesReceived`) — agents
-#     ignore VC on counters too. Polled-fallback for these lives in
-#     #578 (controller-side cron Get).
+#   * Byte counters (`Stats.BytesSent` / `BytesReceived`), retries,
+#     noise and the signal itself — agents ignore VC on counters too.
+#     Sampled on a cadence by `wifi-sampled.yaml` beside this file, as a
+#     Bulk Data profile over the MTP.
 #
 #   * Vendor extension events (`X_VENDOR_*`) — operator-authored
 #     vendor profiles at priority 50+ extend this baseline; this file
@@ -77,4 +92,12 @@ spec:
         - Device.WiFi.SSID.{i}.Enable
         - Device.WiFi.SSID.{i}.SSID
         - Device.WiFi.Radio.{i}.Status
+        - Device.WiFi.Radio.{i}.Channel
+        - Device.WiFi.Radio.{i}.ChannelLastSelectionReason
         - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.AuthenticationState
+    # Client join, leave and failure, with reasons.
+    - notifType: Event
+      referenceList:
+        - Device.WiFi.DataElements.AssociationEvent.Associated!
+        - Device.WiFi.DataElements.DisassociationEvent.Disassociated!
+        - Device.WiFi.DataElements.FailedConnectionEvent.FailedConnection!

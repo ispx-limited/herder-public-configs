@@ -22,6 +22,10 @@ spec:
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.EasyMeshControllerOperationMode", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.LinkType", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.SignalStrength", interval: 0}
+    # The operating class bands a radio; the client labels rule reads it
+    # from the same batch as the stations, and falls back to the radio
+    # index on a build that does not report it.
+    - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClasses.{i}.Class", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength", interval: 0}
     - {path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.Hostname", interval: 0}
@@ -50,6 +54,10 @@ spec:
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.MultiAPDevice.EasyMeshControllerOperationMode", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.LinkType", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.SignalStrength", interval: 0}
+    # The operating class bands a radio; the client labels rule reads it
+    # from the same batch as the stations, and falls back to the radio
+    # index on a build that does not report it.
+    - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClasses.{i}.Class", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength", interval: 0}
     - {path: "InternetGatewayDevice.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.Hostname", interval: 0}

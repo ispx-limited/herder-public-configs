@@ -52,9 +52,12 @@ spec:
 # dashboards, and the ingest-time label-enrichment SDK's raw input:
 #
 #   * Extender-attached clients (HNC.HNE tree) — RSSI, MAC, TxPHYRate
-#   * Gateway-attached clients with Arris-reported signal strength
-#     (AssociatedDevice.X_0000C5_{RSSI,SignalStrength})
-#   * Per-client steering stats (HNC.Steer.SummaryStats)
+#   * Gateway-attached clients with the Arris-reported signal, byte
+#     counters and association age
+#     (AssociatedDevice.X_0000C5_{RSSI,BytesSent,BytesReceived,TimeAssociated})
+#   * Per-client steering counters (HNC.Steer.SummaryStats)
+#   * Per-radio noise floor and channel utilisation, and the channel
+#     change history, the RF facts TR-098 has no standard leaf for
 #   * Mesh ESS identity (HNC.ESS.1.ESSName)
 #   * Ethernet/WLAN X_0000C5_ link-rate + frequency-band extensions
 #   * Host LastActive timestamp
@@ -71,8 +74,11 @@ spec:
 #   * Non-Arris paths (X_SAGEMCOM_* and other vendors' X_* prefixes)
 #   * TR-181 Device.* paths (covered by the default tr181-*.yaml set)
 #   * Paths already in the default tr098-*.yaml set
-#   * SummaryStats.STA.*.MaximumNumberOfEntries / NumberNoAP
-#     (low operational value)
+#   * SummaryStats.STA.*.MaximumNumberOfEntries / NumberNoAP, and the
+#     SelfSteerCount, SteeringUnfriendly and *Events counters: nothing
+#     standard defines them, so no baseline name carries them
+#   * AssociatedDevice.X_0000C5_SignalStrength, a percentage beside
+#     the dBm X_0000C5_RSSI the signal is read from
 #   * Generic HNC.HNE.*.* wildcard-at-leaf catch-all (replaced by
 #     the specific STA.* paths underneath)
 #
@@ -109,10 +115,37 @@ spec:
     # tree below (same index tuple on both sides).
     - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
       interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_SignalStrength"
-      interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_RSSI"
       interval: 0
+    # Bytes each way and seconds associated, the vendor spellings of
+    # what TR-181 keeps on AssociatedDevice.Stats and AssociationTime.
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_BytesSent"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_BytesReceived"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_TimeAssociated"
+      interval: 0
+    # --- Per-radio RF (vendor leaves; TR-098 has none) ---
+    # Noise floor in dBm on each WLAN, read by wifi-arris as
+    # canonical.wifi.radio.{i}.noise. Channel utilisation as a
+    # percentage lives on the mesh tree's radio rows, HNE.1 being the
+    # gateway. The channel change history is the firmware's own record
+    # of every move with its reason; a table, so it is collected raw and
+    # diffed by a reader rather than mapped to a scalar.
+    - path: "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.X_0000C5_Noise"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.Radio.{i}.ChanUtilization"
+      interval: 0
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.{i}.Radio"
+      interval: 900
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.{i}.Channel"
+      interval: 900
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.{i}.LastChannel"
+      interval: 900
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.{i}.Reason"
+      interval: 900
+    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.ChannelChangeHistory.{i}.ChannelChangeTime"
+      interval: 900
     # --- Per-client WLAN stats (Arris RSSI tree) ---
     # The real RSSI path on NVG/SURFboard firmware — AssociatedDevice lives
     # at WLANStats.<wlan>.AssociatedDevice.<ad>.Stats.<n>.ClientRSSI.
@@ -152,10 +185,6 @@ spec:
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.DualBandCapable"
       interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.LastSteerTime"
-      interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.SelfSteerCount"
-      interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BTMAttempts"
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BTMSuccesses"
@@ -163,14 +192,6 @@ spec:
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BlacklistAttempts"
       interval: 0
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BlacklistSuccesses"
-      interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.SteeringUnfriendly"
-      interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.WiFiChannelUtilizationEvents"
-      interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.WiFiLinkQualityEvents"
-      interval: 0
-    - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.Steer.SummaryStats.STA.{i}.BHUtilizationEvents"
       interval: 0
     # --- Host "last active" timestamp (Arris extension) ---
     - path: "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.X_0000C5_LastActive"
@@ -219,26 +240,26 @@ spec:
     - path: "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.NeighboringWiFiDiagnostic.Result.{i}.Bandwidth"
       interval: 900
 ---
-# Reference enrichment rule: Arris TR-098 per-client WiFi labels.
+# Arris TR-098 per-client WiFi labels.
 #
-# Emits labeled rows per Inform from three independent source trees —
-# each section is silent-skipped when the device firmware doesn't expose
-# it, so one rule covers several Arris variants:
+# Emits the baseline's wifi.client.* names from the X_0000C5_ leaves,
+# per Inform, from three independent source trees; each section is
+# silent when the firmware does not expose its tree, so one rule covers
+# several Arris variants:
 #
-#   1. HNC.Steer.SummaryStats.STA.*  — per-client band-steering counters,
-#      keyed on the Arris client MAC. Emitted even on gateways with zero
-#      currently-associated clients (historical steering record).
+#   1. HNC.Steer.SummaryStats.STA.*  — the steering counters per client,
+#      kept even on a gateway with no client currently associated.
 #   2. WLANConfiguration.*.AssociatedDevice.* + X_0000C5_WLANStats tree —
-#      live per-client RSSI on gateway-attached clients.
-#   3. X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.* — mesh/extender
-#      clients (only present when a paired extender is Informed).
+#      signal, bytes and association age on gateway-attached clients.
+#   3. X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.* — extender
+#      clients (present when a paired extender is Informed).
 #
-# Labels carry stable client identity (client_mac + hostname when
-# Hosts.Host is populated) plus topology (via, band) so historical
-# per-client queries stay coherent across STA-index churn.
+# The baseline rule runs on the same device and emits the transmit rate
+# from the standard table under the same labels; the two sets of rows
+# collapse to one per client per metric in the labeled query API.
 #
-# Depends on the Arris vendor telemetry profile (arris-wifi-tr098.yaml).
-# Without that profile, the enrichment script runs but emits no rows.
+# Depends on the arris-wifi-tr098 telemetry profile above. Without it
+# the script runs and emits nothing.
 #
 # Selector matches CPE whose manufacturer string is "Arris" or "ARRIS" —
 # firmware reports either across the product family. OUI not constrained
@@ -257,7 +278,7 @@ spec:
       - key: productClass
         operator: In
         values: [NVG578LX, NVG578LX1, NVG448BQ, NVG468MQ, NVG589, NVG599]
-  script: arris-client-rssi-labels.ts
+  script: arris-client-wifi-labels.ts
 ---
 # WAN posture for the experience score's wan dimension: the error rate
 # reads the per-connection Ethernet counters, stability reads the

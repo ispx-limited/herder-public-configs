@@ -38,8 +38,14 @@ spec:
     # --- Radio identity and operating state ---
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.ID"
       interval: 3600
+    # The operating class every contact, not hourly: it is the only
+    # standard leaf that names a Data Elements radio's band (81 to 84 are
+    # 2.4 GHz, 115 to 130 are 5 GHz, 131 to 137 are 6 GHz), and the
+    # client labels rule reads it from the same batch as the stations.
+    # Fetched hourly it is absent from all but one batch in twelve, and
+    # every client on an extender would be skipped for want of a band.
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClasses.{i}.Class"
-      interval: 900
+      interval: 0
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClasses.{i}.Channel"
       interval: 900
     # --- The RF measurement itself ---
@@ -72,3 +78,71 @@ spec:
       interval: 0
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.UnicastBytesReceived"
       interval: 0
+    # --- Per-station measurements ---
+    # The same client facts TR-181 proper keeps on AssociatedDevice, but
+    # for every station on every node of the mesh, which is how a client
+    # on an extender reaches the per-client history at all. SignalStrength
+    # is RCPI (dBm = raw/2 - 110), the client labels rule converts it.
+    # LastConnectTime is seconds since association.
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MACAddress"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.Hostname"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.SignalStrength"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.LastDataDownlinkRate"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.LastDataUplinkRate"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.LastConnectTime"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.BytesSent"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.BytesReceived"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.RetransCount"
+      interval: 0
+    # Steering outcomes per station, and the network's totals. Attempts
+    # against successes is the steering success rate; a station whose
+    # attempts climb and successes do not is the sticky client.
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MultiAPSTA.SteeringSummaryStats.BTMAttempts"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MultiAPSTA.SteeringSummaryStats.BTMSuccesses"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MultiAPSTA.SteeringSummaryStats.BlacklistAttempts"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.BSS.{i}.STA.{i}.MultiAPSTA.SteeringSummaryStats.BlacklistSuccesses"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.MultiAPSteeringSummaryStats.BTMAttempts"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.MultiAPSteeringSummaryStats.BTMSuccesses"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.MultiAPSteeringSummaryStats.BlacklistAttempts"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.MultiAPSteeringSummaryStats.BlacklistSuccesses"
+      interval: 0
+    # --- Backhaul ---
+    # The extender's link to its parent as the extender measures it.
+    # SignalStrength is RCPI like the station's. This is the tree to
+    # read backhaul from: Device.WiFi.MultiAP is deleted in TR-181 2.21.
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.SignalStrength"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.LinkUtilization"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.LastDataDownlinkRate"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.LastDataUplinkRate"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.BytesSent"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.BytesReceived"
+      interval: 0
+    # --- DFS state ---
+    # The channels radar has closed to this device, from its latest
+    # Channel Availability Check report. The list changes when radar is
+    # heard or a non-occupancy period ends; the countdown on each entry
+    # is not collected because it would be a row per poll per channel.
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.CACStatus.{i}.CACNonOccupancyChannel.{i}.OpClass"
+      interval: 900
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.CACStatus.{i}.CACNonOccupancyChannel.{i}.Channel"
+      interval: 900
