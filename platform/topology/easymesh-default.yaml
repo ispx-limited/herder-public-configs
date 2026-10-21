@@ -67,6 +67,9 @@ spec:
       # leaving or changing band is a change to the graph.
       - "Device.Hosts.Host.{i}.Active"
       - "Device.Hosts.Host.{i}.Layer1Interface"
+      # An extender's uplink coming up or moving to another band.
+      - "Device.WiFi.EndPoint.{i}.Status"
+      - "Device.WiFi.EndPoint.{i}.SSIDReference"
   coalesceWindow: 60s
   config:
     # rssiEncoding: "dbm" (default for MultiAP) or "rcpi". RCPI converts
