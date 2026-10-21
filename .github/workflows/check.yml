@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 15
     container:
       # A literal, because the image field cannot read the env context.
-      image: ghcr.io/ispx-limited/herder-community:v0.65.0
+      image: ghcr.io/ispx-limited/herder-community:v0.70.0
       options: --user root
     steps:
       - uses: actions/checkout@v4
