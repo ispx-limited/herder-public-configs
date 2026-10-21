@@ -53,6 +53,7 @@ metadata:
   name: wifi-scan-tr181
 spec:
   capability: wifi_scan
+  title: WiFi scan
   priority: 10
 
   # TR-181 devices, on either protocol. TR-098 has no standard

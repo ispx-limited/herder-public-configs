@@ -44,6 +44,7 @@ metadata:
   name: wifi-scan-nokia-beacon
 spec:
   capability: wifi_scan
+  title: WiFi scan
   priority: 50
   deviceSelector:
     matchExpressions:

@@ -28,6 +28,7 @@ metadata:
   name: ping-arris
 spec:
   capability: ping
+  title: Ping
   priority: 50
   deviceSelector:
     matchLabels:

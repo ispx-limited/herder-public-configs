@@ -16,6 +16,7 @@ metadata:
   name: dsl-line-test-tr181
 spec:
   capability: dsl_line_test
+  title: DSL line test
   priority: 5
   deviceSelector:
     matchExpressions:
@@ -40,6 +41,7 @@ metadata:
   name: dsl-line-test-tr098
 spec:
   capability: dsl_line_test
+  title: DSL line test
   priority: 5
   deviceSelector:
     matchExpressions:

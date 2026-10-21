@@ -13,6 +13,7 @@ metadata:
   name: ping-tr181
 spec:
   capability: ping
+  title: Ping
   priority: 10
   deviceSelector:
     matchExpressions:
@@ -54,6 +55,7 @@ metadata:
   name: ping-tr098
 spec:
   capability: ping
+  title: Ping
   priority: 10
   deviceSelector:
     matchExpressions:
