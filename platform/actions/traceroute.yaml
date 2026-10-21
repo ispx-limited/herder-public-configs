@@ -6,6 +6,7 @@ metadata:
   name: traceroute-tr181
 spec:
   capability: traceroute
+  title: Traceroute
   priority: 10
   deviceSelector:
     matchExpressions:
@@ -50,6 +51,7 @@ metadata:
   name: traceroute-tr098
 spec:
   capability: traceroute
+  title: Traceroute
   priority: 10
   deviceSelector:
     matchExpressions:

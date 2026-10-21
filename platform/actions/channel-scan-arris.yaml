@@ -27,6 +27,7 @@ metadata:
   name: channel-scan-arris
 spec:
   capability: channel_scan
+  title: Channel scan
   priority: 50
   deviceSelector:
     matchLabels:

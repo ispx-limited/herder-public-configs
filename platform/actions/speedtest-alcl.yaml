@@ -24,6 +24,7 @@ metadata:
   name: speedtest-alcl
 spec:
   capability: speedtest
+  title: Speed test
   priority: 50
 
   deviceSelector:

@@ -22,6 +22,7 @@ metadata:
   name: speedtest-tr143
 spec:
   capability: speedtest
+  title: Speed test
   priority: 10
 
   # TR-098 devices. The TR-181 equivalent lives under

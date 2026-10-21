@@ -8,6 +8,7 @@ metadata:
   name: capacity-test-tr181
 spec:
   capability: capacity_test
+  title: Capacity test
   priority: 10
   deviceSelector:
     matchExpressions:

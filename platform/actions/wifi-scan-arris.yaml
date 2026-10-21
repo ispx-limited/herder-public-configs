@@ -37,6 +37,7 @@ metadata:
   name: wifi-scan-arris
 spec:
   capability: wifi_scan
+  title: WiFi scan
   # Above the TR-181 profile's 10. A device matching both (a vendor
   # shipping the standard tree as well as its own) should use the tree
   # its own firmware populates.

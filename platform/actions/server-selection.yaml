@@ -11,6 +11,7 @@ metadata:
   name: server-selection-tr181
 spec:
   capability: server_selection
+  title: Server selection
   priority: 10
   deviceSelector:
     matchExpressions:

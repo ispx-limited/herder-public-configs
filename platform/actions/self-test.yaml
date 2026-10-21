@@ -8,6 +8,7 @@ metadata:
   name: self-test-tr181
 spec:
   capability: self_test
+  title: Self test
   priority: 10
   deviceSelector:
     matchExpressions:
@@ -32,6 +33,7 @@ metadata:
   name: self-test-tr098
 spec:
   capability: self_test
+  title: Self test
   priority: 10
   deviceSelector:
     matchExpressions:

@@ -13,6 +13,7 @@ metadata:
   name: dns-lookup-tr181
 spec:
   capability: dns_lookup
+  title: DNS lookup
   priority: 10
   deviceSelector:
     matchExpressions:
@@ -45,6 +46,7 @@ metadata:
   name: dns-lookup-tr098
 spec:
   capability: dns_lookup
+  title: DNS lookup
   priority: 10
   deviceSelector:
     matchExpressions:
