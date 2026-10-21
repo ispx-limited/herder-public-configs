@@ -135,10 +135,14 @@
     const rssiRaw = s.RSSI as string | undefined;
     if (rssiRaw !== undefined && rssiRaw !== "") {
       let rssi = parseFloat(rssiRaw);
-      if (!isNaN(rssi)) {
+      // 0 is what the HNC table holds for a station it has no reading
+      // for, not a signal: drawn as one, an iPhone showed 0 dBm. A dBm
+      // signal is negative, so anything else is no measurement.
+      if (!isNaN(rssi) && rssi !== 0) {
         if (rssiEncoding === "rcpi") {
           rssi = (rssi / 2) - 110;
         }
+        if (rssi >= 0) continue;
         topology.addEdgeMetric("rssi_dbm", rssi, {
           parent: parentMAC,
           child: clientMAC,
