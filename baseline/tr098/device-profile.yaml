@@ -115,6 +115,18 @@ spec:
           address: canonical.interface.wan.ip_address
           port: port
           protocol: protocol
+    - key: voice
+      title: Voice
+      icon: phone
+      component: module
+      # On every TR-098 page and shown only where a line is enabled, so
+      # a gateway on this baseline that carries voice gets the section
+      # without a profile of its own, and one that does not never sees it.
+      showWhen:
+        canonical: canonical.voice.line.{i}.enable
+        in: ["true", "1", "Enabled"]
+      config:
+        module: voice
     - key: maintenance
       title: Maintenance
       icon: wrench
