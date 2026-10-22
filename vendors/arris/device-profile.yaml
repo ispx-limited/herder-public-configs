@@ -34,7 +34,7 @@ spec:
       showWhen:
         # A gateway that can carry voice is not a home that has it: the
         # section is for the homes with an enabled line.
-        canonical: canonical.voice.line.*.enable
+        canonical: canonical.voice.line.{i}.enable
         in: ["true", "1", "Enabled"]
       config:
         sections:
