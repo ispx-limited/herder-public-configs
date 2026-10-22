@@ -140,6 +140,9 @@ for (let si = 0; si < steerStats.length; si++) {
 // Labels match the baseline's TR-098 section (client_mac, hostname, via,
 // band, wlan_idx) so the two scripts' rows collapse to one per client.
 const gwMacByTuple: Record<string, string> = {};
+// Clients whose AssociatedDevice row carried a signal, so the WLANStats
+// fallback below does not add a second reading for the same poll.
+const gwSignalSeen: Record<string, boolean> = {};
 const gwAssoc = batch.matches(
   "InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*",
 );
@@ -159,6 +162,8 @@ for (let gi = 0; gi < gwAssoc.length; gi++) {
     wlan_idx: wlanIdx,
   };
   emitSignal("wifi.client.rssi", ad.X_0000C5_RSSI, gwLabels);
+  const gwRssi = toInt(ad.X_0000C5_RSSI);
+  if (gwRssi !== null && gwRssi < 0) gwSignalSeen[mac] = true;
   emitCount("wifi.client.bytes_tx", ad.X_0000C5_BytesSent, gwLabels);
   emitCount("wifi.client.bytes_rx", ad.X_0000C5_BytesReceived, gwLabels);
   // 0 on firmware that has the leaf and never fills it (an NVG578LX in
@@ -171,36 +176,41 @@ for (let gi = 0; gi < gwAssoc.length; gi++) {
 }
 
 // The WLANStats tree keys its rows on the same (WLAN, AssociatedDevice)
-// tuple. RSSI and Noise there are what the gateway hears, the uplink
-// the canonical signal and noise mean, on firmware whose
-// AssociatedDevice row lacks X_0000C5_RSSI. ClientRSSI and ClientNoise
-// are the client's own readings of the downlink, which only this
-// firmware relays, and LinkQuality its 0 to 100 grade; those are x.arris.
-// The firmware writes 99999 and 9999 for a reading it could not take,
-// which the negative-dBm guard drops.
+// tuple; ClientRSSI there is the signal on firmware whose
+// AssociatedDevice row lacks X_0000C5_RSSI. Stats.{i} is a list of
+// records per client, not one reading: an NVG578LX in service holds up
+// to 46 per client, and emitting each as the current signal made a
+// client's poll a spread of values from -60 to -78 dBm. One reading per
+// client per poll: the newest record, and only where the
+// AssociatedDevice row carried no signal of its own.
 const wlanStats = batch.matches(
   "InternetGatewayDevice.LANDevice.1.X_0000C5_WLANStats.*.AssociatedDevice.*.Stats.*",
 );
+interface StatRecord { rssi: unknown; wlanIdx: string; record: number; }
+const newestStat: Record<string, StatRecord> = {};
 for (let ti = 0; ti < wlanStats.length; ti++) {
   const st = wlanStats[ti];
   const wlanIdx = st.$indexes.X_0000C5_WLANStats;
   const stMac = gwMacByTuple[wlanIdx + "|" + st.$indexes.AssociatedDevice];
-  if (!stMac) continue;
-  const band = resolveBand(wlanIdx);
+  if (!stMac || gwSignalSeen[stMac]) continue;
+  const recordIdx = toInt(st.$indexes.Stats);
+  const record = recordIdx === null ? 0 : recordIdx;
+  const seen = newestStat[stMac];
+  if (!seen || record > seen.record) {
+    newestStat[stMac] = { rssi: st.ClientRSSI, wlanIdx, record };
+  }
+}
+for (const stMac in newestStat) {
+  const rec = newestStat[stMac];
+  const band = resolveBand(rec.wlanIdx);
   if (!band) continue;
-  const stLabels: EmitLabels = {
+  emitSignal("wifi.client.rssi", rec.rssi, {
     client_mac: stMac,
     hostname: hostnameOf(stMac),
     via: "gateway",
     band,
-    wlan_idx: wlanIdx,
-  };
-  emitSignal("wifi.client.rssi", st.RSSI, stLabels);
-  emitSignal("wifi.client.noise", st.Noise, stLabels);
-  emitSignal("wifi.client.x.arris.client_rssi", st.ClientRSSI, stLabels);
-  emitSignal("wifi.client.x.arris.client_noise", st.ClientNoise, stLabels);
-  const lq = toInt(st.LinkQuality);
-  if (lq !== null && lq >= 0 && lq <= 100) emit("wifi.client.x.arris.link_quality", lq, stLabels);
+    wlan_idx: rec.wlanIdx,
+  });
 }
 
 // --- 3. Extender-attached clients (HNC.HNE mesh tree) -----------------------
