@@ -23,11 +23,14 @@ spec:
         operator: In
         values: [G-2426G-A]
   parameters:
-    # Receive power, in units of 0.1 dBm per TR-181, so -2410 is
-    # -24.1 dBm. A healthy ONT sits around -15 to -25 dBm and an
-    # operator investigates past roughly -27, which is why this is the
-    # one optical parameter worth a short interval: a fibre bend or a
-    # dirty connector shows here before the subscriber calls.
+    # Receive power. TR-181 defines OpticalSignalLevel in thousandths
+    # of a dBm (Dbm1000), so -24100 is -24.1 dBm; the vendor's own
+    # CurrentDownstreamRxPower leaf is not in the standard and its
+    # scale is the firmware's, so check it on a unit before trusting a
+    # threshold against it. A healthy ONT sits around -15 to -25 dBm
+    # and an operator investigates past roughly -27, which is why this
+    # is the one optical parameter worth a short interval: a fibre
+    # bend or a dirty connector shows here before the subscriber calls.
     - path: "Device.Optical.Interface.{i}.CurrentDownstreamRxPower"
       interval: 300
     - path: "Device.Optical.Interface.{i}.OpticalSignalLevel"

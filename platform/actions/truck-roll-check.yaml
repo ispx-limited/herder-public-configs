@@ -1,0 +1,245 @@
+# Truck roll check: does this CPE need a field technician, a remote
+# fix, or more evidence? One action for the helpdesk, whose result is a
+# verdict with the readings behind it instead of a dozen capabilities
+# to run and read by hand.
+#
+# It only reads and pings. Nothing here writes configuration.
+#
+# Every step is optional, and each access technology is its own step,
+# because "this device has no such object" is evidence: an optical
+# collect that faults with 9005 says the gateway is not an integrated
+# ONT, and the normalizer reads error.<step> the same way it reads a
+# level. A required step would make that a failed run. The snapshot
+# comes first with a short timeout so a silent CPE gets a verdict in
+# ninety seconds rather than after every step has timed out in turn.
+#
+# The snapshot collects raw subtrees rather than canonical names: what
+# a step collects comes back keyed by the device's own path whatever
+# the profile asked for, so the normalizer reads raw paths and repeats
+# the WAN-finding rules the baseline mapping tables use (the Ethernet
+# port with Upstream true; the IP interface over PPP, over Cellular, or
+# with a /32 mask). A subtree the firmware lacks is bisected out of the
+# read, not faulted, so one step can name several.
+#
+# Thresholds live in config so a cohort retunes them without touching
+# the script: copy a document, raise its priority above 10, narrow its
+# selector, and change the numbers. Config does not merge between
+# profiles, so the copy restates the steps too.
+apiVersion: actions.herder.io/v1alpha1
+kind: ActionProfile
+metadata:
+  name: truck-roll-check-tr181
+spec:
+  capability: truck_roll_check
+  priority: 10
+  deviceSelector:
+    matchExpressions:
+      - key: "dataModel:device"
+        operator: Exists
+  # The reachable-but-slow case: 90s + 4 x 45s + 150s is about seven
+  # minutes. A silent device finishes at the snapshot timeout.
+  timeout: 8m
+  context:
+    window: 168h
+  config:
+    # Pinged from inside the home by the device's own ping profile. An
+    # address rather than a name, so a resolver fault cannot read as a
+    # reachability fault. Point it at the ISP's own anycast resolver
+    # or BNG where one exists.
+    reachability_host: "1.1.1.1"
+    # Fail when more than this percentage of echoes is lost. The
+    # bundled ping sends four, so 25 tolerates one and fails on two.
+    ping_loss_max_pct: "25"
+    # TR-181 optical levels are thousandths of a dBm (Dbm1000): -24100
+    # is -24.1 dBm. A vendor that reports tenths overrides with 10.
+    optical_level_divisor: "1000"
+    # GPON class B+ ONU receiver: sensitivity -27 dBm, overload -8 dBm.
+    # C+ optics tolerate about -30; set it per cohort.
+    optical_rx_min_dbm: "-27"
+    optical_rx_max_dbm: "-8"
+    # Within this many dB above the minimum is supporting evidence
+    # rather than a failure: a dirty connector drifts before it drops.
+    optical_rx_marginal_db: "2"
+    # B+ ONU launch power window. Outside it is the ONT's own laser,
+    # not the fibre.
+    optical_tx_min_dbm: "0.5"
+    optical_tx_max_dbm: "5"
+    # DSL margins and attenuation are tenths of a dB on the wire; these
+    # are dB.
+    dsl_snr_margin_min_db: "6"
+    # ADSL loops only: TR-181 says line attenuation does not apply to
+    # VDSL2, and the check skips a line whose StandardUsed is G.993.
+    dsl_attenuation_max_db: "55"
+    # A line whose showtime is younger than this, on a CPE that has
+    # been up longer, retrained without a reboot.
+    dsl_showtime_min_seconds: "3600"
+    # TR-098 only: Stats.Total.LinkRetrain averaged over TotalStart.
+    dsl_retrains_per_day_max: "5"
+    # LTE/5G. RSRP and RSRQ are what TR-181 defines; a reading at the
+    # int maximum means the modem does not report it and is ignored.
+    lte_rsrp_min_dbm: "-110"
+    lte_rsrq_min_db: "-15"
+    # TR-181 has no SINR. A vendor profile names its leaf relative to
+    # Device.Cellular.Interface.{i}. (verify on hardware first). Empty
+    # means no SINR check.
+    lte_sinr_min_db: "0"
+    cellular_sinr_leaf: ""
+    # When set, an attached AccessPoint with a different APN is a
+    # remote fix (re-provision), not a truck.
+    cellular_expected_apn: ""
+    # Negotiated rate on the upstream Ethernet port below this means a
+    # cable or ONT port fault: a gigabit link on a damaged pair trains
+    # at 100. 0 disables. Hyperfibre cohorts set 2500 or 10000.
+    eth_wan_expected_bit_rate_mbps: "1000"
+    # Receive errors over packets received since boot. Supporting
+    # evidence only, because the counters are cumulative.
+    eth_error_ratio_max: "0.001"
+    # The upstream link changed state within this many seconds, on a
+    # CPE up for longer than that: the link flapped.
+    eth_flap_seconds: "3600"
+    # Spontaneous reboots in the context window that point at power or
+    # hardware rather than the line.
+    reboot_storm_count: "3"
+    # Silences in the window that count as an intermittent line.
+    outage_count_supporting: "3"
+    # A CPE silent for at least this long gets the prolonged_silence
+    # reason and the verdict below. inconclusive is the honest default:
+    # silence cannot tell a dead line from a gateway switched off at
+    # the wall. An ISP whose helpdesk always confirms power first can
+    # set truck_roll here.
+    silent_hours_for_truck_roll: "24"
+    silent_long_verdict: "inconclusive"
+    # The experience score's wifi dimension below this, with a healthy
+    # line, is a Wi-Fi problem to fix remotely.
+    experience_poor_below: "60"
+    # Device metadata key naming the access type (gpon, fibre, dsl,
+    # fwa). When present it narrows which readings count and picks the
+    # question to ask when the CPE is not answering.
+    access_type_metadata_key: "access_type"
+    # What the helpdesk asks the subscriber when the CPE is not
+    # answering. Config so an ISP can word or translate them.
+    ask_fibre: "Is the ONT powered, and is its PON or LOS light red or off?"
+    ask_gpon: "Is the gateway powered, and is its PON or LOS light red or off?"
+    ask_dsl: "Is the DSL light solid, and is the line cable seated in the wall socket?"
+    ask_fwa: "Is the outdoor unit powered, and how many signal bars does it show?"
+    ask_default: "Is the gateway powered, and which lights are on?"
+  steps:
+    # One session: UpTime proves the CPE answered, IP.Interface finds
+    # the WAN connection, Ethernet.Interface finds the upstream port.
+    - name: snapshot
+      optional: true
+      timeout: 90s
+      collect:
+        - Device.DeviceInfo.UpTime
+        - Device.IP.Interface.
+        - Device.Ethernet.Interface.
+    - name: optical
+      optional: true
+      timeout: 45s
+      collect:
+        - Device.Optical.Interface.
+    # DSL.Line carries per-subcarrier arrays too; the normalizer reads
+    # the scalars and never echoes the arrays into the result.
+    - name: dsl
+      optional: true
+      timeout: 45s
+      collect:
+        - Device.DSL.Line.
+        - Device.DSL.Channel.
+    - name: cellular
+      optional: true
+      timeout: 45s
+      collect:
+        - Device.Cellular.Interface.
+        - Device.Cellular.AccessPoint.
+    # Password reads back empty per TR-181; neither it nor Username is
+    # copied into the result.
+    - name: ppp
+      optional: true
+      timeout: 45s
+      collect:
+        - Device.PPP.Interface.
+    - name: reachability
+      optional: true
+      run: ping
+      inputs:
+        host: "{{ .config.reachability_host }}"
+      timeout: 2m30s
+  normalize: platform/actions/truck-roll-check.ts
+---
+apiVersion: actions.herder.io/v1alpha1
+kind: ActionProfile
+metadata:
+  name: truck-roll-check-tr098
+spec:
+  capability: truck_roll_check
+  priority: 10
+  deviceSelector:
+    matchExpressions:
+      - key: "dataModel:igd"
+        operator: Exists
+  timeout: 8m
+  context:
+    window: 168h
+  config:
+    reachability_host: "1.1.1.1"
+    ping_loss_max_pct: "25"
+    optical_level_divisor: "1000"
+    optical_rx_min_dbm: "-27"
+    optical_rx_max_dbm: "-8"
+    optical_rx_marginal_db: "2"
+    optical_tx_min_dbm: "0.5"
+    optical_tx_max_dbm: "5"
+    dsl_snr_margin_min_db: "6"
+    dsl_attenuation_max_db: "55"
+    dsl_showtime_min_seconds: "3600"
+    dsl_retrains_per_day_max: "5"
+    lte_rsrp_min_dbm: "-110"
+    lte_rsrq_min_db: "-15"
+    lte_sinr_min_db: "0"
+    cellular_sinr_leaf: ""
+    cellular_expected_apn: ""
+    eth_wan_expected_bit_rate_mbps: "1000"
+    eth_error_ratio_max: "0.001"
+    eth_flap_seconds: "3600"
+    reboot_storm_count: "3"
+    outage_count_supporting: "3"
+    silent_hours_for_truck_roll: "24"
+    silent_long_verdict: "inconclusive"
+    experience_poor_below: "60"
+    access_type_metadata_key: "access_type"
+    ask_fibre: "Is the ONT powered, and is its PON or LOS light red or off?"
+    ask_gpon: "Is the gateway powered, and is its PON or LOS light red or off?"
+    ask_dsl: "Is the DSL light solid, and is the line cable seated in the wall socket?"
+    ask_fwa: "Is the outdoor unit powered, and how many signal bars does it show?"
+    ask_default: "Is the gateway powered, and which lights are on?"
+  steps:
+    # WANConnectionDevice. whole rather than WANIPConnection.1: the lab
+    # NVG578LX carries IPv4 on instance 2, and the subtree brings every
+    # WANPPPConnection with it, so TR-098 needs no separate ppp step.
+    - name: snapshot
+      optional: true
+      timeout: 90s
+      collect:
+        - InternetGatewayDevice.DeviceInfo.UpTime
+        - InternetGatewayDevice.WANDevice.1.WANCommonInterfaceConfig.
+        - InternetGatewayDevice.WANDevice.1.WANConnectionDevice.
+    - name: ethernet
+      optional: true
+      timeout: 45s
+      collect:
+        - InternetGatewayDevice.WANDevice.1.WANEthernetInterfaceConfig.
+    - name: dsl
+      optional: true
+      timeout: 45s
+      collect:
+        - InternetGatewayDevice.WANDevice.1.WANDSLInterfaceConfig.
+    # No optical or cellular step: TR-098 defines neither object, and
+    # the normalizer reports both as skipped for that reason.
+    - name: reachability
+      optional: true
+      run: ping
+      inputs:
+        host: "{{ .config.reachability_host }}"
+      timeout: 2m30s
+  normalize: platform/actions/truck-roll-check.ts
