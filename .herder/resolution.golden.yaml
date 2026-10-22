@@ -1512,6 +1512,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -2416,6 +2425,15 @@ devices:
         - path: Device.Ethernet.Interface.*.CurrentBitRate
           source: tr181-ethernet
           interval: 900
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.LastChange
           source: tr181-ip
           interval: 900
@@ -3089,6 +3107,15 @@ devices:
         - path: Device.Ethernet.Interface.*.CurrentBitRate
           source: tr181-ethernet
           interval: 900
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.LastChange
           source: tr181-ip
           interval: 900
@@ -3538,6 +3565,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -6155,6 +6191,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -6862,6 +6907,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -7544,6 +7598,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -8235,6 +8298,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -8919,6 +8991,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -9585,6 +9666,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -10258,6 +10348,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -10929,6 +11028,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -11598,6 +11706,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -12265,6 +12382,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -12939,6 +13065,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -14966,6 +15101,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -15641,6 +15785,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -16739,6 +16892,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -17408,6 +17570,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -18075,6 +18246,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
@@ -19165,6 +19345,15 @@ devices:
         - path: Device.Hosts.Host.*.Layer3Interface
           source: tr181-hosts
           interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
+          source: tr181-hosts
+          interval: 0
         - path: Device.IP.Interface.*.Enable
           source: tr181-ip
           interval: 0
@@ -19837,6 +20026,15 @@ devices:
           source: tr181-hosts
           interval: 0
         - path: Device.Hosts.Host.*.Layer3Interface
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Status
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.SSIDReference
+          source: tr181-hosts
+          interval: 0
+        - path: Device.WiFi.EndPoint.*.Stats.SignalStrength
           source: tr181-hosts
           interval: 0
         - path: Device.IP.Interface.*.Enable
