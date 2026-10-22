@@ -16,8 +16,14 @@ const RSSI_FLOOR = ctx.configGet<number>("wifiRssiFloor", -85);
 const RSSI_CEIL = ctx.configGet<number>("wifiRssiCeil", -55);
 const RATE_FLOOR = ctx.configGet<number>("rateFloorMbps", 10);
 const RATE_CEIL = ctx.configGet<number>("rateCeilMbps", 100);
+// TR-181 LastDataDownlinkRate and TR-098 LastDataTransmitRate are both
+// defined in kbps, so the division is unconditional. The earlier guess
+// ("above 10000 must be kbps") read a client stuck at 6500 kbps as
+// 6500 Mbps and scored the worst clients 100. A vendor rule whose
+// firmware reports Mbps sets this false in its own config block.
+const RATE_KBPS = ctx.configGet<boolean>("rateKbps", true);
 const WAN_ERR_CEIL = ctx.configGet<number>("wanErrorRateCeil", 0.01);
-const WAN_UPTIME_GOOD = ctx.configGet<number>("wanUptimeGoodSeconds", 86400);
+const WAN_UPTIME_GOOD = ctx.configGet<number>("wanUptimeGoodSeconds", 14400);
 
 // --- Helpers ------------------------------------------------------------
 
@@ -85,31 +91,32 @@ const clients: ClientSample[] = [];
 // naming convention, not a vendor table: dBm-style RSSI is preferred,
 // the percent-style SignalStrength variant is used only as a last
 // resort and never mistaken for dBm (values above 0 are ignored for
-// the rssi component).
+// the rssi component). A reading of exactly 0 is the no-measurement
+// placeholder on every data model and is not a signal either.
 function clientSignalDbm(c: Record<string, unknown>): number | null {
   const std = toNum(c.SignalStrength);
-  if (std !== null && std <= 0) return std;
+  if (std !== null && std < 0) return std;
   const keys = Object.keys(c);
   for (let i = 0; i < keys.length; i++) {
     if (/^X_[0-9A-Fa-f]{6}_RSSI$/.test(keys[i])) {
       const v = toNum(c[keys[i]]);
-      if (v !== null && v <= 0) return v;
+      if (v !== null && v < 0) return v;
     }
   }
   for (let i = 0; i < keys.length; i++) {
     if (/^X_[0-9A-Fa-f]{6}_SignalStrength$/.test(keys[i])) {
       const v = toNum(c[keys[i]]);
-      if (v !== null && v <= 0) return v;
+      if (v !== null && v < 0) return v;
     }
   }
-  return std;
+  return null;
 }
 
 const tr181Clients = batch.matches("Device.WiFi.AccessPoint.*.AssociatedDevice.*");
 for (let i = 0; i < tr181Clients.length; i++) {
   const c = tr181Clients[i];
   clients.push({
-    rssi: toNum(c.SignalStrength),
+    rssi: clientSignalDbm(c),
     rate: toNum(c.LastDataDownlinkRate),
     mac: typeof c.MACAddress === "string" ? c.MACAddress.toLowerCase() : null,
   });
@@ -157,9 +164,8 @@ if (wifiRssiScore !== null) {
 const rateScores: number[] = [];
 for (let i = 0; i < clients.length; i++) {
   const rate = clients[i].rate;
-  if (rate === null || rate === 0) continue;
-  // Rates report in kbps on some data models; treat >10000 as kbps.
-  const mbps = rate > 10000 ? rate / 1000 : rate;
+  if (rate === null || rate <= 0) continue;
+  const mbps = RATE_KBPS ? rate / 1000 : rate;
   rateScores.push(linScore(mbps, RATE_FLOOR, RATE_CEIL));
 }
 wifiRateScore = mean(rateScores);
