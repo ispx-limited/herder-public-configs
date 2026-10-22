@@ -116,6 +116,37 @@
   // already attached via WiFi.
   const emittedClients: Record<string, boolean> = {};
 
+  // ---- Step 1b: the uplink ----
+  // A unit that is itself a WiFi client of another access point (an
+  // extender on a wireless backhaul) says so in Device.WiFi.EndPoint:
+  // an endpoint whose Status is Enabled, and the SSID it rides on in
+  // SSIDReference. The host table then lists the access point it is
+  // associated to behind that SSID, and that host is the gateway this
+  // unit hangs off, not one of its clients. Drawn as a client it put
+  // the subscriber's own router under the extender.
+  const uplinkSsids: Record<string, string> = {};
+  const endpoints = batch.matches("Device.WiFi.EndPoint.*");
+  for (let i = 0; i < endpoints.length; i++) {
+    const ep = endpoints[i];
+    if (String(ep.Status || "") !== "Enabled") continue;
+    const ref = String(ep.SSIDReference || "").match(/Device\.WiFi\.SSID\.(\d+)/);
+    if (ref) uplinkSsids[ref[1]] = ep.$indexes.EndPoint;
+  }
+  let upstreamMAC = "";
+  let upstreamEndpoint = "";
+  for (const macKey in hostByMAC) {
+    const via = hostByMAC[macKey].layer1.match(/^Device\.WiFi\.SSID\.(\d+)/);
+    if (via && uplinkSsids[via[1]] !== undefined) {
+      upstreamMAC = macKey;
+      upstreamEndpoint = uplinkSsids[via[1]];
+      break;
+    }
+  }
+  // The unit names the gateway it is behind in GatewayInfo even where
+  // the backhaul is wired, which is the same fact about what it is.
+  const behindGateway = upstreamMAC !== "" ||
+    String(batch.params["Device.GatewayInfo.SerialNumber"] || "").trim() !== "";
+
   // ---- Step 2: gateway = the managed CPE itself ----
   //
   // Walk the TR-181 paths that carry a real 6-byte MAC for "this
@@ -190,7 +221,7 @@
   if (gatewayMAC) {
     topology.addNode({
       id: gatewayMAC,
-      type: "gateway",
+      type: behindGateway ? "extender" : "gateway",
       managed_device_id: device.id,
       manufacturer: device.manufacturer,
       model: device.model,
@@ -327,6 +358,10 @@
     ssidsSeen++;
     if (band !== "") ssidsWithBand++;
 
+    // The SSID a station rides on is the upstream's network, not one
+    // this unit offers.
+    if (uplinkSsids[ssidIdx] !== undefined) continue;
+
     const enable = String(s.Enable === undefined ? "" : s.Enable);
     const status = String(s.Status === undefined ? "" : s.Status);
     const down = enable === "false" || enable === "0"
@@ -350,6 +385,28 @@
       edge_type: bandToEdgeType(band),
       bssid: bssid,
     });
+  }
+
+  if (upstreamMAC !== "") {
+    const up = hostByMAC[upstreamMAC];
+    topology.addNode({
+      id: upstreamMAC,
+      type: "gateway",
+      hostname: up.hostname || undefined,
+      ipv4: up.ipv4 || undefined,
+      ipv6: up.ipv6 || undefined,
+    });
+    topology.addEdge({
+      parent: upstreamMAC,
+      child: gatewayMAC,
+      edge_type: "wifi_backhaul",
+    });
+    edgeRssi(
+      batch.params["Device.WiFi.EndPoint." + upstreamEndpoint + ".Stats.SignalStrength"],
+      upstreamMAC,
+      gatewayMAC,
+    );
+    emittedClients[upstreamMAC] = true;
   }
 
   // An unresolved band is `other`, not the busiest guess. An edge typed

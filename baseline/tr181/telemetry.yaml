@@ -544,6 +544,15 @@ spec:
       interval: 0
     - path: "Device.Hosts.Host.{i}.Layer3Interface"
       interval: 0
+    # --- The unit's own WiFi stations (a wireless backhaul) ---
+    # Which SSID an active station rides on is what tells the topology
+    # that the host behind it is the gateway upstream, not a client.
+    - path: "Device.WiFi.EndPoint.{i}.Status"
+      interval: 0
+    - path: "Device.WiFi.EndPoint.{i}.SSIDReference"
+      interval: 0
+    - path: "Device.WiFi.EndPoint.{i}.Stats.SignalStrength"
+      interval: 0
 ---
 apiVersion: telemetry.herder.io/v1alpha1
 kind: TelemetryProfile
