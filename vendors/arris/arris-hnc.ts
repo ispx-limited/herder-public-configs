@@ -26,7 +26,8 @@
     const h = hosts[i];
     const mac = ((h.MACAddress as string | undefined) || "").toLowerCase();
     if (!mac) continue;
-    if (!includeInactive && (h.Active as string | undefined) === "false") continue;
+    const active = (h.Active as string | undefined) || "";
+    if (!includeInactive && (active === "false" || active === "0")) continue;
     hostByMAC[mac] = {
       hostname: (h.HostName as string | undefined) || "",
       ipv4: (h.IPAddress as string | undefined) || "",
@@ -89,6 +90,24 @@
     }
   }
 
+  // The gateway's own reading of each client's signal, from the
+  // AssociatedDevice entry on the radio the host table puts it on. The
+  // HNC table holds 0 for a station it has no reading for, and on this
+  // firmware that is most sessions.
+  const wlanPrefix = "InternetGatewayDevice.LANDevice.1.WLANConfiguration.";
+  const assoc = batch.matches(wlanPrefix + "*.AssociatedDevice.*");
+  const assocRSSI: Record<string, number> = {};
+  for (let i = 0; i < assoc.length; i++) {
+    const a = assoc[i];
+    const mac = ((a.AssociatedDeviceMACAddress as string | undefined) || "").toLowerCase();
+    if (!mac) continue;
+    const hostMeta = hostByMAC[mac];
+    const layer2 = hostMeta ? hostMeta.layer2.replace(/\.$/, "") : "";
+    if (layer2 && layer2 !== wlanPrefix + a.$indexes.WLANConfiguration) continue;
+    const rssi = parseFloat((a.X_0000C5_RSSI as string | undefined) || "");
+    if (!isNaN(rssi) && rssi < 0) assocRSSI[mac] = rssi;
+  }
+
   // Step 3: clients per HNE.{i}.Radio.{j}.SSID.{k}.STA.{l}. Skip
   // backhaul-SSID stations — they're inter-node links, not clients.
   const stations = batch.matches(
@@ -134,23 +153,21 @@
       edge_type: edgeType,
     });
 
-    // Per-edge RSSI metric.
-    const rssiRaw = s.RSSI as string | undefined;
-    if (rssiRaw !== undefined && rssiRaw !== "") {
-      let rssi = parseFloat(rssiRaw);
-      // 0 is what the HNC table holds for a station it has no reading
-      // for, not a signal: drawn as one, an iPhone showed 0 dBm. A dBm
-      // signal is negative, so anything else is no measurement.
-      if (!isNaN(rssi) && rssi !== 0) {
-        if (rssiEncoding === "rcpi") {
-          rssi = (rssi / 2) - 110;
-        }
-        if (rssi >= 0) continue;
-        topology.addEdgeMetric("rssi_dbm", rssi, {
-          parent: parentMAC,
-          child: clientMAC,
-        });
-      }
+    // Per-edge RSSI metric. 0 is no reading, not a signal: a dBm
+    // signal is negative, so anything else falls back to the gateway's
+    // own reading for a client of the gateway.
+    let rssi = parseFloat((s.RSSI as string | undefined) || "");
+    if (!isNaN(rssi) && rssi !== 0 && rssiEncoding === "rcpi") {
+      rssi = (rssi / 2) - 110;
+    }
+    if ((isNaN(rssi) || rssi >= 0) && parentMAC === gatewayMAC && clientMAC in assocRSSI) {
+      rssi = assocRSSI[clientMAC];
+    }
+    if (!isNaN(rssi) && rssi < 0) {
+      topology.addEdgeMetric("rssi_dbm", rssi, {
+        parent: parentMAC,
+        child: clientMAC,
+      });
     }
   }
   // Step 4: clients on the gateway's own radios, from the standard
@@ -160,8 +177,6 @@
   // HNC table alone, a gateway with a phone on it showed no clients
   // while the client signals panel listed the phone on both bands.
   // A station the HNC table already placed is left where it is.
-  const wlanPrefix = "InternetGatewayDevice.LANDevice.1.WLANConfiguration.";
-  const assoc = batch.matches(wlanPrefix + "*.AssociatedDevice.*");
   for (let i = 0; i < assoc.length; i++) {
     const a = assoc[i];
     const clientMAC = ((a.AssociatedDeviceMACAddress as string | undefined) || "").toLowerCase();
@@ -192,9 +207,8 @@
     else if (band.indexOf("6") === 0) edgeType = "wifi_6g";
     topology.addEdge({ parent: gatewayMAC, child: clientMAC, edge_type: edgeType });
 
-    const rssi = parseFloat((a.X_0000C5_RSSI as string | undefined) || "");
-    if (!isNaN(rssi) && rssi < 0) {
-      topology.addEdgeMetric("rssi_dbm", rssi, { parent: gatewayMAC, child: clientMAC });
+    if (clientMAC in assocRSSI) {
+      topology.addEdgeMetric("rssi_dbm", assocRSSI[clientMAC], { parent: gatewayMAC, child: clientMAC });
     }
   }
 })();

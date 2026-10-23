@@ -34,6 +34,8 @@ spec:
   # only the nodes and the host table left the map as it was first drawn
   # until the heartbeat: a map drawn from a session without its stations
   # showed the gateway alone for hours while the clients were there.
+  # The signal is hashed for the same reason: the edge colour is drawn
+  # from it, and hashed out it stayed at the first reading for hours.
   changeHash:
     paths:
       - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.MACAddress"
@@ -43,6 +45,8 @@ spec:
       - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.Active"
       - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.Layer2Interface"
       - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.AssociatedDeviceMACAddress"
+      - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.{i}.X_0000C5_RSSI"
+      - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.Radio.{i}.SSID.{i}.STA.{i}.RSSI"
   coalesceWindow: 60s
   config:
     # Regex matched against SSID name; matching SSIDs are treated as
