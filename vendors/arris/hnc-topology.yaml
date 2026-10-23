@@ -27,11 +27,18 @@ spec:
   triggerPaths:
     - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*"
     - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"
+  # The stations are the map's clients, so a phone joining, leaving or
+  # moving to another node or radio is a change to the graph. Hashing
+  # only the nodes and the host table left the map as it was first drawn
+  # until the heartbeat: a map drawn from a session without its stations
+  # showed the gateway alone for hours while the clients were there.
   changeHash:
     paths:
       - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.MACAddress"
       - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.Type"
+      - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.{i}.Radio.{i}.SSID.{i}.STA.{i}.MACAddress"
       - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.MACAddress"
+      - "InternetGatewayDevice.LANDevice.1.Hosts.Host.{i}.Active"
   coalesceWindow: 60s
   config:
     # Regex matched against SSID name; matching SSIDs are treated as
