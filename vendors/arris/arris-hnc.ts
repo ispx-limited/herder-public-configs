@@ -19,7 +19,7 @@
   const backhaulRe = new RegExp(backhaulPattern);
 
   // Step 1: host metadata by MAC for client emit cross-ref.
-  interface HostMeta { hostname: string; ipv4: string; }
+  interface HostMeta { hostname: string; ipv4: string; layer2: string; }
   const hostByMAC: Record<string, HostMeta> = {};
   const hosts = batch.matches("InternetGatewayDevice.LANDevice.1.Hosts.Host.*");
   for (let i = 0; i < hosts.length; i++) {
@@ -30,6 +30,7 @@
     hostByMAC[mac] = {
       hostname: (h.HostName as string | undefined) || "",
       ipv4: (h.IPAddress as string | undefined) || "",
+      layer2: (h.Layer2Interface as string | undefined) || "",
     };
   }
 
@@ -93,6 +94,7 @@
   const stations = batch.matches(
     "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*.Radio.*.SSID.*.STA.*",
   );
+  const placed: Record<string, boolean> = {};
   for (let i = 0; i < stations.length; i++) {
     const s = stations[i];
     const clientMAC = ((s.MACAddress as string | undefined) || "").toLowerCase();
@@ -110,6 +112,7 @@
     if (!parentMAC) continue;
 
     const hostMeta = hostByMAC[clientMAC];
+    placed[clientMAC] = true;
     topology.addNode({
       id: clientMAC,
       type: "client",
@@ -148,6 +151,50 @@
           child: clientMAC,
         });
       }
+    }
+  }
+  // Step 4: clients on the gateway's own radios, from the standard
+  // WLANConfiguration.{i}.AssociatedDevice table. The HNC station table
+  // above is filled only now and then on this firmware, while the
+  // AssociatedDevice table is reported on every session: drawn from the
+  // HNC table alone, a gateway with a phone on it showed no clients
+  // while the client signals panel listed the phone on both bands.
+  // A station the HNC table already placed is left where it is.
+  const wlanPrefix = "InternetGatewayDevice.LANDevice.1.WLANConfiguration.";
+  const assoc = batch.matches(wlanPrefix + "*.AssociatedDevice.*");
+  for (let i = 0; i < assoc.length; i++) {
+    const a = assoc[i];
+    const clientMAC = ((a.AssociatedDeviceMACAddress as string | undefined) || "").toLowerCase();
+    if (!clientMAC || placed[clientMAC]) continue;
+    const wlan = a.$indexes.WLANConfiguration;
+
+    // The mesh backhaul's stations are the extenders, not clients.
+    const ssid = batch.params[wlanPrefix + wlan + ".SSID"] || "";
+    if (backhaulRe.test(ssid)) continue;
+
+    // A station still listed on a radio it has left: the host table
+    // names the interface it is on now.
+    const hostMeta = hostByMAC[clientMAC];
+    const layer2 = hostMeta ? hostMeta.layer2.replace(/\.$/, "") : "";
+    if (layer2 && layer2 !== wlanPrefix + wlan) continue;
+
+    placed[clientMAC] = true;
+    topology.addNode({
+      id: clientMAC,
+      type: "client",
+      hostname: hostMeta ? hostMeta.hostname || undefined : undefined,
+      ipv4: hostMeta ? hostMeta.ipv4 || undefined : undefined,
+    });
+
+    const band = batch.params[wlanPrefix + wlan + ".X_0000C5_OperatingFrequencyBand"] || "";
+    let edgeType: "wifi_2g" | "wifi_5g" | "wifi_6g" = "wifi_5g";
+    if (band.indexOf("2.4") === 0) edgeType = "wifi_2g";
+    else if (band.indexOf("6") === 0) edgeType = "wifi_6g";
+    topology.addEdge({ parent: gatewayMAC, child: clientMAC, edge_type: edgeType });
+
+    const rssi = parseFloat((a.X_0000C5_RSSI as string | undefined) || "");
+    if (!isNaN(rssi) && rssi < 0) {
+      topology.addEdgeMetric("rssi_dbm", rssi, { parent: gatewayMAC, child: clientMAC });
     }
   }
 })();
