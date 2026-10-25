@@ -27,7 +27,7 @@ spec:
   triggerPaths:
     - "InternetGatewayDevice.LANDevice.1.X_0000C5_Wireless.HNC.HNE.*"
     - "InternetGatewayDevice.LANDevice.1.Hosts.Host.*"
-    - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.*.AssociatedDevice.*"
+    - "InternetGatewayDevice.LANDevice.1.WLANConfiguration.{i}.AssociatedDevice.*"
   # The stations (the HNC table's and the gateway's own AssociatedDevice
   # table) are the map's clients, so a phone joining, leaving or moving
   # to another node or radio is a change to the graph. Hashing
