@@ -44,9 +44,18 @@ spec:
     # client labels rule reads it from the same batch as the stations.
     # Fetched hourly it is absent from all but one batch in twelve, and
     # every client on an extender would be skipped for want of a band.
+    # Two spellings of the same table. CurrentOperatingClasses is what
+    # the Beacons and other firmware built on the early Data Elements
+    # releases report; TR-181 2.17 renamed it CurrentOperatingClassProfile
+    # and a current gateway reports that one. Each costs one 9005 on the
+    # firmware that has the other, negative-cached per #605.
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClasses.{i}.Class"
       interval: 0
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClasses.{i}.Channel"
+      interval: 900
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClassProfile.{i}.Class"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.Radio.{i}.CurrentOperatingClassProfile.{i}.Channel"
       interval: 900
     # --- The RF measurement itself ---
     # Utilization is the total; Transmit, ReceiveSelf and ReceiveOther
