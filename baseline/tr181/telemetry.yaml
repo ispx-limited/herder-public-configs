@@ -264,6 +264,12 @@ spec:
       interval: 3600
     - path: "Device.WiFi.SSID.{i}.BSSID"
       interval: 0
+    # Beside the BSSID so the identity rule can tell an access point,
+    # where the two are the same address, from an extender's backhaul
+    # station, where the BSSID is the gateway's radio and only this one
+    # is the unit's own.
+    - path: "Device.WiFi.SSID.{i}.MACAddress"
+      interval: 0
     - path: "Device.WiFi.SSID.{i}.LowerLayers"
       interval: 0
     - path: "Device.WiFi.SSID.{i}.Stats.BytesSent"

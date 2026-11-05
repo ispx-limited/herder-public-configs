@@ -15,6 +15,16 @@
 // gateway from a radio address, not an Ethernet one: an X5042 behind a
 // FAST5598 is in the gateway's host table under its first BSSID and
 // under nothing Device.Ethernet reports.
+//
+// Except on the interface that is the backhaul. TR-181 models an
+// extender's station side as an SSID too, and on that one BSSID is the
+// access point it is associated to, the gateway's, while MACAddress is
+// the extender's own radio. An SSID whose two addresses differ is such
+// a station, so only its MACAddress is its own; one that reports a
+// single address, or the same one twice, is an access point and the
+// address is its own either way. Emitting the station's BSSID claimed
+// the gateway's radio for the extender, and an address two devices
+// claim links neither.
 
 (function () {
   const own: RegExp[] = [
@@ -22,8 +32,18 @@
     /^InternetGatewayDevice\.WANDevice\.\d+\.WANConnectionDevice\.\d+\.WAN(IP|PPP)Connection\.\d+\.MACAddress$/,
     /^InternetGatewayDevice\.LANDevice\.\d+\.WLANConfiguration\.\d+\.BSSID$/,
     /^Device\.Ethernet\.(Interface|Link)\.\d+\.MACAddress$/,
-    /^Device\.WiFi\.SSID\.\d+\.(BSSID|MACAddress)$/,
+    /^Device\.WiFi\.SSID\.\d+\.MACAddress$/,
   ];
+  // An SSID's BSSID is its own only when the batch does not say
+  // otherwise with a different MACAddress beside it.
+  const ssidBssid = /^Device\.WiFi\.SSID\.(\d+)\.BSSID$/;
+  function bssidIsOwn(path: string): boolean {
+    const m = path.match(ssidBssid);
+    if (!m) return false;
+    const mac = batch.params["Device.WiFi.SSID." + m[1] + ".MACAddress"];
+    if (typeof mac !== "string" || mac === "") return true;
+    return canonical(mac) === canonical(batch.params[path]);
+  }
 
   function canonical(raw: string): string | null {
     const mac = raw.trim().toLowerCase().replace(/-/g, ":");
@@ -38,12 +58,9 @@
   const params = batch.params;
   for (const path in params) {
     if (!Object.prototype.hasOwnProperty.call(params, path)) continue;
-    let isOwn = false;
-    for (let i = 0; i < own.length; i++) {
-      if (own[i].test(path)) {
-        isOwn = true;
-        break;
-      }
+    let isOwn = bssidIsOwn(path);
+    for (let i = 0; i < own.length && !isOwn; i++) {
+      if (own[i].test(path)) isOwn = true;
     }
     if (!isOwn) continue;
     const mac = canonical(params[path]);

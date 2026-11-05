@@ -1830,6 +1830,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -2602,6 +2605,9 @@ devices:
         - path: Device.WiFi.SSID.*.Alias
           source: tr181-wifi
           interval: 3600
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.Stats.RetransCount
           source: tr181-wifi
           interval: 0
@@ -3296,6 +3302,9 @@ devices:
         - path: Device.WiFi.SSID.*.Alias
           source: tr181-wifi
           interval: 3600
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.Stats.RetransCount
           source: tr181-wifi
           interval: 0
@@ -3919,6 +3928,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -6548,6 +6560,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -7270,6 +7285,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -7976,6 +7994,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -8688,6 +8709,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -9390,6 +9414,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -10080,6 +10107,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -10774,6 +10804,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -11466,6 +11499,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -12156,6 +12192,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -12844,6 +12883,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -13539,6 +13581,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -15587,6 +15632,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -16283,6 +16331,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -17402,6 +17453,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -18092,6 +18146,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -18780,6 +18837,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
@@ -19891,6 +19951,9 @@ devices:
         - path: Device.WiFi.SSID.*.BSSID
           source: tr181-wifi
           interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
+          source: tr181-wifi
+          interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
           source: tr181-wifi
           interval: 0
@@ -20584,6 +20647,9 @@ devices:
           source: tr181-wifi
           interval: 3600
         - path: Device.WiFi.SSID.*.BSSID
+          source: tr181-wifi
+          interval: 0
+        - path: Device.WiFi.SSID.*.MACAddress
           source: tr181-wifi
           interval: 0
         - path: Device.WiFi.SSID.*.LowerLayers
