@@ -1326,6 +1326,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -1600,6 +1606,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -2320,6 +2332,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
           source: dataelements-wifi-rf
           interval: 3600
@@ -2446,6 +2464,12 @@ devices:
         - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Enable
           source: tr181-multiap
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
+          source: tr181-multiap
+          interval: 0
         - path: Device.DeviceInfo.Manufacturer
           source: tr181-system
           interval: 3600
@@ -3002,6 +3026,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.BSS.*.BSSID
           source: dataelements-wifi-rf
           interval: 3600
@@ -3128,6 +3158,12 @@ devices:
         - path: Device.WiFi.MultiAP.APDevice.*.Radio.*.Enable
           source: tr181-multiap
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
+          source: tr181-multiap
+          interval: 0
         - path: Device.DeviceInfo.Manufacturer
           source: tr181-system
           interval: 3600
@@ -3379,6 +3415,12 @@ devices:
           source: dataelements-wifi-rf
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
           source: dataelements-wifi-rf
           interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
@@ -3655,6 +3697,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -6026,6 +6074,9 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -6276,6 +6327,9 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.ID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -6742,6 +6796,9 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -6992,6 +7049,9 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.ID
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -7414,6 +7474,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -7688,6 +7754,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -8112,6 +8184,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -8386,6 +8464,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -8811,6 +8895,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -9079,6 +9169,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -9482,6 +9578,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -9756,6 +9858,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -10162,6 +10270,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -10436,6 +10550,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -10842,6 +10962,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -11116,6 +11242,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -11520,6 +11652,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -11794,6 +11932,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -12198,6 +12342,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -12472,6 +12622,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -12881,6 +13037,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -13155,6 +13317,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -14915,6 +15083,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -15189,6 +15363,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -15601,6 +15781,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -15875,6 +16061,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -16706,6 +16898,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -16980,6 +17178,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -17384,6 +17588,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -17658,6 +17868,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -18062,6 +18278,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -18336,6 +18558,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -19159,6 +19387,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -19433,6 +19667,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries
@@ -19842,6 +20082,12 @@ devices:
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClasses.*.Channel
           source: dataelements-wifi-rf
           interval: 900
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Class
+          source: dataelements-wifi-rf
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.CurrentOperatingClassProfile.*.Channel
+          source: dataelements-wifi-rf
+          interval: 900
         - path: Device.WiFi.DataElements.Network.Device.*.Radio.*.Utilization
           source: dataelements-wifi-rf
           interval: 0
@@ -20116,6 +20362,12 @@ devices:
           source: tr181-multiap
           interval: 0
         - path: Device.WiFi.DataElements.Network.Device.*.Manufacturer
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.LinkType
+          source: tr181-multiap
+          interval: 0
+        - path: Device.WiFi.DataElements.Network.Device.*.MultiAPDevice.Backhaul.MACAddress
           source: tr181-multiap
           interval: 0
         - path: Device.NAT.PortMappingNumberOfEntries

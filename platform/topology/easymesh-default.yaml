@@ -1,9 +1,11 @@
 # Default topology rule for TR-181 EasyMesh / MultiAP devices.
 #
 # Walks Device.WiFi.MultiAP.APDevice.{i}.Radio.{j}.AP.{k}.AssociatedDevice.{l}
-# to assemble the mesh node graph. APDevice entries are paired
-# extenders; the gateway is the managed CPE itself. Each extender
-# wires back to the gateway as a wifi_backhaul edge.
+# to assemble the mesh node graph. APDevice entries are the mesh agents:
+# the one carrying the gateway's own MAC is the gateway (a controller is
+# an agent too, and lists itself), the rest are extenders. Each extender
+# wires back to the gateway as a backhaul edge typed from Data Elements
+# Backhaul.LinkType where the device reports it, wifi_backhaul otherwise.
 #
 # Targets the MultiAP path tree (broad firmware compatibility, what
 # cpe-labs sim emits). The newer Device.WiFi.DataElements.Network.*

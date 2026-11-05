@@ -606,6 +606,19 @@ spec:
       interval: 3600
     - path: "Device.WiFi.DataElements.Network.Device.{i}.Manufacturer"
       interval: 0
+    # How each agent is attached, in the agent's own words: the link
+    # type decides whether the map draws its backhaul as Wi-Fi or
+    # Ethernet, the MAC names the agent's backhaul radio so the station
+    # that radio makes on the gateway is drawn as the backhaul rather
+    # than as a client, and the RCPI stands in for a signal where the
+    # MultiAP table reports none. Interval 0 because the topology rule
+    # reads them from the batch that carries the rest of the mesh.
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.LinkType"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.MACAddress"
+      interval: 0
+    - path: "Device.WiFi.DataElements.Network.Device.{i}.MultiAPDevice.Backhaul.Stats.SignalStrength"
+      interval: 0
 ---
 # Telemetry profile: TR-181 radio RF measurements.
 #

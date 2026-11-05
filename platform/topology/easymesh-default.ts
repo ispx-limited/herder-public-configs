@@ -9,6 +9,21 @@
 //
 // Hostname / IPv4 / IPv6 cross-ref Device.Hosts.Host.* by MAC.
 //
+// The controller lists itself in Device.WiFi.MultiAP.APDevice (an
+// EasyMesh controller is also an agent, and APDevice.1 is usually the
+// gateway's own agent), and it leases its extenders addresses like any
+// other host. Neither makes the gateway an extender of itself or an
+// extender a client: an APDevice carrying the gateway's MAC is the
+// gateway, and a host whose MAC is an APDevice's is that extender, so
+// its name and address go on the extender node instead of on a second
+// node with the same id. Where the device also reports
+// Device.WiFi.DataElements, each agent's MultiAPDevice.Backhaul says
+// how it is attached: the backhaul edge is typed from LinkType
+// (Ethernet or Wi-Fi) rather than assumed wireless, and the agent's
+// backhaul radio, a station on one of the gateway's own access points,
+// is drawn as that backhaul link, with the access point's reading of
+// its signal, rather than as a client.
+//
 // Firmware with no association table at all (a Nokia FastMile faults
 // 9005 on AccessPoint.{i}.AssociatedDevice. and rejects its entry
 // count) still names the radio each wireless host is on in the host
@@ -245,6 +260,52 @@
     // resolvable identity yet").
     return;
   }
+
+  // ---- Step 2b: the mesh agents, before anything is drawn ----
+  // The MultiAP table names every agent, the controller included; Data
+  // Elements, where the device reports it, says how each one is
+  // attached. Both are read up front so the client walks below can
+  // tell an extender's bridge MAC and backhaul radio from a client.
+  interface AgentMeta {
+    // How the agent is attached, from Data Elements Backhaul.LinkType:
+    // "ethernet", "wifi_backhaul" or "" when nothing says.
+    linkType: string;
+    // The MAC of the agent's backhaul radio, from Data Elements
+    // Backhaul.MACAddress: a station on one of the gateway's own
+    // access points when the backhaul is wireless.
+    backhaulSta: string;
+    // RCPI from Data Elements Backhaul.Stats, for the backhaul edge when
+    // the MultiAP table carries no dBm signal.
+    backhaulRcpi: string;
+  }
+  const agentByMAC: Record<string, AgentMeta> = {};
+  const agentByBackhaulSta: Record<string, string> = {};
+  const deAgents = batch.matches("Device.WiFi.DataElements.Network.Device.*");
+  for (let i = 0; i < deAgents.length; i++) {
+    const d = deAgents[i];
+    const id = ((d.ID as string | undefined) || "").toLowerCase();
+    if (!id) continue;
+    const linkRaw = String(d["MultiAPDevice.Backhaul.LinkType"] || "");
+    const linkType = /eth/i.test(linkRaw) ? "ethernet"
+      : /wi-?fi|wlan|802\.11/i.test(linkRaw) ? "wifi_backhaul" : "";
+    const sta = String(d["MultiAPDevice.Backhaul.MACAddress"] || "").toLowerCase();
+    agentByMAC[id] = {
+      linkType: linkType,
+      backhaulSta: sta,
+      backhaulRcpi: String(d["MultiAPDevice.Backhaul.Stats.SignalStrength"] || ""),
+    };
+    if (sta && id !== gatewayMAC) agentByBackhaulSta[sta] = id;
+  }
+  const extenderMACs: Record<string, boolean> = {};
+  const apDevices = batch.matches("Device.WiFi.MultiAP.APDevice.*");
+  for (let i = 0; i < apDevices.length; i++) {
+    const apMAC = ((apDevices[i].MACAddress as string | undefined) || "").toLowerCase();
+    if (apMAC && apMAC !== gatewayMAC) extenderMACs[apMAC] = true;
+  }
+  // The signal and access point the gateway's own radio reports for an
+  // extender's backhaul station, recorded in step 4 and drawn in step 6.
+  interface BackhaulSeen { signal: unknown; bssid: string; }
+  const backhaulSeen: Record<string, BackhaulSeen> = {};
 
   // Helper: look up the band for a Device.WiFi.AccessPoint.{i}. The
   // SSIDReference points at Device.WiFi.SSID.{j}, which has
@@ -496,6 +557,14 @@
     if (!includeInactive && isInactive(s.Active)) continue;
 
     const apIdx = s.$indexes.AccessPoint;
+    // An extender's backhaul radio associated to this access point is
+    // the backhaul link, drawn in step 6 with this reading of it, not
+    // a client of the home.
+    if (agentByBackhaulSta[clientMAC]) {
+      backhaulSeen[agentByBackhaulSta[clientMAC]] = { signal: s.SignalStrength, bssid: bssidForAP(apIdx) };
+      continue;
+    }
+    if (extenderMACs[clientMAC]) continue;
     const hostMeta = hostByMAC[clientMAC];
 
     // Which radio this station is on, by the two routes the data model
@@ -575,7 +644,7 @@
   // back to the gateway when the interface isn't in the parameter
   // tree (e.g. firmware that omits Device.Ethernet entirely).
   for (const macKey in hostByMAC) {
-    if (emittedClients[macKey]) continue;
+    if (emittedClients[macKey] || extenderMACs[macKey]) continue;
     const hostMeta = hostByMAC[macKey];
     if (!hostMeta.layer1.startsWith("Device.Ethernet")) continue;
 
@@ -609,13 +678,22 @@
   //   ssid → mesh-client (typed by the same band, RSSI overlay
   //                       attached to this edge)
   const extenderByIndex: Record<string, string> = {};
-  const apDevices = batch.matches("Device.WiFi.MultiAP.APDevice.*");
+  // The controller's own APDevice entry. Its access points and stations
+  // are the gateway's, already drawn from the flat tables, so the walks
+  // below skip anything of its that is already on the map.
+  const gatewayAPIndex: Record<string, boolean> = {};
   for (let i = 0; i < apDevices.length; i++) {
     const ap = apDevices[i];
     const apMAC = ((ap.MACAddress as string | undefined) || "").toLowerCase();
     if (!apMAC) continue;
+    if (apMAC === gatewayMAC) {
+      gatewayAPIndex[ap.$indexes.APDevice] = true;
+      extenderByIndex[ap.$indexes.APDevice] = apMAC;
+      continue;
+    }
     extenderByIndex[ap.$indexes.APDevice] = apMAC;
 
+    const hostMeta = hostByMAC[apMAC];
     topology.addNode({
       id: apMAC,
       type: "extender",
@@ -623,13 +701,24 @@
       model: (ap.ModelName as string | undefined) || undefined,
       firmware: (ap.SoftwareVersion as string | undefined) || undefined,
       serial: (ap.SerialNumber as string | undefined) || undefined,
+      hostname: hostMeta ? hostMeta.hostname || undefined : undefined,
+      ipv4: hostMeta ? hostMeta.ipv4 || undefined : undefined,
+      ipv6: hostMeta ? hostMeta.ipv6 || undefined : undefined,
       synced: true,
     });
 
+    // The backhaul as the agent describes it where Data Elements is
+    // reported, wireless where nothing says otherwise. A wireless
+    // backhaul is a station on one of the gateway's access points, so
+    // the edge carries that access point's BSSID when step 4 saw it.
+    const agent = agentByMAC[apMAC];
+    const seen = backhaulSeen[apMAC];
+    const linkType = agent && agent.linkType ? agent.linkType : "wifi_backhaul";
     topology.addEdge({
       parent: gatewayMAC,
       child: apMAC,
-      edge_type: "wifi_backhaul",
+      edge_type: linkType as TopologyEdge["edge_type"],
+      bssid: seen && seen.bssid ? seen.bssid : undefined,
     });
 
     // Backhaul RSSI — when the CPE reports it, colour the gateway→
@@ -637,8 +726,23 @@
     // amber/red on the panel instead of inheriting the type colour.
     // Without this attachment the edge has no metric and the overlay
     // falls back to the static "wifi_backhaul" type tone, hiding the
-    // most operationally interesting signal in the mesh path.
-    edgeRssi(ap.SignalStrength, gatewayMAC, apMAC);
+    // most operationally interesting signal in the mesh path. The
+    // readings, in order of preference: the gateway radio's own dBm for
+    // the backhaul station, the MultiAP table's dBm, the Data Elements
+    // RCPI.
+    if (linkType !== "ethernet") {
+      if (seen && typeof seen.signal === "string" && seen.signal !== "" && parseFloat(seen.signal) < 0) {
+        edgeRssi(seen.signal, gatewayMAC, apMAC);
+      } else if (typeof ap.SignalStrength === "string" && ap.SignalStrength !== "" && parseFloat(ap.SignalStrength) !== 0) {
+        edgeRssi(ap.SignalStrength, gatewayMAC, apMAC);
+      } else if (agent && agent.backhaulRcpi !== "") {
+        const raw = parseFloat(agent.backhaulRcpi);
+        if (!isNaN(raw) && raw > 0) {
+          const rssi = raw / 2 - 110;
+          if (rssi < 0) topology.addEdgeMetric("rssi_dbm", rssi, { parent: gatewayMAC, child: apMAC });
+        }
+      }
+    }
   }
 
   // Walk APDevice.{i}.Radio.{j}.AP.{k} and emit an `ssid` node per
@@ -659,6 +763,11 @@
 
     const bssid = ((apEntry.BSSID as string | undefined) || "").toLowerCase();
     if (!bssid) continue;
+    // The controller's access points are the gateway's SSID table, drawn
+    // in step 3a. One the flat table did not carry is drawn here under
+    // the gateway, so a controller that reports its radios only through
+    // MultiAP still shows them.
+    if (gatewayAPIndex[apIdx] && emittedSsids[bssid]) continue;
     const ssidName = (apEntry.SSID as string | undefined) || "";
 
     const meshBase = "Device.WiFi.MultiAP.APDevice." + apIdx +
@@ -707,6 +816,10 @@
     const meshSsid = meshSsidByLoc[apIdx + "/" + radioIdx + "/" + apEntryIdx];
     const parentExtender = extenderByIndex[apIdx];
     if (!parentExtender && !meshSsid) continue;
+    // Already on the map from the flat table (the controller's own
+    // stations), an extender's backhaul radio, or an extender itself:
+    // none of them is a client of this access point.
+    if (emittedClients[clientMAC] || agentByBackhaulSta[clientMAC] || extenderMACs[clientMAC]) continue;
     const parentNodeId = meshSsid ? meshSsid.bssid : (parentExtender as string);
     const meshEdgeType = meshSsid ? bandToEdgeType(meshSsid.band) : "other";
 
@@ -765,7 +878,7 @@
   // more than the map said about it before.
   if (flatStations.length === 0 && meshStations.length === 0) {
     for (const macKey in hostByMAC) {
-      if (emittedClients[macKey]) continue;
+      if (emittedClients[macKey] || extenderMACs[macKey]) continue;
       const hostMeta = hostByMAC[macKey];
       const viaSsid = hostMeta.layer1.match(/^Device\.WiFi\.SSID\.(\d+)/);
       const viaRadio = hostMeta.layer1.match(/^Device\.WiFi\.Radio\.(\d+)/);
