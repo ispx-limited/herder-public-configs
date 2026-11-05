@@ -31,9 +31,9 @@
 # one once it reconnects, so a broker restart costs a few minutes of
 # resolution rather than a hole. Three because agents bound it: a Zyxel
 # DX3301 refuses anything outside [-1:3], and an agent that refuses one
-# value refuses the whole profile, so ten collected nothing there. Each retained collection carries its
-# own collection time and is stored at that time, and a collection
-# delivered twice is stored once.
+# value refuses the whole profile, so ten collected nothing there. Each
+# retained collection carries its own collection time and is stored at
+# that time, and a collection delivered twice is stored once.
 #
 # Selector: `protocol:usp` and `dataModel:device`. USPEventNotif exists
 # only on a TR-369 agent, so a TR-069 device on the same data model
