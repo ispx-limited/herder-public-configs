@@ -144,13 +144,17 @@
   for (let i = 0; i < endpoints.length; i++) {
     const ep = endpoints[i];
     if (String(ep.Status || "") !== "Enabled") continue;
-    const ref = String(ep.SSIDReference || "").match(/Device\.WiFi\.SSID\.(\d+)/);
+    // Path references are matched with or without their leading
+    // "Device.": TR-181 asks for the full path, and a Zyxel DX3301
+    // reports AccessPoint.{i}.SSIDReference as "WiFi.SSID.5". Read only
+    // as written, its clients resolved to no SSID and no band.
+    const ref = String(ep.SSIDReference || "").match(/(?:^|\.)WiFi\.SSID\.(\d+)/);
     if (ref) uplinkSsids[ref[1]] = ep.$indexes.EndPoint;
   }
   let upstreamMAC = "";
   let upstreamEndpoint = "";
   for (const macKey in hostByMAC) {
-    const via = hostByMAC[macKey].layer1.match(/^Device\.WiFi\.SSID\.(\d+)/);
+    const via = hostByMAC[macKey].layer1.match(/^(?:Device\.)?WiFi\.SSID\.(\d+)/);
     if (via && uplinkSsids[via[1]] !== undefined) {
       upstreamMAC = macKey;
       upstreamEndpoint = uplinkSsids[via[1]];
@@ -316,11 +320,11 @@
   function edgeTypeForAP(apIdx: string): WifiEdgeType {
     const ssidRef = batch.params["Device.WiFi.AccessPoint." + apIdx + ".SSIDReference"] || "";
     if (ssidRef === "") return "wifi_5g";
-    const m = ssidRef.match(/Device\.WiFi\.SSID\.(\d+)/);
+    const m = ssidRef.match(/(?:^|\.)WiFi\.SSID\.(\d+)/);
     if (!m) return "wifi_5g";
     const ssidIdx = m[1];
     const lowerLayers = batch.params["Device.WiFi.SSID." + ssidIdx + ".LowerLayers"] || "";
-    const radioMatch = lowerLayers.match(/Device\.WiFi\.Radio\.(\d+)/);
+    const radioMatch = lowerLayers.match(/(?:^|\.)WiFi\.Radio\.(\d+)/);
     if (!radioMatch) return "wifi_5g";
     const radioIdx = radioMatch[1];
     const band = batch.params["Device.WiFi.Radio." + radioIdx + ".OperatingFrequencyBand"] || "";
@@ -372,7 +376,7 @@
 
   function bssidForAP(apIdx: string): string {
     const ssidRef = batch.params["Device.WiFi.AccessPoint." + apIdx + ".SSIDReference"] || "";
-    const m = ssidRef.match(/Device\.WiFi\.SSID\.(\d+)/);
+    const m = ssidRef.match(/(?:^|\.)WiFi\.SSID\.(\d+)/);
     if (!m) return "";
     return (batch.params["Device.WiFi.SSID." + m[1] + ".BSSID"] || "").toLowerCase();
   }
@@ -398,6 +402,21 @@
   // and the graph walk drops an edge whose endpoint is missing, so the
   // client would disappear from the map rather than move up a level.
   const emittedSsids: Record<string, boolean> = {};
+  // An SSID whose access point hides it and serves nobody is the
+  // gateway's own plumbing, a mesh backhaul VAP (a Zyxel DX3301 runs one
+  // named by a random hex string), not a network of the home. Drawn, it
+  // read as an unknown device on the gateway. A hidden SSID with a
+  // client on it is a real network and is drawn.
+  const hiddenIdle: Record<string, boolean> = {};
+  const apEntries = batch.matches("Device.WiFi.AccessPoint.*");
+  for (let i = 0; i < apEntries.length; i++) {
+    const ap = apEntries[i];
+    const ref = String(ap.SSIDReference || "").match(/(?:^|\.)WiFi\.SSID\.(\d+)/);
+    if (!ref) continue;
+    const advertised = String(ap.SSIDAdvertisementEnabled === undefined ? "" : ap.SSIDAdvertisementEnabled);
+    const clients = String(ap.AssociatedDeviceNumberOfEntries === undefined ? "" : ap.AssociatedDeviceNumberOfEntries);
+    if ((advertised === "false" || advertised === "0") && clients === "0") hiddenIdle[ref[1]] = true;
+  }
   const ssidEntries = batch.matches("Device.WiFi.SSID.*");
   let ssidsSeen = 0;
   let ssidsWithBand = 0;
@@ -408,7 +427,7 @@
     if (!bssid) continue;
     const ssidName = (s.SSID as string | undefined) || "";
     const lowerLayers = (s.LowerLayers as string | undefined) || "";
-    const radioMatch = lowerLayers.match(/Device\.WiFi\.Radio\.(\d+)/);
+    const radioMatch = lowerLayers.match(/(?:^|\.)WiFi\.Radio\.(\d+)/);
     const radioIdx = radioMatch ? radioMatch[1] : "";
     const band = bandOf(radioIdx);
     const channel = channelOf(radioIdx);
@@ -427,7 +446,7 @@
     const status = String(s.Status === undefined ? "" : s.Status);
     const down = enable === "false" || enable === "0"
       || (status !== "" && status !== "Up");
-    if (!includeDisabledSsids && (down || ssidName === "")) continue;
+    if (!includeDisabledSsids && (down || ssidName === "" || hiddenIdle[ssidIdx])) continue;
 
     emittedSsids[bssid] = true;
     topology.addNode({
@@ -494,7 +513,7 @@
 
   function ssidForAP(apIdx: string): SsidMeta | null {
     const ssidRef = batch.params["Device.WiFi.AccessPoint." + apIdx + ".SSIDReference"] || "";
-    const m = ssidRef.match(/Device\.WiFi\.SSID\.(\d+)/);
+    const m = ssidRef.match(/(?:^|\.)WiFi\.SSID\.(\d+)/);
     if (!m) return null;
     return ssidByIdx[m[1]] || null;
   }
@@ -578,12 +597,12 @@
     let ssidMeta = ssidForAP(apIdx);
     let radioIdx = ssidMeta ? ssidMeta.radioIdx : "";
     if (!ssidMeta && hostMeta) {
-      const viaSsid = hostMeta.layer1.match(/Device\.WiFi\.SSID\.(\d+)/);
+      const viaSsid = hostMeta.layer1.match(/(?:^|\.)WiFi\.SSID\.(\d+)/);
       if (viaSsid && ssidByIdx[viaSsid[1]]) {
         ssidMeta = ssidByIdx[viaSsid[1]];
         radioIdx = ssidMeta.radioIdx;
       } else {
-        const viaRadio = hostMeta.layer1.match(/Device\.WiFi\.Radio\.(\d+)/);
+        const viaRadio = hostMeta.layer1.match(/(?:^|\.)WiFi\.Radio\.(\d+)/);
         if (viaRadio) radioIdx = viaRadio[1];
       }
     }
@@ -860,8 +879,8 @@
   // ---- Step 7: Wi-Fi clients only the host table knows ----
   // The association table is the authority wherever a device has one,
   // so this runs only for a batch with no association row at all, flat
-  // or mesh. A device that reports the table is drawn exactly as
-  // before.
+  // or mesh, and no access point's entry count either. A device that
+  // reports the table is drawn exactly as before.
   //
   // What is left is firmware that has no table to report. Its host
   // table still says which hosts are wireless: Layer1Interface names
@@ -876,18 +895,31 @@
   // SSID is known to sit on another radio. A host no route resolves
   // hangs off the gateway with the band of its radio, which is still
   // more than the map said about it before.
-  if (flatStations.length === 0 && meshStations.length === 0) {
+  // A table that counts zero rows is a table: every client has left,
+  // and the host table, which keeps a wireless host Active until its
+  // lease or ARP entry ages out, would otherwise draw the client that
+  // just disassociated. A Zyxel DX3301 lists a phone that left as
+  // Active on its SSID for minutes. Only a batch with no entry count
+  // for any access point is firmware without the table.
+  let reportsAssocTable = false;
+  for (const k in batch.params) {
+    if (/^(?:Device\.)?WiFi\.AccessPoint\.\d+\.AssociatedDeviceNumberOfEntries$/.test(k)) {
+      reportsAssocTable = true;
+      break;
+    }
+  }
+  if (flatStations.length === 0 && meshStations.length === 0 && !reportsAssocTable) {
     for (const macKey in hostByMAC) {
       if (emittedClients[macKey] || extenderMACs[macKey]) continue;
       const hostMeta = hostByMAC[macKey];
-      const viaSsid = hostMeta.layer1.match(/^Device\.WiFi\.SSID\.(\d+)/);
-      const viaRadio = hostMeta.layer1.match(/^Device\.WiFi\.Radio\.(\d+)/);
+      const viaSsid = hostMeta.layer1.match(/^(?:Device\.)?WiFi\.SSID\.(\d+)/);
+      const viaRadio = hostMeta.layer1.match(/^(?:Device\.)?WiFi\.Radio\.(\d+)/);
       if (!viaSsid && !viaRadio) continue;
 
       let radioIdx = viaRadio ? viaRadio[1] : "";
       let ssidMeta: SsidMeta | null = viaSsid ? ssidByIdx[viaSsid[1]] || null : null;
       if (!ssidMeta) {
-        const viaAP = hostMeta.assoc.match(/^Device\.WiFi\.AccessPoint\.(\d+)\./);
+        const viaAP = hostMeta.assoc.match(/^(?:Device\.)?WiFi\.AccessPoint\.(\d+)\./);
         if (viaAP) {
           ssidMeta = ssidForAP(viaAP[1]);
           const sameIdx = ssidByIdx[viaAP[1]];

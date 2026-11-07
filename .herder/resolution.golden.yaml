@@ -13059,6 +13059,7 @@ devices:
         - tr181-wifi-rf
         - usp-firmware-operations
         - usp-software-modules
+        - usp-topology-live
         - usp-wan-sampled
         - usp-wan-status
         - usp-wifi-realtime
@@ -15809,6 +15810,7 @@ devices:
         - tr181-wifi-rf
         - usp-firmware-operations
         - usp-software-modules
+        - usp-topology-live
         - usp-wan-sampled
         - usp-wan-status
         - usp-wifi-realtime
@@ -20125,6 +20127,7 @@ devices:
         - tr181-wifi-rf
         - usp-firmware-operations
         - usp-software-modules
+        - usp-topology-live
         - usp-wan-sampled
         - usp-wan-status
         - usp-wifi-realtime
