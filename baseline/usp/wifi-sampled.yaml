@@ -16,8 +16,14 @@
 # point to the band it runs on. The rule sees one report as one batch,
 # and a client whose band it cannot resolve in that batch is skipped, so
 # the chain rides in every report rather than being assumed from the
-# first contact. The radio half is the noise floor, the utilisation and
-# the channel-change counters the Spectrum page and the DFS ledger read.
+# first contact. The radio half is the noise floor and the
+# channel-change counters the Spectrum page and the DFS ledger read.
+#
+# Only parameters TR-181 defines, because an agent validates every
+# reference and refuses the whole profile over one it does not know. A
+# Zyxel DX3301 refused this profile over Radio.{i}.ChannelUtilization,
+# which TR-181 2.21 does not have: the radio's utilisation is the Data
+# Elements Radio.{i}.Utilization the RF profile already collects.
 #
 # Five minutes is the cadence a per-home WiFi picture needs: the busy
 # hour resolves, a client's session is bounded to five minutes, and a
@@ -66,7 +72,6 @@ spec:
         - Device.WiFi.SSID.{i}.Stats.FailedRetransCount
         # Per radio.
         - Device.WiFi.Radio.{i}.Channel
-        - Device.WiFi.Radio.{i}.ChannelUtilization
         - Device.WiFi.Radio.{i}.Stats.Noise
         - Device.WiFi.Radio.{i}.Stats.TotalChannelChangeCount
         - Device.WiFi.Radio.{i}.Stats.AutoDFSChannelChangeCount
