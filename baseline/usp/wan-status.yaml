@@ -23,17 +23,16 @@
 #     some fleets and PPP on others, and a profile that guessed would
 #     be silent on half of them.
 #
-#   * ValueChange on the matching `LastChange` leaves. TR-181 counts
-#     LastChange in seconds since the interface entered its current
-#     state, so the value reported alongside a transition is how long
-#     the previous state lasted: the length of the outage, from the
-#     device rather than from the platform's clock.
-#
-# LastChange is best effort. Agents are allowed to declare
-# VALUE_CHANGE_WILL_IGNORE on counters, and one that does simply sends
-# nothing for it; the Status transitions still arrive, and the outage
-# window is still on the device page from the presence events either
-# side of it. The same caveat the wifi baseline records for RSSI.
+# Not `LastChange`. TR-181 counts it in seconds since the interface
+# entered its current state, so it changes every second by definition,
+# and an agent either declares VALUE_CHANGE_WILL_IGNORE on it or
+# honours the subscription and notifies each time it checks for
+# changes. A Zyxel DX3301 does the second: a notification for
+# each interface every ten seconds, for the life of the session, which
+# across a fleet is a storm carrying nothing the Status transitions do
+# not. The outage window is on the device page from the presence
+# events either side of it, and the value itself is still collected
+# with the device's other parameters.
 #
 # Deliberate exclusions (do not add without amendment):
 #
@@ -67,6 +66,4 @@ spec:
     - notifType: ValueChange
       referenceList:
         - Device.IP.Interface.{i}.Status
-        - Device.IP.Interface.{i}.LastChange
         - Device.PPP.Interface.{i}.Status
-        - Device.PPP.Interface.{i}.LastChange
