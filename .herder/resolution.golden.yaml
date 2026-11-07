@@ -13713,6 +13713,7 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - wifi-client-events(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-gateway(100)
@@ -16464,6 +16465,7 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - wifi-client-events(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-gateway(100)
@@ -20781,6 +20783,7 @@ devices:
     enrichment:
       - baseline-experience-score(210)
       - generic-client-wifi(200)
+      - wifi-client-events(200)
       - device-addresses(100)
       - easymesh-topology-default(100)
       - topology-gateway(100)

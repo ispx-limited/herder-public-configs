@@ -1,0 +1,39 @@
+# WiFi client joins, leaves and failed joins, with their 802.11 codes.
+#
+# The three Wi-Fi Data Elements client events (Associated!,
+# Disassociated!, FailedConnection!) arrive over TR-369 when the
+# usp-wifi-realtime profile subscribes to them, and carry what no polled
+# table can: the status a join was refused with and the reason a client
+# left. The script turns each into one labeled row per event, keyed on
+# the client MAC, so a home's history reads "the TV failed to join four
+# times this evening: 4-way handshake timeout" rather than a gap in the
+# client list.
+#
+# Emitted metrics, value 1 per event:
+#
+#   wifi.client.joined        a client associated
+#   wifi.client.left          a client disassociated
+#   wifi.client.join_failed   a client tried and was refused
+#
+# Labels: client_mac, bssid, and where the event carries one,
+# reason_code or status_code with its text (reason, status) and a cause
+# (below). Codes the table does not name keep their number and no text.
+#
+# A device reports FailedConnection! only where its firmware does; the
+# Data Elements switch that turns it on (ReportUnsuccessfulAssociations)
+# is a write and not this rule's to make.
+apiVersion: telemetry.herder.io/v1alpha1
+kind: EnrichmentRule
+metadata:
+  name: wifi-client-events
+spec:
+  priority: 200
+  deviceSelector:
+    matchExpressions:
+      - key: "protocol:usp"
+        operator: Exists
+  triggerPaths:
+    - Device.WiFi.DataElements.AssociationEvent.Associated!
+    - Device.WiFi.DataElements.DisassociationEvent.Disassociated!
+    - Device.WiFi.DataElements.FailedConnectionEvent.FailedConnection!
+  script: wifi-client-events.ts

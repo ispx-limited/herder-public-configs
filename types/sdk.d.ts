@@ -107,8 +107,20 @@ declare global {
      * Numbers render as an operator would write them: an integral value
      * is an integer string whatever arithmetic produced it, and nothing
      * reaches the CPE in exponent notation.
+     *
+     * Whether to write is decided by comparing `value` with the device's
+     * current value, which by default is the stored copy: it moves only
+     * when something reads the device, so a change made in the CPE's own
+     * GUI on a path no Inform carries goes unseen. With `{ maxAge }` the
+     * path is read live first, on the same per-session terms as `get`,
+     * batched with the pass's fetches into one round trip; the write is
+     * sent only when the device differs. `{ maxAge: null }` opts out of
+     * a `provision.defaults` that asked for it. A read the CPE faults
+     * falls back to the stored copy. A credential that reads back empty
+     * or masked is judged by what the device last acknowledged, so it is
+     * written once, not every session.
      */
-    set(path: string, value: string | number | boolean): void;
+    set(path: string, value: string | number | boolean, options?: { maxAge: number | null }): void;
 
     /**
      * Register a path for live retrieval; returns null on first run,
@@ -288,6 +300,21 @@ declare global {
      * `{ $indexes: { AccessPoint: "1" }, SSID: "MyNet" }` per match.
      */
     matches(pattern: string): ReadonlyArray<MatchedEntry>;
+
+    /**
+     * Events the device reported in this message, with every argument
+     * it sent. `path` is the object path followed by the event name,
+     * e.g. `Device.WiFi.DataElements.DisassociationEvent.Disassociated!`.
+     * Empty when the message carries none; a rule reading events lists
+     * their paths in `triggerPaths`.
+     */
+    readonly events: ReadonlyArray<ReportedEvent>;
+  }
+
+  /** One event from `batch.events`. */
+  interface ReportedEvent {
+    readonly path: string;
+    readonly args: Readonly<Record<string, string>>;
   }
 
   /** A single result from `batch.matches`. */
@@ -490,6 +517,18 @@ declare global {
      * the evaluation records a warning naming it.
      */
     run(target: string, ...args: unknown[]): unknown;
+
+    /**
+     * Defaults for the rest of this run of the rule's script, including
+     * helpers it runs through `run`. `{ setMaxAge: 0 }` makes every
+     * `device.set` without its own `maxAge` read its path live before
+     * the write is judged. Off unless called; the line runs on every
+     * evaluation, so it applies every time. Each fresh set can cost a
+     * round trip to the CPE, which is what bounds a host's sessions.
+     * Throws when called after a `device.set`, so a rule cannot judge
+     * half its writes one way and half the other.
+     */
+    defaults(options: { setMaxAge?: number | null }): void;
 
     /**
      * What the caller passed to `provision.run`, empty for a rule's own
