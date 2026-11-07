@@ -15,9 +15,11 @@
 #
 # Clients walk AssociatedDevice tables per radio. Hostname / IPv4 /
 # IPv6 cross-ref Device.Hosts.Host.* by MAC. A batch with no
-# association row at all draws its wireless hosts from the host table
-# instead (Layer1Interface names the radio), which is the only place
-# firmware without the table says who is on Wi-Fi.
+# association row and no access point entry count at all draws its
+# wireless hosts from the host table instead (Layer1Interface names the
+# radio), which is the only place firmware without the table says who
+# is on Wi-Fi. A table that counts zero rows is a table: its clients
+# have left, whatever the host table still says.
 #
 # Cost: triggerPaths gates on the wifi / hosts subtree so unrelated
 # Informs skip the script entirely. changeHash on structural fields
@@ -72,7 +74,12 @@ spec:
       # An extender's uplink coming up or moving to another band.
       - "Device.WiFi.EndPoint.{i}.Status"
       - "Device.WiFi.EndPoint.{i}.SSIDReference"
-  coalesceWindow: 60s
+  # No coalesceWindow. A window skips a run inside it rather than
+  # deferring it, so a client leaving and coming back within the window
+  # left the map showing it gone until the next change. A USP device's
+  # map moves on events (baseline/usp/topology-realtime.yaml), and the
+  # change hash above already keeps a session that changes nothing from
+  # running the script.
   config:
     # rssiEncoding: "dbm" (default for MultiAP) or "rcpi". RCPI converts
     # via (RCPI/2) - 110.

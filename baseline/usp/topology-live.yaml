@@ -1,0 +1,92 @@
+# USP live network map baseline profile.
+#
+# While someone is watching a home's network map (an event stream open
+# on the device with the device.topology topic, which the device page
+# holds), the agent pushes everything the topology rules join every
+# five seconds, and the map follows a client joining, leaving, moving
+# band or changing signal within seconds. It is a Bulk Data profile over
+# the MTP, the TR-369 way to have an agent push a set of values on a
+# cadence: no controller reads, nothing polled.
+#
+# `whileWatched: true` is what makes that affordable. The profile is on
+# the agent only while the device is watched and comes off within a
+# minute of the last watcher leaving, so the cost is the homes on
+# screen, not the fleet. Every other home keeps the sampled cadence of
+# wifi-sampled.yaml beside this file.
+#
+# The set is what platform/topology/ reads, leaves rather than whole
+# objects where the flat tables allow it, so a report carries the map
+# and not every counter under it:
+# the client tables with their signal and rates, the host table that
+# names them, the SSID and radio chain that places them on a band, the
+# gateway's own MACs, and the mesh tables an EasyMesh gateway reports.
+# A reference the device's model lacks is not installed, so a gateway
+# with no MultiAP or Data Elements tree carries none of that half.
+#
+# Five seconds is the shortest cadence that reads as live on a map and
+# well above the agents' MinReportingInterval. `retain: 0`: a missed
+# live report is superseded by the next one.
+#
+# Selector: `protocol:usp` and `dataModel:device`, as the other USP
+# baselines. Priority 10, baseline tier.
+
+apiVersion: telemetry.herder.io/v1alpha1
+kind: TelemetryProfile
+metadata:
+  name: usp-topology-live
+spec:
+  priority: 10
+  deviceSelector:
+    matchExpressions:
+      - key: "protocol:usp"
+        operator: Exists
+      - key: "dataModel:device"
+        operator: Exists
+  sampled:
+    - interval: 5
+      whileWatched: true
+      parameters:
+        # The gateway's own identity.
+        - Device.Ethernet.Link.{i}.MACAddress
+        - Device.Ethernet.Interface.{i}.MACAddress
+        - Device.Ethernet.Interface.{i}.Name
+        # SSIDs, the radio each runs on, and whether it is a network of
+        # the home.
+        - Device.WiFi.SSID.{i}.BSSID
+        - Device.WiFi.SSID.{i}.SSID
+        - Device.WiFi.SSID.{i}.MACAddress
+        - Device.WiFi.SSID.{i}.LowerLayers
+        - Device.WiFi.SSID.{i}.Enable
+        - Device.WiFi.SSID.{i}.Status
+        - Device.WiFi.Radio.{i}.OperatingFrequencyBand
+        - Device.WiFi.Radio.{i}.Channel
+        - Device.WiFi.AccessPoint.{i}.SSIDReference
+        - Device.WiFi.AccessPoint.{i}.SSIDAdvertisementEnabled
+        - Device.WiFi.AccessPoint.{i}.AssociatedDeviceNumberOfEntries
+        # Each client and what the radio reports about it.
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.MACAddress
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Active
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.SignalStrength
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.LastDataDownlinkRate
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.LastDataUplinkRate
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Retransmissions
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesSent
+        - Device.WiFi.AccessPoint.{i}.AssociatedDevice.{i}.Stats.BytesReceived
+        # Names and addresses, wired hosts included.
+        - Device.Hosts.Host.{i}.PhysAddress
+        - Device.Hosts.Host.{i}.HostName
+        - Device.Hosts.Host.{i}.IPAddress
+        - Device.Hosts.Host.{i}.Active
+        - Device.Hosts.Host.{i}.Layer1Interface
+        - Device.Hosts.Host.{i}.AddressSource
+        # An extender's uplink, and the mesh an EasyMesh gateway reports.
+        # EndPoint as an object: a gateway carries the table with no rows,
+        # and an agent may refuse a search path that matches nothing (a
+        # Zyxel DX3301 refused the whole profile over EndPoint.*.Status).
+        - Device.WiFi.EndPoint.
+        - Device.GatewayInfo.SerialNumber
+        # Whole objects: the mesh steps read too much of each tree for a
+        # leaf list to keep up with them, and a live map with less on it
+        # than the session's would be worse than none.
+        - Device.WiFi.MultiAP.APDevice.
+        - Device.WiFi.DataElements.Network.
