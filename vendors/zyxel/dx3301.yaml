@@ -52,6 +52,13 @@ metadata:
   name: zyxel-dx3301-tr181-cwmp
 spec:
   priority: 50
+  # The baseline's split, restated because this profile replaces it:
+  # this firmware's USP agent restarts on an AddObject to its port
+  # mapping table, while the same writes over CWMP complete.
+  transport:
+    reads: usp
+    writes: cwmp
+    operations: cwmp
   deviceSelector:
     matchExpressions:
       - key: productClass
