@@ -1,0 +1,89 @@
+# Zyxel DX3301-T0: remote management lives in the vendor tree.
+#
+# This firmware leaves Device.UserInterface.RemoteAccess empty (port 0,
+# no protocols) and keeps remote management in
+# Device.X_ZYXEL_RemoteManagement.SPService.{i}, one entry per service:
+# 1 HTTP, 2 HTTPS, 3 FTP, 4 TELNET, 5 SSH, 6 SNMP, 7 PING, 8 TR069. Each
+# has Enable, Port and Mode (ALL opens it from LAN and WAN). The remote
+# access module maps to the HTTPS entry, the one an operator opens for
+# WAN access to the web configurator.
+#
+# The profile is the TR-181 CWMP baseline with that table swapped and
+# the WAN address picked by service name, below.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: remote-access-zyxel
+spec:
+  mappings:
+    - canonical: canonical.mgmt.remote_access.enable
+      valueType: boolean
+      devicePath: Device.X_ZYXEL_RemoteManagement.SPService.2.Enable
+    - canonical: canonical.mgmt.remote_access.port
+      valueType: unsignedint
+      devicePath: Device.X_ZYXEL_RemoteManagement.SPService.2.Port
+    - canonical: canonical.mgmt.remote_access.protocol
+      valueType: string
+      devicePath: Device.X_ZYXEL_RemoteManagement.SPService.2.Name
+---
+# The WAN address. The baseline picks the IP interface with a /32 mask
+# (PPPoE) and falls back to interface 1, which on this firmware is the
+# LAN: the DX3301 lists four interfaces named WAN (WWAN, ADSL, VDSL,
+# ETHWAN), only the one in use holds an address, and that address is a
+# DHCP /24. X_ZYXEL_SrvName names the service; this unit runs Ethernet
+# WAN. A DX3301 on VDSL takes VDSL here.
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingTable
+metadata:
+  name: interfaces-zyxel-wan
+spec:
+  mappings:
+    - canonical: canonical.interface.wan.ip_address
+      valueType: string
+      instanceAlias:
+        object: Device.IP.Interface.
+        matchBy: X_ZYXEL_SrvName
+        matchValue: ETHWAN
+      pathTemplate: Device.IP.Interface.{index}.IPv4Address.1.IPAddress
+---
+apiVersion: mapping.herder.io/v1alpha1
+kind: MappingProfile
+metadata:
+  name: zyxel-dx3301-tr181-cwmp
+spec:
+  priority: 50
+  # The baseline's split, restated because this profile replaces it:
+  # this firmware's USP agent restarts on an AddObject to its port
+  # mapping table, while the same writes over CWMP complete.
+  transport:
+    reads: usp
+    writes: cwmp
+    operations: cwmp
+  deviceSelector:
+    matchExpressions:
+      - key: productClass
+        operator: In
+        values: [DX3301-T0]
+      - key: "dataModel:device"
+        operator: Exists
+      - key: "protocol:cwmp"
+        operator: Exists
+  parameterMappings:
+    - device-info-tr181
+    - firmware-tr181
+    - mgmt-tr181
+    - diagnostics-tr181
+    - wifi-tr181
+    - interfaces-tr181
+    # After the baseline: a later table's mapping of the same canonical
+    # replaces the earlier one.
+    - interfaces-zyxel-wan
+    - voice-tr104i2
+    - wifi-scan-tr181
+    - wifi-capability-tr181
+    - wifi-rf-tr181
+    - netdiag-tr181
+    - remote-access-zyxel
+    - nat-tr181
+    - software-tr181
+    - oriel-home-tr181
