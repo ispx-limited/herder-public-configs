@@ -263,6 +263,15 @@ spec:
   # demo fleet as 52k failed SetParameterValues and a cohort stuck in
   # bootstrap. More specific selector, higher priority.
   priority: 20
+  # A device that speaks both CWMP and USP streams and reports over USP
+  # and is configured over CWMP: some USP agents fail at writes they
+  # declare, while the same writes over CWMP complete. Reads stay on
+  # USP, which needs no connection request. A vendor whose agent handles
+  # writes well sets writes: usp on its own profile.
+  transport:
+    reads: usp
+    writes: cwmp
+    operations: cwmp
   deviceSelector:
     matchExpressions:
       - key: "dataModel:device"
